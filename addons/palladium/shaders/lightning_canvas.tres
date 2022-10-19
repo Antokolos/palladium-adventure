@@ -1,0 +1,75 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+//uniform vec2 resolution = vec2(1024.0, 256.0);
+uniform vec3 color = vec3(4.75, 5.0, 20.0);
+
+uniform bool use_image_adjust = false;
+uniform float brightness = 1.0;
+uniform float contrast = 1.0;
+uniform float saturation = 1.0;
+
+float rand(vec2 co){
+	return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+float hash(vec2 p, in float s)
+{
+	return fract(sin(dot(vec3(p.xy,10.0 * abs(sin(s))), vec3(27.1, 61.7, 12.4))) * 273758.5453123);
+}
+
+float noise(in vec2 p, in float s)
+{
+	vec2 i = floor(p);
+	vec2 f = fract(p);
+	f *= f * (3.0 - 2.0 * f);
+	return mix(mix(hash(i + vec2(0.0, 0.0), s), hash(i + vec2(1.0, 0.0), s),f.x),mix(hash(i + vec2(0.0, 1.0), s), hash(i + vec2(1.0, 1.0), s),f.x),f.y) * s;
+}
+
+float fbm(vec2 p)
+{
+	float v = 0.0;
+	v += noise(p * 1.0, 0.35);
+	v += noise(p * 2.0, 0.25);
+	v += noise(p * 4.0, 0.125);
+	v += noise(p * 8.0, 0.0625);
+	return v;
+}
+
+vec2 rot(vec2 uv, float th) {
+	float x = uv.x * cos(th) + uv.y * sin(th);
+	float y = -uv.x * sin(th) + uv.y * cos(th);
+	return vec2(x, y);
+}
+
+float envelope(vec2 uv) {
+	vec2 uvr = rot(uv, -0.7);
+	return uvr.y - 0.3 * cos(uvr.x * 1.1) * sin((uvr.x + 0.3)* 4.8) - 0.3;
+}
+
+void fragment()
+{
+	//vec2 uv = (FRAGCOORD.xy / resolution.xy) * 2.0 - 1.0;
+	//uv.x *= resolution.x / resolution.y;
+	vec2 uv = UV * 2.0 - 1.0;
+	float t = 0.1 * abs(1.0 / (envelope(uv) + fbm(uv + TIME)));
+	vec3 finalColor = t * color;
+	
+	if (use_image_adjust) {
+		finalColor = mix(vec3(0.0), finalColor, brightness);
+		finalColor = mix(vec3(0.5), finalColor, contrast);
+		finalColor = mix(vec3(dot(vec3(1.0), finalColor) * 0.33333), finalColor, saturation);
+	}
+	
+	COLOR = vec4(finalColor, 0.1);
+}"
+
+[resource]
+shader = SubResource( 1 )
+shader_param/color = Vector3( 4.75, 5, 20 )
+shader_param/use_image_adjust = false
+shader_param/brightness = 1.0
+shader_param/contrast = 1.0
+shader_param/saturation = 1.0

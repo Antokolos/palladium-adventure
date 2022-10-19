@@ -1,0 +1,13 @@
+[remap]
+
+importer="inkgd.ink"
+type="Resource"
+path="res://.import/Default.ink-68f2a22f8ed2cf3f38fb08e2676c85a0.res"
+
+[deps]
+
+source_file="res://ink-scripts/ru/Default.ink"
+dest_files=[ "res://.import/Default.ink-68f2a22f8ed2cf3f38fb08e2676c85a0.res" ]
+
+[params]
+

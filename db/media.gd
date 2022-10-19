@@ -1,0 +1,176 @@
+extends Node
+class_name PLDDBMedia
+
+signal music_finished()
+
+enum MusicId {
+	NONE = 0,
+	LOADING = 10
+	UNDERWATER = 20,
+	GAME_OVER = 30
+}
+
+const MUSIC = {
+	MusicId.NONE : null,
+	MusicId.LOADING : null,
+	MusicId.UNDERWATER : preload("res://music/underwater.ogg"),
+	MusicId.GAME_OVER : preload("res://music/bleeding_out2.ogg"),
+}
+
+enum SoundId {
+	FIRE_LIGHTER = 10,
+	FIRE_EXTINGUISH = 20,
+	RAT_SQUEAK = 30,
+	FEMALE_SCREAM_SHORT = 40,
+	MALE_SCREAM_SHORT = 50,
+	SPLASH_IN = 60,
+	SPLASH_OUT = 70,
+	MAN_BREATHE_IN_TANK = 80,
+	MAN_DRINKS = 90,
+	BUBBLES_1 = 100,
+	BUBBLES_2 = 110,
+	BUBBLES_3 = 120,
+	MAN_BREATHE_IN_1 = 130,
+	MAN_BREATHE_IN_2 = 140,
+	WOMAN_BREATHE_IN_1 = 150,
+	WOMAN_BREATHE_IN_2 = 160,
+}
+
+const SOUND = {
+	SoundId.FIRE_LIGHTER : preload("res://addons/palladium/assets/sound/environment/238059__klankbeeld__cigarette-lighter-click-light-140320-0129.ogg"),
+	SoundId.FIRE_EXTINGUISH : preload("res://addons/palladium/assets/sound/environment/155660__the-semen-incident__cig-extinguish_potuh_fakel.ogg"),
+	SoundId.RAT_SQUEAK : preload("res://addons/palladium/assets/sound/environment/472399__joseagudelo__16-raton-chillando.ogg"),
+	SoundId.FEMALE_SCREAM_SHORT : preload("res://addons/palladium/assets/sound/environment/2604_A_a_h_last_trap.ogg"),
+	SoundId.MALE_SCREAM_SHORT : preload("res://addons/palladium/assets/sound/environment/2336_mur_yelling.ogg"),
+	SoundId.SPLASH_IN : preload("res://addons/palladium/assets/sound/environment/splash_in.ogg"),
+	SoundId.SPLASH_OUT : preload("res://addons/palladium/assets/sound/environment/splash_out.ogg"),
+	SoundId.MAN_BREATHE_IN_TANK : preload("res://addons/palladium/assets/sound/environment/2421_bandit_tank_sigh.ogg"),
+	SoundId.MAN_DRINKS : preload("res://addons/palladium/assets/sound/environment/2422_Andreas_drinks.ogg"),
+	SoundId.BUBBLES_1 : preload("res://addons/palladium/assets/sound/environment/bubbles-single1.ogg"),
+	SoundId.BUBBLES_2 : preload("res://addons/palladium/assets/sound/environment/bubbles-single2.ogg"),
+	SoundId.BUBBLES_3 : preload("res://addons/palladium/assets/sound/environment/bubbles-single3.ogg"),
+	SoundId.MAN_BREATHE_IN_1 : preload("res://addons/palladium/assets/sound/environment/2419_bandit_sigh_1.ogg"),
+	SoundId.MAN_BREATHE_IN_2 : preload("res://addons/palladium/assets/sound/environment/2420_bandit_sigh_2.ogg"),
+	SoundId.WOMAN_BREATHE_IN_1 : preload("res://addons/palladium/assets/sound/environment/2402_enhale_1.ogg"),
+	SoundId.WOMAN_BREATHE_IN_2 : preload("res://addons/palladium/assets/sound/environment/2402_enhale_2.ogg"),
+}
+
+onready var music_player = $MusicPlayer
+onready var sound_players = get_node("sound_players").get_children()
+onready var pre_delay_timers = get_node("pre_delay_timers").get_children()
+var music_ids = [ MusicId.NONE ]
+var music_paused = false
+
+var _pldrt = null
+
+func init(pldrt):
+	_pldrt = pldrt
+	return self
+
+static func lookup_music_id_from_int(music_id : int):
+	for id in MusicId:
+		if music_id == MusicId[id]:
+			return MusicId[id]
+	return MusicId.NONE
+
+static func lookup_music_ids_from_ints(music_ids : Array):
+	var result = []
+	for music_id in music_ids:
+		result.append(lookup_music_id_from_int(music_id))
+	return result
+
+func change_music_to(music_id, replace_existing = true):
+	var stream = MUSIC[music_id] if music_id != MusicId.NONE and MUSIC.has(music_id) else null
+	if (
+		music_ids[0] == music_id
+		and stream and music_player.stream
+		and _pldrt.common_utils.is_same_resource(stream, music_player.stream)
+	):
+		if not music_player.is_playing():
+			play_music()
+		return
+	if replace_existing:
+		music_ids[0] = music_id
+	else:
+		music_ids.push_front(music_id)
+	if stream:
+		music_player.stream = stream
+		play_music()
+	else:
+		music_player.stream = null
+		stop_music()
+
+func restore_music_from_save(saved_music_ids):
+	music_ids = (
+		lookup_music_ids_from_ints(saved_music_ids)
+			if saved_music_ids and not saved_music_ids.empty()
+			else [ MusicId.NONE ]
+	)
+	change_music_to(music_ids[0])
+
+func restore_music_from(music_id):
+	if music_ids.size() > 1 and music_ids[0] == music_id:
+		music_ids.pop_front()
+		change_music_to(music_ids[0])
+
+func play_random_sound(sound_ids : Array, is_loop = false, volume_db = 0, pre_delay_sec = 0.0, channel = -1):
+	if not sound_ids or sound_ids.empty():
+		return
+	play_sound(sound_ids[randi() % sound_ids.size()], is_loop, volume_db, pre_delay_sec, channel)
+
+func play_sound(sound_id, is_loop = false, volume_db = 0, pre_delay_sec = 0.0, channel = -1):
+	if channel < -1 or channel > sound_players.size():
+		push_error("Incorrect channel number %d" % channel)
+		return null
+	var stream = SOUND[sound_id]
+	if not _pldrt.common_utils.set_stream_loop(stream, is_loop):
+		return null
+	if channel >= 0:
+		return play_stream(sound_players[channel], stream, volume_db, pre_delay_timers[channel], pre_delay_sec)
+	else:
+		for i in range(0, sound_players.size()):
+			var sound_player = sound_players[i]
+			var pre_delay_timer = pre_delay_timers[i]
+			if not sound_player.is_playing() and pre_delay_timer.is_stopped():
+				return play_stream(sound_player, stream, volume_db, pre_delay_timer, pre_delay_sec)
+
+func play_stream(sound_player, stream, volume_db, pre_delay_timer, pre_delay_sec):
+	if pre_delay_sec > 0.0:
+		pre_delay_timer.start(pre_delay_sec)
+		yield(pre_delay_timer, "timeout")
+	sound_player.stream = stream
+	sound_player.set_volume_db(volume_db)
+	sound_player.play()
+	return sound_player
+
+func stop_sound():
+	for sound_player in sound_players:
+		sound_player.stop()
+
+func play_music():
+	if music_player.stream:
+		music_player.play()
+	music_paused = false
+
+func pause_music():
+	music_paused = true
+	music_player.stop()
+
+func stop_music():
+	music_player.stop()
+	music_ids = [ MusicId.NONE ]
+
+func _on_MusicPlayer_finished():
+	emit_signal("music_finished")
+	if (
+		not music_paused
+		and not music_ids.empty()
+		and music_ids[0] != MusicId.NONE
+		and music_player.stream
+		and _pldrt.common_utils.is_same_resource(music_player.stream, MUSIC[music_ids[0]])
+	):
+		music_ids.pop_front()
+		if music_ids.empty():
+			music_ids = [ MusicId.NONE ]
+		else:
+			change_music_to(music_ids[0])

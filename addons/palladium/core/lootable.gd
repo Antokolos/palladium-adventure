@@ -1,0 +1,81 @@
+extends PLDUsable
+class_name PLDLootable
+
+signal use_lootable(player_node, lootable)
+
+export(PLDDB.TakableIds) var takable_id = PLDDB.TakableIds.NONE
+export(int) var count_init = 1
+export(bool) var can_loot = true
+export(bool) var can_loot_on_hard_difficulty = true
+export(int) var max_count = 0
+
+func _ready():
+	__PLDRT.game_state.connect("item_taken", self, "_on_item_taken")
+
+func connect_signals(target):
+	connect("use_lootable", target, "use_lootable")
+
+func use(player_node, camera_node):
+	if not is_can_loot():
+		return false
+	if max_count > 0 and __PLDRT.game_state.get_item_count(takable_id) > max_count:
+		__PLDRT.game_state.get_hud().queue_popup_message("MESSAGE_TOO_MANY_ITEMS", [ tr(PLDDB.get_items_name(takable_id)) ])
+		return false
+	__PLDRT.game_state.take(takable_id, get_count(), get_path())
+	emit_signal("use_lootable", player_node, self)
+	return true
+
+func get_usage_code(player_node):
+	return "ACTION_LOOT" if is_can_loot() else ""
+
+func _on_item_taken(item_id, count_total, count_taken, item_path):
+	if item_id == takable_id and item_path == get_path():
+		make_absent()
+
+func has_id(tid):
+	return takable_id == tid
+
+func is_can_loot():
+	return can_loot and is_present() and (can_loot_on_hard_difficulty or not __PLDRT.settings.is_difficulty_hard())
+
+func get_count():
+	return __PLDRT.game_state.get_lootable_count(get_path())
+
+func set_count(amount):
+	__PLDRT.game_state.set_lootable_count(get_path(), amount)
+
+func inc_count(amount):
+	var path = get_path()
+	var count_new = __PLDRT.game_state.get_lootable_count(path) + amount
+	__PLDRT.game_state.set_lootable_count(path, count_new)
+	return count_new
+
+func is_present():
+	if takable_id == PLDDB.TakableIds.NONE:
+		return false
+	var path = get_path()
+	if __PLDRT.game_state.get_lootable_count(path) <= 0:
+		return false
+	var ts = __PLDRT.game_state.get_takable_state(path)
+	return (ts == PLDGameState.TakableState.DEFAULT) or (ts == PLDGameState.TakableState.PRESENT)
+
+func make_present():
+	var path = get_path()
+	__PLDRT.game_state.set_takable_state(path, false)
+	if __PLDRT.game_state.get_lootable_count(path) <= 0:
+		__PLDRT.game_state.set_lootable_count(path, count_init)
+
+func make_absent():
+	var path = get_path()
+	__PLDRT.game_state.set_takable_state(path, true)
+	__PLDRT.game_state.set_lootable_count(path, 0)
+
+func restore_state():
+	var state = __PLDRT.game_state.get_takable_state(get_path())
+	if state == PLDGameState.TakableState.DEFAULT:
+		make_present()
+		return
+	if state == PLDGameState.TakableState.PRESENT:
+		make_present()
+	else:
+		make_absent()

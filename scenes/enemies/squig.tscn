@@ -1,0 +1,73 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://assets/characters/enemies/squig.glb" type="PackedScene" id=1]
+[ext_resource path="res://scenes/enemies/squig.gd" type="Script" id=2]
+[ext_resource path="res://scenes/enemies/animation_squig.tres" type="AnimationNodeBlendTree" id=3]
+
+
+[node name="squig" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+main_skeleton = NodePath("squig_new/Skeleton")
+attack_cutscene_ids = PoolIntArray( 1, 2 )
+
+[node name="BoneAttachment" parent="squig_new/Skeleton" index="0"]
+transform = Transform( -0.998819, -0.0194763, -0.0445095, -0.0349779, -0.347558, 0.937006, -0.033719, 0.937456, 0.346466, -0.0879615, -0.521372, 3.03337 )
+
+[node name="jaw bottom" parent="squig_new/Skeleton/BoneAttachment" index="0"]
+portal_mode = 2
+include_in_bound = false
+
+[node name="BoneAttachment2" parent="squig_new/Skeleton" index="1"]
+transform = Transform( 0.255721, 0.920517, -0.295389, -0.900873, 0.116039, -0.418284, -0.350761, 0.373071, 0.858944, 0.50732, 0.305638, 4.22232 )
+
+[node name="eyeL001" parent="squig_new/Skeleton/BoneAttachment2" index="0"]
+portal_mode = 2
+include_in_bound = false
+
+[node name="BoneAttachment3" parent="squig_new/Skeleton" index="2"]
+transform = Transform( -0.998819, -0.037701, -0.030641, -0.0349761, 0.120292, 0.992122, -0.0337181, 0.992022, -0.121468, -0.11512, 0.30869, 2.97685 )
+
+[node name="horns" parent="squig_new/Skeleton/BoneAttachment3" index="0"]
+portal_mode = 2
+include_in_bound = false
+
+[node name="BoneAttachment4" parent="squig_new/Skeleton" index="3"]
+transform = Transform( -0.998819, -0.037701, -0.030641, -0.0349761, 0.120292, 0.992122, -0.0337181, 0.992022, -0.121468, -0.11512, 0.30869, 2.97685 )
+
+[node name="jaw upper" parent="squig_new/Skeleton/BoneAttachment4" index="0"]
+portal_mode = 2
+include_in_bound = false
+
+[node name="clawsL" parent="squig_new/Skeleton" index="4"]
+portal_mode = 2
+include_in_bound = false
+
+[node name="clawsR" parent="squig_new/Skeleton" index="5"]
+portal_mode = 2
+include_in_bound = false
+
+[node name="squig_body_new" parent="squig_new/Skeleton" index="6"]
+portal_mode = 2
+include_in_bound = false
+
+[node name="tail spikes" parent="squig_new/Skeleton" index="7"]
+portal_mode = 2
+include_in_bound = false
+
+[node name="AnimationTree" type="AnimationTree" parent="." index="2"]
+tree_root = ExtResource( 3 )
+anim_player = NodePath("../AnimationPlayer")
+process_mode = 0
+parameters/AliveTransition/current = 0
+parameters/CutsceneShot/active = false
+parameters/CutsceneTransition/current = 0
+parameters/DamageShot/active = false
+parameters/DamageTransition/current = 0
+parameters/LookTransition/current = 1
+parameters/TimeScale/scale = 1.0
+"parameters/TimeScale 2/scale" = 1.0
+parameters/Transition/current = 0
+
+[node name="RestTimer" type="Timer" parent="." index="3"]
+wait_time = 7.0
+one_shot = true

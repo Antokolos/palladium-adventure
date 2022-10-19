@@ -1,0 +1,90 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://assets/characters/player/vasya_export.gltf" type="PackedScene" id=1]
+[ext_resource path="res://vasya_model.gd" type="Script" id=2]
+[ext_resource path="res://animation_tree.tres" type="AnimationNodeBlendTree" id=3]
+
+[node name="vasya" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+main_skeleton = NodePath("metarig001/Skeleton")
+
+[node name="eyebrow012Mesh001" parent="metarig001/Skeleton" index="0"]
+portal_mode = 2
+include_in_bound = false
+layers = 3
+
+[node name="eyelashes01Mesh001" parent="metarig001/Skeleton" index="1"]
+portal_mode = 2
+include_in_bound = false
+layers = 3
+
+[node name="high-polyMesh001" parent="metarig001/Skeleton" index="2"]
+portal_mode = 2
+include_in_bound = false
+layers = 3
+
+[node name="male_genericMesh001" parent="metarig001/Skeleton" index="3"]
+portal_mode = 2
+include_in_bound = false
+layers = 3
+
+[node name="male_pants" parent="metarig001/Skeleton" index="4"]
+portal_mode = 2
+include_in_bound = false
+layers = 5
+
+[node name="male_shirt" parent="metarig001/Skeleton" index="5"]
+portal_mode = 2
+include_in_bound = false
+layers = 3
+
+[node name="shoes04Mesh001" parent="metarig001/Skeleton" index="6"]
+portal_mode = 2
+include_in_bound = false
+
+[node name="short02Mesh001" parent="metarig001/Skeleton" index="7"]
+portal_mode = 2
+include_in_bound = false
+layers = 3
+
+[node name="teeth_baseMesh001" parent="metarig001/Skeleton" index="8"]
+portal_mode = 2
+include_in_bound = false
+layers = 3
+
+[node name="tongue01Mesh001" parent="metarig001/Skeleton" index="9"]
+portal_mode = 2
+include_in_bound = false
+layers = 3
+
+[node name="AnimationTree" type="AnimationTree" parent="." index="2"]
+tree_root = ExtResource( 3 )
+anim_player = NodePath("../AnimationPlayer")
+process_mode = 0
+parameters/AliveTransition/current = 0
+parameters/Blend2_Aux/blend_amount = 0
+parameters/Blend2_Head/blend_amount = 0
+parameters/Blend2_Lips/blend_amount = 0
+parameters/CutsceneShot/active = false
+parameters/CutsceneTransition/current = 0
+parameters/DamageShot/active = false
+parameters/DamageTransition/current = 0
+parameters/LookTransition/current = 1
+parameters/RestShot/active = false
+parameters/RestTransition/current = 0
+parameters/SpeakShot/active = false
+parameters/SpeakTransition/current = 0
+parameters/TimeScale/scale = 1.0
+parameters/Transition/current = 0
+parameters/Transition_Lips/current = 0
+
+[node name="SpeechTimer" type="Timer" parent="." index="3"]
+process_mode = 0
+one_shot = true
+
+[node name="RestTimer" type="Timer" parent="." index="4"]
+wait_time = 7.0
+one_shot = true
+
+[connection signal="timeout" from="SpeechTimer" to="." method="_on_SpeechTimer_timeout"]
+[connection signal="timeout" from="RestTimer" to="." method="_on_RestTimer_timeout"]

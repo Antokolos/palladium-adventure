@@ -1,0 +1,68 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://addons/palladium/default_theme.tres" type="Theme" id=1]
+[ext_resource path="res://addons/palladium/ui/difficulty_dialog.gd" type="Script" id=2]
+
+[node name="difficulty_dialog" type="WindowDialog"]
+pause_mode = 2
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme = ExtResource( 1 )
+window_title = "SETTINGS_DIFFICULTY"
+script = ExtResource( 2 )
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+custom_constants/separation = 50
+alignment = 1
+
+[node name="Label" type="Label" parent="VBoxContainer"]
+margin_left = 833.0
+margin_top = 480.0
+margin_right = 1086.0
+margin_bottom = 512.0
+size_flags_horizontal = 4
+text = "DIALOG_DIFFICULTY_LABEL"
+align = 1
+valign = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+margin_left = 777.0
+margin_top = 562.0
+margin_right = 1143.0
+margin_bottom = 600.0
+size_flags_horizontal = 4
+size_flags_vertical = 4
+custom_constants/separation = 30
+alignment = 1
+
+[node name="DifficultyHardButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+margin_right = 173.0
+margin_bottom = 38.0
+focus_neighbour_left = NodePath("../DifficultyNormalButton")
+focus_neighbour_top = NodePath("../DifficultyNormalButton")
+focus_neighbour_right = NodePath("../DifficultyNormalButton")
+focus_neighbour_bottom = NodePath("../DifficultyNormalButton")
+focus_next = NodePath("../DifficultyNormalButton")
+focus_previous = NodePath("../DifficultyNormalButton")
+text = "SETTINGS_DIFFICULTY_HARD"
+
+[node name="DifficultyNormalButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+margin_left = 203.0
+margin_right = 366.0
+margin_bottom = 38.0
+focus_neighbour_left = NodePath("../DifficultyHardButton")
+focus_neighbour_top = NodePath("../DifficultyHardButton")
+focus_neighbour_right = NodePath("../DifficultyHardButton")
+focus_neighbour_bottom = NodePath("../DifficultyHardButton")
+focus_next = NodePath("../DifficultyHardButton")
+focus_previous = NodePath("../DifficultyHardButton")
+text = "SETTINGS_DIFFICULTY_NORMAL"
+[connection signal="about_to_show" from="." to="." method="_on_difficulty_dialog_about_to_show"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/DifficultyHardButton" to="." method="_on_DifficultyHardButton_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/DifficultyNormalButton" to="." method="_on_DifficultyNormalButton_pressed"]

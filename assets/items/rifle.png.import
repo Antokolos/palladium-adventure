@@ -1,0 +1,13 @@
+[remap]
+
+importer="image"
+type="Image"
+path="res://.import/rifle.png-6ba146de98aedaa67725d883df174a57.image"
+
+[deps]
+
+source_file="res://assets/items/rifle.png"
+dest_files=[ "res://.import/rifle.png-6ba146de98aedaa67725d883df174a57.image" ]
+
+[params]
+

@@ -1,0 +1,187 @@
+[gd_resource type="AnimationNodeBlendTree" load_steps=29 format=2]
+
+[sub_resource type="AnimationNodeTransition" id=27]
+input_count = 2
+input_0/name = "alive"
+input_0/auto_advance = false
+input_1/name = "dead"
+input_1/auto_advance = false
+
+[sub_resource type="AnimationNodeAnimation" id=1]
+animation = "biting_single"
+
+[sub_resource type="AnimationNodeAnimation" id=2]
+animation = "Suspecting pose"
+
+[sub_resource type="AnimationNodeAnimation" id=3]
+animation = "turn_reference"
+
+[sub_resource type="AnimationNodeAnimation" id=4]
+animation = "turn_reference"
+
+[sub_resource type="AnimationNodeAnimation" id=5]
+animation = "rest_pose"
+
+[sub_resource type="AnimationNodeAnimation" id=6]
+animation = "Running"
+
+[sub_resource type="AnimationNodeOneShot" id=7]
+fadein_time = 0.5
+fadeout_time = 0.5
+
+[sub_resource type="AnimationNodeTransition" id=8]
+input_count = 6
+input_0/name = "empty"
+input_0/auto_advance = false
+input_1/name = "biting"
+input_1/auto_advance = false
+input_2/name = "biting_single"
+input_2/auto_advance = false
+input_3/name = "Suspecting pose"
+input_3/auto_advance = false
+input_4/name = "turn_reference"
+input_4/auto_advance = false
+input_5/name = "turn_reference"
+input_5/auto_advance = false
+
+[sub_resource type="AnimationNodeOneShot" id=9]
+
+[sub_resource type="AnimationNodeTransition" id=10]
+input_count = 3
+input_0/name = "fatal"
+input_0/auto_advance = false
+input_1/name = "jumpscare"
+input_1/auto_advance = false
+input_2/name = "normal"
+input_2/auto_advance = false
+
+[sub_resource type="AnimationNodeTransition" id=11]
+input_count = 5
+input_0/name = "stand_up"
+input_0/auto_advance = true
+input_1/name = "standing"
+input_1/auto_advance = false
+input_2/name = "sit_down"
+input_2/auto_advance = true
+input_3/name = "squatting"
+input_3/auto_advance = false
+input_4/name = "inactive"
+input_4/auto_advance = false
+
+[sub_resource type="AnimationNodeTimeScale" id=12]
+
+[sub_resource type="AnimationNodeTimeScale" id=13]
+
+[sub_resource type="AnimationNodeTransition" id=14]
+input_count = 5
+xfade_time = 0.5
+input_0/name = "look"
+input_0/auto_advance = false
+input_1/name = "walk"
+input_1/auto_advance = false
+input_2/name = "run"
+input_2/auto_advance = false
+input_3/name = "crouch"
+input_3/auto_advance = false
+input_4/name = "fall"
+input_4/auto_advance = false
+
+[sub_resource type="AnimationNodeAnimation" id=28]
+animation = "squig_lies_immobilized"
+
+[sub_resource type="AnimationNodeAnimation" id=15]
+animation = "squig_empty"
+
+[sub_resource type="AnimationNodeAnimation" id=16]
+animation = "squig_empty"
+
+[sub_resource type="AnimationNodeAnimation" id=17]
+animation = "death"
+
+[sub_resource type="AnimationNodeAnimation" id=18]
+animation = "biting"
+
+[sub_resource type="AnimationNodeAnimation" id=19]
+animation = "injury"
+
+[sub_resource type="AnimationNodeAnimation" id=20]
+animation = "rest_pose"
+
+[sub_resource type="AnimationNodeAnimation" id=21]
+animation = "injury_2"
+
+[sub_resource type="AnimationNodeAnimation" id=22]
+animation = "squig_empty"
+
+[sub_resource type="AnimationNodeAnimation" id=23]
+animation = "rest_pose"
+
+[sub_resource type="AnimationNodeAnimation" id=24]
+animation = "squig_empty"
+
+[sub_resource type="AnimationNodeAnimation" id=25]
+animation = "Walk"
+
+[sub_resource type="AnimationNodeAnimation" id=26]
+animation = "Walk"
+
+[resource]
+graph_offset = Vector2( 474.652, 312.108 )
+nodes/AliveTransition/node = SubResource( 27 )
+nodes/AliveTransition/position = Vector2( 1780, -100 )
+nodes/Animation/node = SubResource( 6 )
+nodes/Animation/position = Vector2( 140, -140 )
+"nodes/Animation 2/node" = SubResource( 1 )
+"nodes/Animation 2/position" = Vector2( 720, 220 )
+"nodes/Animation 3/node" = SubResource( 2 )
+"nodes/Animation 3/position" = Vector2( 520, 340 )
+"nodes/Animation 4/node" = SubResource( 3 )
+"nodes/Animation 4/position" = Vector2( 700, 460 )
+"nodes/Animation 5/node" = SubResource( 4 )
+"nodes/Animation 5/position" = Vector2( 720, 580 )
+"nodes/Animation 6/node" = SubResource( 5 )
+"nodes/Animation 6/position" = Vector2( -220, -220 )
+nodes/CutsceneShot/node = SubResource( 7 )
+nodes/CutsceneShot/position = Vector2( 1340, -120 )
+nodes/CutsceneTransition/node = SubResource( 8 )
+nodes/CutsceneTransition/position = Vector2( 1060, 80 )
+nodes/DamageShot/node = SubResource( 9 )
+nodes/DamageShot/position = Vector2( 2020, 40 )
+nodes/DamageTransition/node = SubResource( 10 )
+nodes/DamageTransition/position = Vector2( 1640, 180 )
+nodes/LookTransition/node = SubResource( 11 )
+nodes/LookTransition/position = Vector2( 180, -540 )
+nodes/TimeScale/node = SubResource( 13 )
+nodes/TimeScale/position = Vector2( 800, 340 )
+"nodes/TimeScale 2/node" = SubResource( 12 )
+"nodes/TimeScale 2/position" = Vector2( 1440, 400 )
+nodes/Transition/node = SubResource( 14 )
+nodes/Transition/position = Vector2( 500, -220 )
+nodes/death_last_frame/node = SubResource( 28 )
+nodes/death_last_frame/position = Vector2( 1520, 40 )
+nodes/empty/node = SubResource( 15 )
+nodes/empty/position = Vector2( 700, -20 )
+nodes/fall/node = SubResource( 16 )
+nodes/fall/position = Vector2( 200, 100 )
+nodes/fatal/node = SubResource( 17 )
+nodes/fatal/position = Vector2( 1380, 160 )
+nodes/greek_skel_stands_up/node = SubResource( 18 )
+nodes/greek_skel_stands_up/position = Vector2( 700, 100 )
+nodes/jumpscare/node = SubResource( 19 )
+nodes/jumpscare/position = Vector2( 1380, 280 )
+nodes/look/node = SubResource( 20 )
+nodes/look/position = Vector2( -180, -640 )
+nodes/normal/node = SubResource( 21 )
+nodes/normal/position = Vector2( 1140, 400 )
+nodes/output/position = Vector2( 2200, 120 )
+nodes/sit_down/node = SubResource( 22 )
+nodes/sit_down/position = Vector2( -200, -460 )
+nodes/squat_rest/node = SubResource( 23 )
+nodes/squat_rest/position = Vector2( -220, -340 )
+nodes/stand_up/node = SubResource( 24 )
+nodes/stand_up/position = Vector2( -180, -780 )
+nodes/walk/node = SubResource( 25 )
+nodes/walk/position = Vector2( 140, -260 )
+nodes/walk_squat/node = SubResource( 26 )
+nodes/walk_squat/position = Vector2( 140, -20 )
+node_connections = [ "AliveTransition", 0, "CutsceneShot", "AliveTransition", 1, "death_last_frame", "DamageShot", 0, "AliveTransition", "DamageShot", 1, "DamageTransition", "TimeScale 2", 0, "normal", "LookTransition", 0, "stand_up", "LookTransition", 1, "look", "LookTransition", 2, "sit_down", "LookTransition", 3, "squat_rest", "LookTransition", 4, "Animation 6", "CutsceneTransition", 0, "empty", "CutsceneTransition", 1, "greek_skel_stands_up", "CutsceneTransition", 2, "Animation 2", "CutsceneTransition", 3, "TimeScale", "CutsceneTransition", 4, "Animation 4", "CutsceneTransition", 5, "Animation 5", "DamageTransition", 0, "fatal", "DamageTransition", 1, "jumpscare", "DamageTransition", 2, "TimeScale 2", "Transition", 0, "LookTransition", "Transition", 1, "walk", "Transition", 2, "Animation", "Transition", 3, "walk_squat", "Transition", 4, "fall", "TimeScale", 0, "Animation 3", "CutsceneShot", 0, "Transition", "CutsceneShot", 1, "CutsceneTransition", "output", 0, "DamageShot" ]
