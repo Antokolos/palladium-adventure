@@ -1022,13 +1022,22 @@ func move_with_physics(v):
 func do_movement(safe_velocity, characters, delta):
 	var is_need_to_use_physics = is_need_to_use_physics(characters)
 	if is_need_to_use_physics:
-		var v = Vector3(safe_velocity.x, 0, safe_velocity.z)
+		var v = Vector3(
+			safe_velocity.x,
+			0 if safe_velocity.y > 0 else safe_velocity.y,
+			safe_velocity.z
+		)
 		return move_with_physics(v)
 	else:
 		return move_without_physics(safe_velocity, has_floor_collision(), delta)
 
 func do_movement2(safe_velocity, characters, delta):
-	return move_with_physics(Vector3(safe_velocity.x, 0, safe_velocity.z))
+		var v = Vector3(
+			safe_velocity.x,
+			0 if safe_velocity.y > 0 else safe_velocity.y,
+			safe_velocity.z
+		)
+		return move_with_physics(v)
 
 func do_process(delta, is_player):
 	var characters = __PLDRT.game_state.get_characters()
