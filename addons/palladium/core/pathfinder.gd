@@ -286,7 +286,7 @@ func get_follow_parameters(target, current_transform, next_position) -> PLDMovem
 	if need_moving:
 		data.with_distance(d).with_dir(next_dir)
 	cur_dir.y = 0
-	next_dir.y = 0
+#	next_dir.y = 0
 	
 	if target:
 		var t = target.get_global_transform()
@@ -294,7 +294,7 @@ func get_follow_parameters(target, current_transform, next_position) -> PLDMovem
 		var target_dir = t.basis.xform(Z_DIR)
 		target_dir.y = 0
 		var mov_vec = target_position - current_position
-		mov_vec.y = 0
+#		mov_vec.y = 0
 		var ratt = (
 			get_rotation_angle(cur_dir, mov_vec)
 				if mov_vec.length() > ALIGNMENT_RANGE

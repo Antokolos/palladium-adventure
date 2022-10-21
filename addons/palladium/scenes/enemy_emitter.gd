@@ -21,13 +21,13 @@ func _on_SpawnTimer_timeout():
 	enemy.has_melee_attack = true
 	enemy.max_hits = 1
 	enemy.use_distance = 8.8
-	enemy.global_transform = global_transform
 	var enemy_model = load(enemy_model_path).instance()
 	var model_holder = Spatial.new()
 	model_holder.set_name("Model")
 	model_holder.add_child(enemy_model)
 	enemy.add_child(model_holder)
 	get_parent().add_child(enemy)
+	enemy.global_transform = global_transform
 	enemy.set_relationship(-1)
 	enemy.activate()
 	if enemies_count_cur >= enemies_count_max:

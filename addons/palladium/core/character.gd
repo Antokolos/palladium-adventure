@@ -782,6 +782,15 @@ func get_max_speed():
 func get_max_sprint_speed():
 	return MAX_SPRINT_SPEED
 
+func get_collider_collision_layer_bit(collider, bit : int):
+	if collider is CollisionObject:
+		return collider.get_collision_layer_bit(bit)
+	if "collision_layer" in collider:
+		var cl = collider.collision_layer
+		var b = 1 << bit
+		return cl & b != 0
+	return false
+
 func process_movement(delta, dir, characters):
 	var target = Vector3.ZERO if is_movement_disabled() else dir
 	var is_need_to_use_physics = is_need_to_use_physics(characters)
@@ -854,7 +863,7 @@ func process_movement(delta, dir, characters):
 				character_collisions.append(collision)
 				break
 		var is_floor_collision = (
-			collision.collider.get_collision_layer_bit(2)
+			get_collider_collision_layer_bit(collision.collider, 2)
 			and collision.normal
 			and collision.normal.y > 0
 		)
@@ -1011,24 +1020,15 @@ func move_with_physics(v):
 		return vel
 
 func do_movement(safe_velocity, characters, delta):
-	var v = Vector3(
-		safe_velocity.x,
-		0 if safe_velocity.y > 0 else safe_velocity.y,
-		safe_velocity.z
-	)
 	var is_need_to_use_physics = is_need_to_use_physics(characters)
 	if is_need_to_use_physics:
+		var v = Vector3(safe_velocity.x, 0, safe_velocity.z)
 		return move_with_physics(v)
 	else:
-		return move_without_physics(v, has_floor_collision(), delta)
+		return move_without_physics(safe_velocity, has_floor_collision(), delta)
 
 func do_movement2(safe_velocity, characters, delta):
-	var v = Vector3(
-		safe_velocity.x,
-		0 if safe_velocity.y > 0 else safe_velocity.y,
-		safe_velocity.z
-	)
-	return move_with_physics(v)
+	return move_with_physics(Vector3(safe_velocity.x, 0, safe_velocity.z))
 
 func do_process(delta, is_player):
 	var characters = __PLDRT.game_state.get_characters()
