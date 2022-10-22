@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=2]
+[gd_scene load_steps=29 format=2]
 
 [ext_resource path="res://addons/zylann.hterrain/hterrain.gd" type="Script" id=1]
 [ext_resource path="res://addons/palladium/ui/game_window.gd" type="Script" id=2]
@@ -18,6 +18,7 @@
 [ext_resource path="res://assets/terrain/arena_slot3_albedo_bump.packed_tex" type="Texture" id=16]
 [ext_resource path="res://assets/terrain/arena_slot0_normal_roughness.packed_tex" type="Texture" id=17]
 [ext_resource path="res://addons/palladium/shaders/water_3d/displacement_offset_textured/displacement_offset_textured_material.tres" type="Material" id=18]
+[ext_resource path="res://scenes/trees/curly_palm.tscn" type="PackedScene" id=19]
 [ext_resource path="res://addons/palladium/ui/hud.tscn" type="PackedScene" id=22]
 [ext_resource path="res://addons/palladium/ui/viewport.tscn" type="PackedScene" id=50]
 [ext_resource path="res://addons/palladium/core/player.tscn" type="PackedScene" id=51]
@@ -72,6 +73,15 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 149.259, 0, 243.821 )
 enemies_count_max = 3
 enemy_model_path = "res://scenes/enemies/squig.tscn"
 navigation_path = NodePath("../..")
+
+[node name="curly_palm" parent="ViewportContainer/Viewport/Pyramid" instance=ExtResource( 19 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 145.533, -0.15782, 284.479 )
+
+[node name="curly_palm2" parent="ViewportContainer/Viewport/Pyramid" instance=ExtResource( 19 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 145.533, -0.15782, 288.869 )
+
+[node name="curly_palm3" parent="ViewportContainer/Viewport/Pyramid" instance=ExtResource( 19 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 149.773, -0.15782, 288.869 )
 
 [node name="player" parent="ViewportContainer/Viewport/Pyramid" instance=ExtResource( 51 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 145.533, 0, 243.821 )
