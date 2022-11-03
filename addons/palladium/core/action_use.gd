@@ -1,17 +1,21 @@
 extends Spatial
 
+onready var ray_use_targets = $RayCastUseTargets
 onready var ray_items = $RayCastItems
 onready var ray_characters = $RayCastCharacters
 var action_body = null
 var use_distance = 0
 
 func rebuild_exceptions(player_node):
+	ray_use_targets.clear_exceptions()
+	ray_use_targets.add_exception(player_node)
 	ray_items.clear_exceptions()
 	ray_items.add_exception(player_node)
 	ray_characters.clear_exceptions()
 	ray_characters.add_exception(player_node)
 
 func enable(enable):
+	ray_use_targets.enabled = enable
 	ray_items.enabled = enable
 	ray_characters.enabled = enable
 
@@ -49,7 +53,8 @@ func ray_action(ray, player_node, camera_node):
 func action(player_node, camera_node):
 	if __PLDRT.game_state.get_hud().is_in_conversation():
 		return
-	if ray_action(ray_items, player_node, camera_node) \
+	if ray_action(ray_use_targets, player_node, camera_node) \
+		or ray_action(ray_items, player_node, camera_node) \
 		or ray_action(ray_characters, player_node, camera_node):
 		return
 	var item = __PLDRT.game_state.get_hud().get_active_item()
@@ -88,6 +93,10 @@ func highlight(player_node):
 		if player_node.is_too_late_to_unhide():
 			return ""
 		return __PLDRT.common_utils.get_action_input_control() + tr("ACTION_UNHIDE") + " | " + tr("MESSAGE_CONTROLS_FLASHLIGHT") % __PLDRT.common_utils.get_input_control("flashlight", false)
+	var data_use_targets = ray_highlight(ray_use_targets, player_node)
+	use_distance = data_use_targets.use_distance
+	if data_use_targets.hint_message:
+		return data_use_targets.hint_message
 	var data_items = ray_highlight(ray_items, player_node)
 	use_distance = data_items.use_distance
 	if data_items.hint_message:

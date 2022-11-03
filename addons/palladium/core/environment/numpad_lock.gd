@@ -22,6 +22,17 @@ func _ready():
 	was_opened = not door.is_untouched()
 	door.connect("door_state_changing", self, "_on_door_state_changing")
 
+func set_code_correct(code : int):
+	code_clear()
+	var c = code
+	code_correct.clear()
+	while true:
+		var cr = c % 10
+		code_correct.push_front(cr)
+		if c < 10:
+			return
+		c = c / 10
+
 func was_opened():
 	return was_opened
 

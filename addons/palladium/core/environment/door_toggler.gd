@@ -24,8 +24,10 @@ func use(player_node, camera_node):
 		if door.is_opened():
 			if anim_player:
 				anim_player.play(anim_close)
+				yield(anim_player, "animation_finished")
 			door.close()
 		else:
 			if anim_player:
 				anim_player.play(anim_open)
+				yield(anim_player, "animation_finished")
 			door.open()
