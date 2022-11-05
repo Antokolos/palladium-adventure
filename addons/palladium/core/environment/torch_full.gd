@@ -63,9 +63,8 @@ func _physics_process(delta):
 	if not torch_light.visible or persistent:
 		raycast.enabled = false
 		return
-	var player = __PLDRT.game_state.get_player()
-	if player:
-		var camera = player.get_cam()
+	var camera = __PLDRT.game_state.get_cam()
+	if camera:
 		var origin = camera.get_global_transform().origin
 		var ray_vec = raycast.to_local(origin)
 		var rl = ray_vec.length()

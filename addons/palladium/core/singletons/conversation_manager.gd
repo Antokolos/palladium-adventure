@@ -176,7 +176,7 @@ func stop_conversation(player):
 		hud.show_game_ui(true)
 	if conversation_name_prev.find(MEETING_CONVERSATION_PREFIX) == 0:
 		emit_signal("meeting_finished", player, target_prev, initiator_prev)
-	var cam = player.get_cam()
+	var cam = _pldrt.game_state.get_cam()
 	if cam:
 		cam.enable_use(true)
 	emit_signal("conversation_finished", player, conversation_name_prev, target_prev, initiator_prev, last_result)
@@ -281,7 +281,7 @@ func start_conversation(player, conversation_name, target = null, initiator = nu
 	if is_cutscene:
 		_pldrt.cutscene_manager.start_cutscene(player, cutscene_node, conversation_name, target)
 	else:
-		player.get_cam().enable_use(false)
+		_pldrt.game_state.get_cam().enable_use(false)
 	emit_signal("conversation_started", player, conversation_name, target, initiator)
 	self.target = target
 	self.initiator = initiator

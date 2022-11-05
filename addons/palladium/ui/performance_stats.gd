@@ -8,11 +8,7 @@ func _physics_process(delta):
 	if not __PLDRT.settings.performance_stats:
 		visible = false
 		return
-	var player = __PLDRT.game_state.get_player()
-	if not player:
-		visible = false
-		return
-	var camera = player.get_cam()
+	var camera = __PLDRT.game_state.get_cam()
 	if not camera:
 		visible = false
 		return

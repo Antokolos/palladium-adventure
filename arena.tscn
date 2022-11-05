@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=2]
+[gd_scene load_steps=30 format=2]
 
 [ext_resource path="res://addons/zylann.hterrain/hterrain.gd" type="Script" id=1]
 [ext_resource path="res://addons/palladium/ui/game_window.gd" type="Script" id=2]
@@ -19,6 +19,7 @@
 [ext_resource path="res://assets/terrain/arena_slot0_normal_roughness.packed_tex" type="Texture" id=17]
 [ext_resource path="res://addons/palladium/shaders/water_3d/displacement_offset_textured/displacement_offset_textured_material.tres" type="Material" id=18]
 [ext_resource path="res://scenes/trees/curly_palm.tscn" type="PackedScene" id=19]
+[ext_resource path="res://addons/palladium/core/camera.tscn" type="PackedScene" id=20]
 [ext_resource path="res://addons/palladium/ui/hud.tscn" type="PackedScene" id=22]
 [ext_resource path="res://addons/palladium/ui/viewport.tscn" type="PackedScene" id=50]
 [ext_resource path="res://addons/palladium/core/player.tscn" type="PackedScene" id=51]
@@ -63,6 +64,7 @@ size = Vector2( 1920, 1080 )
 [node name="Pyramid" type="Navigation" parent="ViewportContainer/Viewport"]
 script = ExtResource( 53 )
 is_inside = false
+cam_path = NodePath("camera")
 
 [node name="path_holder" type="Spatial" parent="ViewportContainer/Viewport/Pyramid"]
 
@@ -136,6 +138,8 @@ shader_params/u_roughness = 0.9
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 228.692, -16.6322, 247.382 )
 mesh = SubResource( 5 )
 material/0 = ExtResource( 18 )
+
+[node name="camera" parent="ViewportContainer/Viewport/Pyramid" instance=ExtResource( 20 )]
 
 [node name="hud" parent="." instance=ExtResource( 22 )]
 

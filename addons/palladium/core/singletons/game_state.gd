@@ -322,6 +322,9 @@ func get_level():
 	var viewport = get_viewport()
 	return viewport.get_child(0) if viewport.get_child_count() > 0 else null
 
+func get_cam():
+	return get_level().get_cam()
+
 func get_door(door_full_path):
 	var level = get_level()
 	if not level or not level.has_node("doors"):

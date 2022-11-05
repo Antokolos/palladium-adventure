@@ -477,10 +477,7 @@ func set_active_item(item_idx):
 	return valid
 
 func activate_item_use(item):
-	var player = __PLDRT.game_state.get_player()
-	if not player:
-		return
-	var cam = player.get_cam()
+	var cam = __PLDRT.game_state.get_cam()
 	if not cam:
 		return
 	cam.activate_item_use(item)

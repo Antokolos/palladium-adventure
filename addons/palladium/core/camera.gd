@@ -1,6 +1,29 @@
 extends Camera
 class_name PLDCamera
 
+# The factor to use for asymptotical translation lerping.
+# If 0, the camera will stop moving. If 1, the camera will move instantly.
+export(float) var translate_speed = 0.95
+
+# The factor to use for asymptotical rotation lerping.
+# If 0, the camera will stop rotating. If 1, the camera will rotate instantly.
+export(float) var rotate_speed = 0.95
+
+# The factor to use for asymptotical FOV lerping.
+# If 0, the camera will stop changing its FOV. If 1, the camera will change its FOV instantly.
+# Note: Only works if the target node is a Camera3D.
+export(float) var fov_speed = 0.95
+
+# The factor to use for asymptotical Z near/far plane distance lerping.
+# If 0, the camera will stop changing its Z near/far plane distance. If 1, the camera will do so instantly.
+# Note: Only works if the target node is a Camera3D.
+export(float) var near_far_speed = 0.95
+
+# The node to target.
+export(NodePath) var target_path
+
+export(bool) var strict_following = true
+
 onready var flashlight = get_node("Flashlight") if has_node("Flashlight") else null
 onready var flashlight_spot = flashlight.get_node("Flashlight") if flashlight else null
 onready var cutscene_flashlight = get_node("CutsceneFlashlight") if has_node("CutsceneFlashlight") else null
@@ -124,6 +147,9 @@ func set_inside(inside, bright):
 	environment.set("background_sky_rotation_degrees", __PLDRT.game_state.sky_rotation_degrees)
 	environment.set("ambient_light_energy", 0.3 if bright else (0.04 if inside else 0.3))
 
+func set_target_path(path : NodePath):
+	target_path = path
+
 func change_culling():
 	if culling_rays:
 		self.far = culling_rays.get_max_distance(self.get_global_transform().origin)
@@ -199,6 +225,24 @@ func _process(delta):
 		var player = __PLDRT.game_state.get_player()
 		__PLDRT.game_state.get_hud().main_hud.get_node("HBoxHints/ActionHintLabel").text = use_point.highlight(player)
 	change_culling()
+	
+	if not has_node(target_path):
+		return
+	var target_node = get_node(target_path)
+	var target_xform = target_node.get_global_transform()
+	if strict_following:
+		set_global_transform(target_xform)
+		return
+	# TODO: Fix delta calculation so it behaves correctly if the speed is set to 1.0.
+	var translate_factor = translate_speed * delta * 10
+	var rotate_factor = rotate_speed * delta * 10
+	# Interpolate the origin and basis separately so we can have different translation and rotation
+	# interpolation speeds.
+	var local_transform_only_origin = Transform(Basis(), get_global_transform().origin)
+	var local_transform_only_basis = Transform(get_global_transform().basis, Vector3())
+	local_transform_only_origin = local_transform_only_origin.interpolate_with(target_xform, translate_factor)
+	local_transform_only_basis = local_transform_only_basis.interpolate_with(target_xform, rotate_factor)
+	set_global_transform(Transform(local_transform_only_basis.basis, local_transform_only_origin.origin))
 
 func _input(event):
 	if get_tree().paused \

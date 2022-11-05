@@ -89,10 +89,7 @@ func set_active(active):
 func player_is_in_room(camera_global_origin = null):
 	var origin = camera_global_origin
 	if not origin:
-		var player = __PLDRT.game_state.get_player()
-		if not player:
-			return false
-		var camera = player.get_cam()
+		var camera = __PLDRT.game_state.get_cam()
 		if not camera:
 			return false
 		origin = camera.get_global_transform().origin
@@ -101,12 +98,7 @@ func player_is_in_room(camera_global_origin = null):
 func _physics_process(delta):
 	if not __PLDRT.game_state.is_level_ready():
 		return
-	var player = __PLDRT.game_state.get_player()
-	if not player:
-		enable_raycasts(false)
-		enable_room()
-		return
-	var camera = player.get_cam()
+	var camera = __PLDRT.game_state.get_cam()
 	if not camera:
 		enable_raycasts(false)
 		enable_room()
@@ -119,7 +111,7 @@ func _physics_process(delta):
 	elif player_is_in_room_prev and not player_is_in_room:
 		emit_signal("player_left_room", room_id)
 	var need_enable = player_is_in_room
-	if not active or not player or need_enable:
+	if not active or need_enable:
 		enable_raycasts(false)
 		enable_room()
 		return

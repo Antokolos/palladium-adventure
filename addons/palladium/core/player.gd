@@ -166,7 +166,7 @@ func _input(event):
 			angle_rad_y = deg2rad(event.relative.x * __PLDRT.settings.get_sensitivity() * -1)
 			angle_x_reset = true
 			angle_y_reset = true
-			get_cam().process_rotation(self)
+			__PLDRT.game_state.get_cam().process_rotation(self)
 		elif is_joypad_look(event):
 			var v = event.get_axis_value()
 			var nonzero = v > AXIS_VALUE_THRESHOLD or v < -AXIS_VALUE_THRESHOLD
@@ -228,24 +228,25 @@ func _input(event):
 					set_sprinting(false)
 
 func get_movement_data(is_player):
+	var cam = __PLDRT.game_state.get_cam()
 	if is_player \
 		and is_in_party() \
 		and input_movement_vector.length_squared() > 0 \
 		and not is_movement_disabled() \
 		and not __PLDRT.cutscene_manager.is_cutscene():
 			var dir_input = Vector3()
-			var cam_xform = get_cam().get_global_transform()
+			var cam_xform = cam.get_global_transform()
 			var n = input_movement_vector.normalized()
 			dir_input += -cam_xform.basis.z.normalized() * n.y
 			dir_input += cam_xform.basis.x.normalized() * n.x
-			get_cam().walk_initiate(self)
+			cam.walk_initiate(self)
 			var data = PLDMovementData.new().with_dir(dir_input).with_rest_state(false)
 			if cam_xform.origin.y < max_lower_limit_y:
 				data.with_signal("out_of_bounds", [])
 			return data
 	else:
 		if is_player and not __PLDRT.cutscene_manager.is_cutscene():
-			get_cam().walk_stop(self)
+			cam.walk_stop(self)
 		return .get_movement_data(is_player)
 
 func _physics_process(delta):
@@ -255,7 +256,7 @@ func _physics_process(delta):
 	var is_player = is_player()
 	var d = do_process(delta, is_player)
 	if is_player and d.is_rotating:
-		get_cam().process_rotation(self)
+		__PLDRT.game_state.get_cam().process_rotation(self)
 	if has_floor_collision() and is_in_jump:
 		is_in_jump = false
 		character_nodes.play_sound_falling_to_floor()

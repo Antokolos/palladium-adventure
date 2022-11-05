@@ -55,10 +55,7 @@ func enable(enabled):
 func player_is_in_room(camera_global_origin = null):
 	var origin = camera_global_origin
 	if not origin:
-		var player = __PLDRT.game_state.get_player()
-		if not player:
-			return false
-		var camera = player.get_cam()
+		var camera = __PLDRT.game_state.get_cam()
 		if not camera:
 			return false
 		origin = camera.get_global_transform().origin
@@ -69,11 +66,7 @@ func player_is_in_room(camera_global_origin = null):
 func _physics_process(delta):
 	if persistent or not __PLDRT.game_state.is_level_ready():
 		return
-	var player = __PLDRT.game_state.get_player()
-	if not player:
-		enable(false)
-		return
-	var camera = player.get_cam()
+	var camera = __PLDRT.game_state.get_cam()
 	if not camera:
 		enable(false)
 		return

@@ -230,8 +230,9 @@ func use_weapon(item):
 			__PLDRT.game_state.get_hud().queue_popup_message("MESSAGE_NOTHING_HAPPENS")
 	elif PLDDB.is_weapon_ranged(item.item_id):
 		var p = __PLDRT.game_state.get_player()
+		var cam = __PLDRT.game_state.get_cam()
 		var weapon_data = PLDDB.get_weapon_ranged_data(item.item_id)
-		character.hit(weapon_data.injury_rate, weapon_data.poison_rate, p.get_cam() if p else null)
+		character.hit(weapon_data.injury_rate, weapon_data.poison_rate, cam)
 
 func stun_start(item, stun_duration):
 	character.inc_stuns_count()

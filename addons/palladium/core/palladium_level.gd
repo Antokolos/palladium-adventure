@@ -7,6 +7,7 @@ export var is_loadable = true
 export var player_path = "player"
 export var player_female_path = "player_female"
 export var player_bandit_path = "player_bandit"
+export(NodePath) var cam_path
 
 onready var player = get_node(player_path) if has_node(player_path) else null
 onready var player_female = get_node(player_female_path) if has_node(player_female_path) else null
@@ -34,3 +35,6 @@ func is_bright():
 
 func is_inside():
 	return is_inside
+
+func get_cam():
+	return get_node(cam_path) if cam_path and has_node(cam_path) else null

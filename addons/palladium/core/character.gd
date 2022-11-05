@@ -260,13 +260,16 @@ func use(player_node, camera_node):
 			var was_transporting = is_transporting
 			is_transporting = not is_transporting
 			var player = __PLDRT.game_state.get_player()
+			var cam = __PLDRT.game_state.get_cam()
 			var m = get_model()
 			if not was_transporting and is_transporting:
-				player.get_cam().activate_transporting()
+				if cam:
+					cam.activate_transporting()
 				m.set_meshes_portal_mode(m, CullInstance.PORTAL_MODE_GLOBAL, true)
 			elif was_transporting and not is_transporting:
 				m.set_meshes_portal_mode(m, CullInstance.PORTAL_MODE_ROAMING, false)
-				player.get_cam().deactivate_transporting()
+				if cam:
+					cam.deactivate_transporting()
 				set_scale(Vector3(1.0, 1.0, 1.0))
 				rotation_degrees.z = 0
 				var ufy = character_nodes.get_under_feet_y()
@@ -316,20 +319,11 @@ func get_usage_code(player_node):
 func get_translator_node():
 	return get_node("Rotation_Helper/TranslatorNode")
 
+func get_cam_holder_path():
+	return get_cam_holder().get_path()
+
 func get_cam_holder():
 	return get_node("Rotation_Helper/Camera")
-
-func get_cam():
-	var cutscene_cam = __PLDRT.cutscene_manager.get_cam()
-	var cam_holder = get_cam_holder()
-	return (
-		cutscene_cam
-			if cutscene_cam
-			else
-				cam_holder.get_child(0)
-				if cam_holder and cam_holder.get_child_count() > 0
-				else null
-	)
 
 ### States ###
 
@@ -341,25 +335,18 @@ func become_player():
 	var model = get_model()
 	model.set_simple_mode(true)
 	var player = __PLDRT.game_state.get_player()
+	var cam = __PLDRT.game_state.get_cam()
 	deactivate()
 	if not player or is_player():
-		var cam = get_cam()
-		if not cam:
-			cam = load("res://addons/palladium/core/camera.tscn").instance()
-			get_cam_holder().add_child(cam)
-		cam.rebuild_exceptions(self)
+		if cam:
+			cam.set_target_path(get_cam_holder_path())
+			cam.rebuild_exceptions(self)
 	else:
 		player.deactivate()
-		var cam_holder = get_cam_holder()
-		var player_cam_holder = player.get_cam_holder()
-		var cutscene_cam = __PLDRT.cutscene_manager.get_cam()
-		var camera = player_cam_holder.get_child(0) if player_cam_holder.get_child_count() > 0 else null
-		if camera:
-			player_cam_holder.remove_child(camera)
-			cam_holder.add_child(camera)
-			camera.rebuild_exceptions(self)
-		elif cutscene_cam:
-			cutscene_cam.rebuild_exceptions(self)
+		if cam:
+			cam.set_target_path(get_cam_holder_path())
+			cam.rebuild_exceptions(self)
+		if __PLDRT.cutscene_manager.is_cutscene():
 			__PLDRT.cutscene_manager.stop_cutscene(self)
 		var player_model = player.get_model()
 		player_model.set_simple_mode(false)
