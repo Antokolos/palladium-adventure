@@ -67,7 +67,7 @@ func restore_camera(player, conversation_name_prev = null, target_prev = null):
 	var camera = _pldrt.game_state.get_cam()
 	if is_cutscene():
 		player.reset_movement_and_rotation()
-		player.set_simple_mode(true)
+		player.set_simple_mode(_pldrt.settings.is_first_person_view())
 		camera.set_target_path(player.get_cam_holder_path())
 		camera.show_cutscene_flashlight(false)
 		camera.enable_use(true)

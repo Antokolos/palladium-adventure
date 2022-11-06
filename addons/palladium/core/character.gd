@@ -48,6 +48,9 @@ const COLLISION_LAYER_INTERACTIVE = 3
 const COLLISION_LAYER_PLAYER = 11
 const COLLISION_LAYER_ENEMY = 12
 const COLLISION_LAYER_OBSTACLES = 13
+const TRANSLATOR_NODE_PATH = "Rotation_Helper/TranslatorNode"
+const FIRST_PERSON_CAMERA_PATH = "Rotation_Helper/CameraFirstPerson"
+const THIRD_PERSON_CAMERA_PATH = "Rotation_Helper_TP/CameraThirdPerson"
 
 export(bool) var has_ranged_attack : bool = false
 export(bool) var has_melee_attack : bool = false
@@ -58,6 +61,9 @@ export(bool) var auto_sit_down : bool = false
 
 onready var character_nodes = $character_nodes
 onready var animation_player = $AnimationPlayer
+onready var translator_node = get_node(TRANSLATOR_NODE_PATH) if has_node(TRANSLATOR_NODE_PATH) else null
+onready var camera_first_person = get_node(FIRST_PERSON_CAMERA_PATH) if has_node(FIRST_PERSON_CAMERA_PATH) else null
+onready var camera_third_person = get_node(THIRD_PERSON_CAMERA_PATH) if has_node(THIRD_PERSON_CAMERA_PATH) else null
 
 var vel = Vector3()
 
@@ -317,13 +323,13 @@ func get_usage_code(player_node):
 ### Getting character's parts ###
 
 func get_translator_node():
-	return get_node("Rotation_Helper/TranslatorNode")
+	return translator_node
 
 func get_cam_holder_path():
 	return get_cam_holder().get_path()
 
 func get_cam_holder():
-	return get_node("Rotation_Helper/Camera")
+	return camera_first_person if __PLDRT.settings.is_first_person_view() else camera_third_person
 
 ### States ###
 
@@ -333,7 +339,7 @@ func become_player():
 	if not is_in_party():
 		join_party()
 	var model = get_model()
-	model.set_simple_mode(true)
+	model.set_simple_mode(__PLDRT.settings.is_first_person_view())
 	var player = __PLDRT.game_state.get_player()
 	var cam = __PLDRT.game_state.get_cam()
 	deactivate()

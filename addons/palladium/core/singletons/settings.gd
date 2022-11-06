@@ -62,6 +62,7 @@ var tablet_orientation = TABLET_HORIZONTAL
 var joypad_type = JOYPAD_XBOX
 var performance_stats = false
 var hide_quick_item_key_labels = false
+var first_person_view = true
 var pause_on_joy_disconnected = true
 var disable_mouse_if_joy_connected = false
 var cutoff_enabled = false
@@ -138,6 +139,9 @@ func load_settings():
 
 	if ("hide_quick_item_key_labels" in d):
 		hide_quick_item_key_labels = bool(d.hide_quick_item_key_labels)
+
+	if ("first_person_view" in d):
+		first_person_view = bool(d.first_person_view)
 
 	if ("pause_on_joy_disconnected" in d):
 		pause_on_joy_disconnected = bool(d.pause_on_joy_disconnected)
@@ -218,6 +222,7 @@ func save_settings():
 		"joypad_type" : joypad_type,
 		"performance_stats" : performance_stats,
 		"hide_quick_item_key_labels" : hide_quick_item_key_labels,
+		"first_person_view" : first_person_view,
 		"pause_on_joy_disconnected" : pause_on_joy_disconnected,
 		"disable_mouse_if_joy_connected" : disable_mouse_if_joy_connected,
 		"cutoff_enabled" : cutoff_enabled,
@@ -427,6 +432,12 @@ func set_cutoff_enabled(ce):
 func set_shader_cache_enabled(sce):
 	shader_cache_enabled = sce
 	emit_signal("shader_cache_enabled_changed", sce)
+
+func is_first_person_view():
+	return first_person_view
+
+func set_first_person_view(fpv):
+	first_person_view = fpv
 
 func set_pause_on_joy_disconnected(pjd):
 	pause_on_joy_disconnected = pjd

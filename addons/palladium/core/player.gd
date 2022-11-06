@@ -14,6 +14,7 @@ export var initial_player = true
 
 onready var upper_body_shape = $UpperBody_CollisionShape
 onready var rotation_helper = $Rotation_Helper
+onready var rotation_helper_tp = $Rotation_Helper_TP
 
 var input_movement_vector = Vector2()
 var angle_rad_x = 0
@@ -33,6 +34,9 @@ func _ready():
 		enemy.connect("attack_finished", self, "_on_enemy_attack_finished")
 	#activate() -- restored from save
 
+func get_rotation_helper():
+	return rotation_helper if __PLDRT.settings.is_first_person_view() else rotation_helper_tp
+
 func hit(injury_rate, poison_rate = 0, hit_direction_node = null, hit_dir_vec = Z_DIR):
 	.hit(injury_rate, poison_rate, hit_direction_node, hit_dir_vec)
 	var health_new = __PLDRT.game_state.party_stats[name_hint]["health_current"] - injury_rate
@@ -50,6 +54,7 @@ func reset_movement():
 func reset_rotation():
 	.reset_rotation()
 	angle_rad_x = 0
+	var rotation_helper = get_rotation_helper()
 	if rotation_helper:
 		rotation_helper.set_rotation_degrees(Vector3(0, 0, 0))
 	if upper_body_shape:
@@ -91,6 +96,7 @@ func process_rotation(need_to_update_collisions):
 		return { "rotate_x" : false, "rotate_y" : result.rotate_y }
 	if need_to_update_collisions:
 		move_and_collide(Vector3.ZERO)
+	var rotation_helper = get_rotation_helper()
 	rotation_helper.rotate_x(angle_rad_x)
 	var translator_node = get_translator_node()
 	if translator_node:
