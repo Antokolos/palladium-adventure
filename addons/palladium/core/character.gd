@@ -49,7 +49,7 @@ const COLLISION_LAYER_PLAYER = 11
 const COLLISION_LAYER_ENEMY = 12
 const COLLISION_LAYER_OBSTACLES = 13
 const FIRST_PERSON_CAMERA_PATH = "Rotation_Helper/FirstPersonCamera"
-const THIRD_PERSON_CAMERA_PATH = "Rotation_Helper_TP/ThirdPersonCamera"
+const THIRD_PERSON_CAMERA_PATH = "Rotation_HelperX/Rotation_HelperY/ThirdPersonCamera"
 const TRANSLATOR_NODE_PATH = "Rotation_Helper/FirstPersonCamera/TranslatorNode"
 
 export(bool) var has_ranged_attack : bool = false

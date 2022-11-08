@@ -14,6 +14,7 @@ export var initial_player = true
 
 onready var upper_body_shape = $UpperBody_CollisionShape
 onready var rotation_helper = $Rotation_Helper
+onready var rotation_helper_tp = $Rotation_HelperX
 
 var input_movement_vector = Vector2()
 var angle_rad_x = 0
@@ -34,7 +35,11 @@ func _ready():
 	#activate() -- restored from save
 
 func get_rotation_helper():
-	return rotation_helper
+	return (
+		rotation_helper
+			if __PLDRT.settings.get_camera_view() == PLDSettings.CAMERA_VIEW_FIRST_PERSON
+			else rotation_helper_tp
+	)
 
 func hit(injury_rate, poison_rate = 0, hit_direction_node = null, hit_dir_vec = Z_DIR):
 	.hit(injury_rate, poison_rate, hit_direction_node, hit_dir_vec)

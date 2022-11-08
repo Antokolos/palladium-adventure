@@ -1,6 +1,8 @@
 extends Spatial
 class_name PLDCharacterNodes
 
+const RAY_ROT_MIN_DEG = -88
+const RAY_ROT_MAX_DEG = 88
 const FRIENDLY_FIRE_ENABLED = false
 const OXYGEN_DECREASE_RATE = 5
 const DEBUG_RAYS = false
@@ -268,6 +270,9 @@ func get_under_feet_y():
 
 func process_rotation(angle_rad_x):
 	ranged_damage_raycast.rotate_x(angle_rad_x)
+	var ray_rot = ranged_damage_raycast.rotation_degrees
+	ray_rot.x = clamp(ray_rot.x, RAY_ROT_MIN_DEG, RAY_ROT_MAX_DEG)
+	ranged_damage_raycast.rotation_degrees = ray_rot
 
 func reset_rotation():
 	ranged_damage_raycast.set_rotation_degrees(Vector3(0, 0, 0))
