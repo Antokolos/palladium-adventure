@@ -38,6 +38,7 @@ func _ready():
 	melee_attack_area.monitoring = character.has_melee_attack()
 	melee_damage_area.monitoring = character.has_melee_attack()
 	ranged_damage_raycast.enabled = character.has_ranged_attack()
+	ranged_damage_raycast.add_exception(character)
 	standing_raycast.add_exception(character)
 	under_feet_raycast.add_exception(character)
 
@@ -264,6 +265,19 @@ func get_under_feet_y():
 		return p.y
 	else:
 		return null
+
+func process_rotation(angle_rad_x):
+	ranged_damage_raycast.rotate_x(angle_rad_x)
+
+func reset_rotation():
+	ranged_damage_raycast.set_rotation_degrees(Vector3(0, 0, 0))
+
+func get_damage_point():
+	if not ranged_damage_raycast.enabled or not ranged_damage_raycast.is_colliding():
+		var t = get_global_transform()
+		var rt = ranged_damage_raycast.get_transform()
+		return t.xform(rt.xform(ranged_damage_raycast.cast_to))
+	return ranged_damage_raycast.get_collision_point()
 
 func get_possible_attack_target(update_collisions):
 	if not character.is_activated():

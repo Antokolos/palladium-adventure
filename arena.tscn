@@ -87,6 +87,7 @@ transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 149.773
 
 [node name="player" parent="ViewportContainer/Viewport/Pyramid" instance=ExtResource( 51 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 145.533, 0, 243.821 )
+has_ranged_attack = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Pyramid/player"]
 

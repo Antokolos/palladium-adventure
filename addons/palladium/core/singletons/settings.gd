@@ -50,6 +50,10 @@ const JOYPAD_NINTENDO = 2
 const JOYPAD_PS = 1
 const JOYPAD_XBOX = 0
 
+const CAMERA_VIEW_FIRST_PERSON = 0
+const CAMERA_VIEW_THIRD_PERSON_STRICT = 1
+const CAMERA_VIEW_THIRD_PERSON_FOLLOW = 2
+
 enum InputType {
 	NONE = 0,
 	KEY = 1,
@@ -62,7 +66,7 @@ var tablet_orientation = TABLET_HORIZONTAL
 var joypad_type = JOYPAD_XBOX
 var performance_stats = false
 var hide_quick_item_key_labels = false
-var first_person_view = true
+var camera_view = CAMERA_VIEW_THIRD_PERSON_STRICT
 var pause_on_joy_disconnected = true
 var disable_mouse_if_joy_connected = false
 var cutoff_enabled = false
@@ -140,8 +144,8 @@ func load_settings():
 	if ("hide_quick_item_key_labels" in d):
 		hide_quick_item_key_labels = bool(d.hide_quick_item_key_labels)
 
-	if ("first_person_view" in d):
-		first_person_view = bool(d.first_person_view)
+	if ("camera_view" in d):
+		camera_view = int(d.camera_view)
 
 	if ("pause_on_joy_disconnected" in d):
 		pause_on_joy_disconnected = bool(d.pause_on_joy_disconnected)
@@ -222,7 +226,7 @@ func save_settings():
 		"joypad_type" : joypad_type,
 		"performance_stats" : performance_stats,
 		"hide_quick_item_key_labels" : hide_quick_item_key_labels,
-		"first_person_view" : first_person_view,
+		"camera_view" : camera_view,
 		"pause_on_joy_disconnected" : pause_on_joy_disconnected,
 		"disable_mouse_if_joy_connected" : disable_mouse_if_joy_connected,
 		"cutoff_enabled" : cutoff_enabled,
@@ -433,11 +437,11 @@ func set_shader_cache_enabled(sce):
 	shader_cache_enabled = sce
 	emit_signal("shader_cache_enabled_changed", sce)
 
-func is_first_person_view():
-	return first_person_view
+func get_camera_view():
+	return camera_view
 
-func set_first_person_view(fpv):
-	first_person_view = fpv
+func set_camera_view(cv):
+	camera_view = cv
 
 func set_pause_on_joy_disconnected(pjd):
 	pause_on_joy_disconnected = pjd

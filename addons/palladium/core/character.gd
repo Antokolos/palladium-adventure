@@ -48,9 +48,9 @@ const COLLISION_LAYER_INTERACTIVE = 3
 const COLLISION_LAYER_PLAYER = 11
 const COLLISION_LAYER_ENEMY = 12
 const COLLISION_LAYER_OBSTACLES = 13
-const TRANSLATOR_NODE_PATH = "Rotation_Helper/TranslatorNode"
-const FIRST_PERSON_CAMERA_PATH = "Rotation_Helper/CameraFirstPerson"
-const THIRD_PERSON_CAMERA_PATH = "Rotation_Helper_TP/CameraThirdPerson"
+const FIRST_PERSON_CAMERA_PATH = "Rotation_Helper/FirstPersonCamera"
+const THIRD_PERSON_CAMERA_PATH = "Rotation_Helper_TP/ThirdPersonCamera"
+const TRANSLATOR_NODE_PATH = "Rotation_Helper/FirstPersonCamera/TranslatorNode"
 
 export(bool) var has_ranged_attack : bool = false
 export(bool) var has_melee_attack : bool = false
@@ -61,9 +61,9 @@ export(bool) var auto_sit_down : bool = false
 
 onready var character_nodes = $character_nodes
 onready var animation_player = $AnimationPlayer
+onready var first_person_camera = get_node(FIRST_PERSON_CAMERA_PATH) if has_node(FIRST_PERSON_CAMERA_PATH) else null
+onready var third_person_camera = get_node(THIRD_PERSON_CAMERA_PATH) if has_node(THIRD_PERSON_CAMERA_PATH) else null
 onready var translator_node = get_node(TRANSLATOR_NODE_PATH) if has_node(TRANSLATOR_NODE_PATH) else null
-onready var camera_first_person = get_node(FIRST_PERSON_CAMERA_PATH) if has_node(FIRST_PERSON_CAMERA_PATH) else null
-onready var camera_third_person = get_node(THIRD_PERSON_CAMERA_PATH) if has_node(THIRD_PERSON_CAMERA_PATH) else null
 
 var vel = Vector3()
 
@@ -329,7 +329,11 @@ func get_cam_holder_path():
 	return get_cam_holder().get_path()
 
 func get_cam_holder():
-	return camera_first_person if __PLDRT.settings.is_first_person_view() else camera_third_person
+	return (
+		first_person_camera
+			if __PLDRT.settings.get_camera_view() == PLDSettings.CAMERA_VIEW_FIRST_PERSON
+			else third_person_camera
+	)
 
 ### States ###
 
@@ -339,7 +343,7 @@ func become_player():
 	if not is_in_party():
 		join_party()
 	var model = get_model()
-	model.set_simple_mode(__PLDRT.settings.is_first_person_view())
+	model.set_simple_mode(__PLDRT.settings.get_camera_view() == PLDSettings.CAMERA_VIEW_FIRST_PERSON)
 	var player = __PLDRT.game_state.get_player()
 	var cam = __PLDRT.game_state.get_cam()
 	deactivate()
@@ -1033,6 +1037,8 @@ func do_movement2(safe_velocity, characters, delta):
 		return move_with_physics(v)
 
 func do_process(delta, is_player):
+	if third_person_camera and character_nodes:
+		third_person_camera.look_at(character_nodes.get_damage_point(), Vector3.UP)
 	var characters = __PLDRT.game_state.get_characters()
 	var d = {
 		"is_moving" : false,

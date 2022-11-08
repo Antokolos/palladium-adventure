@@ -14,7 +14,6 @@ export var initial_player = true
 
 onready var upper_body_shape = $UpperBody_CollisionShape
 onready var rotation_helper = $Rotation_Helper
-onready var rotation_helper_tp = $Rotation_Helper_TP
 
 var input_movement_vector = Vector2()
 var angle_rad_x = 0
@@ -35,7 +34,7 @@ func _ready():
 	#activate() -- restored from save
 
 func get_rotation_helper():
-	return rotation_helper if __PLDRT.settings.is_first_person_view() else rotation_helper_tp
+	return rotation_helper
 
 func hit(injury_rate, poison_rate = 0, hit_direction_node = null, hit_dir_vec = Z_DIR):
 	.hit(injury_rate, poison_rate, hit_direction_node, hit_dir_vec)
@@ -55,6 +54,7 @@ func reset_rotation():
 	.reset_rotation()
 	angle_rad_x = 0
 	var rotation_helper = get_rotation_helper()
+	character_nodes.reset_rotation()
 	if rotation_helper:
 		rotation_helper.set_rotation_degrees(Vector3(0, 0, 0))
 	if upper_body_shape:
@@ -98,10 +98,10 @@ func process_rotation(need_to_update_collisions):
 		move_and_collide(Vector3.ZERO)
 	var rotation_helper = get_rotation_helper()
 	rotation_helper.rotate_x(angle_rad_x)
+	character_nodes.process_rotation(angle_rad_x)
 	var translator_node = get_translator_node()
 	if translator_node:
 		translator_node.global_rotation.z = 0
-	get_model_holder().rotate_x(angle_rad_x)
 	upper_body_shape.rotate_x(angle_rad_x)
 	var camera_rot = rotation_helper.rotation_degrees
 	var model_rot = Vector3(camera_rot.x, camera_rot.y, camera_rot.z)
@@ -109,7 +109,8 @@ func process_rotation(need_to_update_collisions):
 	camera_rot.x = clamp(camera_rot.x, CAMERA_ROT_MIN_DEG, CAMERA_ROT_MAX_DEG)
 	rotation_helper.rotation_degrees = camera_rot
 	model_rot.x = clamp(model_rot.x, MODEL_ROT_MIN_DEG, MODEL_ROT_MAX_DEG)
-	get_model_holder().rotation_degrees = model_rot
+	if __PLDRT.settings.get_camera_view() == PLDSettings.CAMERA_VIEW_FIRST_PERSON:
+		get_model_holder().rotation_degrees = model_rot
 	shape_rot.x = clamp(shape_rot.x, SHAPE_ROT_MIN_DEG, SHAPE_ROT_MAX_DEG)
 	upper_body_shape.rotation_degrees = shape_rot
 	upper_body_shape.disabled = shape_rot.x >= SHAPE_ROT_MIN_DISABLED_DEG and shape_rot.x <= SHAPE_ROT_MAX_DISABLED_DEG

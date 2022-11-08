@@ -7,12 +7,13 @@ var action_body = null
 var use_distance = 0
 
 func rebuild_exceptions(player_node):
-	ray_use_targets.clear_exceptions()
-	ray_use_targets.add_exception(player_node)
-	ray_items.clear_exceptions()
-	ray_items.add_exception(player_node)
-	ray_characters.clear_exceptions()
-	ray_characters.add_exception(player_node)
+	# Should not use onready vars here, because this method will be called before _ready()
+	$RayCastUseTargets.clear_exceptions()
+	$RayCastUseTargets.add_exception(player_node)
+	$RayCastItems.clear_exceptions()
+	$RayCastItems.add_exception(player_node)
+	$RayCastCharacters.clear_exceptions()
+	$RayCastCharacters.add_exception(player_node)
 
 func enable(enable):
 	ray_use_targets.enabled = enable
