@@ -104,7 +104,14 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0 )
 transform = Transform( 0.927184, 0, -0.374607, 0, 1, 0, 0.374607, 0, 0.927184, 0, 0, 0 )
 
 [node name="ThirdPersonCamera" type="Spatial" parent="Rotation_HelperX/Rotation_HelperY"]
-transform = Transform( -1, 0, -1.19209e-07, 0, 1, 0, 1.19209e-07, 0, -1, 5.96046e-08, 0, -2.2 )
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.2 )
+
+[node name="CameraCollisionPos" type="Spatial" parent="Rotation_HelperX/Rotation_HelperY/ThirdPersonCamera"]
+
+[node name="BacktraceRay" type="RayCast" parent="Rotation_HelperX/Rotation_HelperY/ThirdPersonCamera"]
+enabled = true
+cast_to = Vector3( 0, 0, 0 )
+collision_mask = 1026
 
 [node name="UpperBody_CollisionShape" type="CollisionShape" parent="."]
 transform = Transform( 1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 1.155, 0 )

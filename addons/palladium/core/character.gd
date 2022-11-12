@@ -63,6 +63,8 @@ onready var character_nodes = $character_nodes
 onready var animation_player = $AnimationPlayer
 onready var first_person_camera = get_node(FIRST_PERSON_CAMERA_PATH) if has_node(FIRST_PERSON_CAMERA_PATH) else null
 onready var third_person_camera = get_node(THIRD_PERSON_CAMERA_PATH) if has_node(THIRD_PERSON_CAMERA_PATH) else null
+onready var third_person_collision_pos = third_person_camera.get_node("CameraCollisionPos") if third_person_camera and third_person_camera.has_node("CameraCollisionPos") else null
+onready var backtrace_ray = third_person_camera.get_node("BacktraceRay") if third_person_camera and third_person_camera.has_node("BacktraceRay") else null
 onready var translator_node = get_node(TRANSLATOR_NODE_PATH) if has_node(TRANSLATOR_NODE_PATH) else null
 
 var vel = Vector3()
@@ -332,7 +334,7 @@ func get_cam_holder():
 	return (
 		first_person_camera
 			if __PLDRT.settings.get_camera_view() == PLDSettings.CAMERA_VIEW_FIRST_PERSON
-			else third_person_camera
+			else third_person_collision_pos
 	)
 
 ### States ###
@@ -1036,9 +1038,38 @@ func do_movement2(safe_velocity, characters, delta):
 		)
 		return move_with_physics(v)
 
+func move_backtrace(target: Vector3):
+	if not third_person_camera or not third_person_collision_pos:
+		return
+	var tpct = third_person_camera.get_global_transform()
+	if backtrace_ray and backtrace_ray.enabled:
+		backtrace_ray.set_global_transform(Transform(
+			backtrace_ray.get_global_transform().basis,
+			target
+		))
+		backtrace_ray.cast_to = backtrace_ray.to_local(tpct.origin)
+		if backtrace_ray.is_colliding():
+			var cp = backtrace_ray.get_collision_point()
+			third_person_collision_pos.set_global_transform(Transform(
+				third_person_collision_pos.get_global_transform().basis,
+				cp
+			))
+			return
+	third_person_collision_pos.set_global_transform(tpct)
+
 func do_process(delta, is_player):
-	if third_person_camera and character_nodes:
-		third_person_camera.look_at(character_nodes.get_damage_point(), Vector3.UP)
+	if (
+		__PLDRT.settings.get_camera_view() != PLDSettings.CAMERA_VIEW_FIRST_PERSON
+		and third_person_camera
+		and character_nodes
+	):
+		if backtrace_ray and not backtrace_ray.enabled:
+			backtrace_ray.enabled = true
+		var dp = character_nodes.get_damage_point()
+		third_person_camera.look_at(dp, Vector3.UP)
+		move_backtrace(dp)
+	elif backtrace_ray:
+		backtrace_ray.enabled = false
 	var characters = __PLDRT.game_state.get_characters()
 	var d = {
 		"is_moving" : false,
