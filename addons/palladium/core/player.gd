@@ -1,6 +1,9 @@
 extends PLDCharacter
 class_name PLDPlayer
 
+const YROT_THRESHOLD_RAD = 0.005
+const THIRD_PERSON_YROT_MIN_DEG = -33
+const THIRD_PERSON_YROT_MAX_DEG = 33
 const CAMERA_ROT_MIN_DEG = -88
 const CAMERA_ROT_MAX_DEG = 88
 const MODEL_ROT_MIN_DEG = -88
@@ -9,9 +12,11 @@ const SHAPE_ROT_MIN_DEG = -90-88
 const SHAPE_ROT_MAX_DEG = -90+88
 const SHAPE_ROT_MIN_DISABLED_DEG = -90-20
 const SHAPE_ROT_MAX_DISABLED_DEG = -90+20
+const YROT_HELPER_PATH = "Rotation_HelperX/Rotation_HelperY"
 
 export var initial_player = true
 
+onready var yrot_helper = get_node(YROT_HELPER_PATH) if has_node(YROT_HELPER_PATH) else null
 onready var upper_body_shape = $UpperBody_CollisionShape
 onready var rotation_helper = $Rotation_Helper
 onready var rotation_helper_tp = $Rotation_HelperX
@@ -65,6 +70,8 @@ func reset_rotation():
 	if upper_body_shape:
 		upper_body_shape.set_rotation_degrees(Vector3(-90, 0, 0))
 		upper_body_shape.disabled = true
+	if yrot_helper:
+		yrot_helper.set_rotation_degrees(Vector3(0, 0, 0))
 
 func enable_collisions_and_interaction(enable):
 	.enable_collisions_and_interaction(enable)
@@ -96,6 +103,13 @@ func remove_item_from_hand():
 	get_model().remove_item_from_hand()
 
 func process_rotation(need_to_update_collisions):
+	if yrot_helper:
+		var yrot = yrot_helper.rotation_degrees
+		if angle_rad_y < -YROT_THRESHOLD_RAD and yrot.y < THIRD_PERSON_YROT_MAX_DEG:
+			yrot.y += 1
+		elif angle_rad_y > YROT_THRESHOLD_RAD and yrot.y > THIRD_PERSON_YROT_MIN_DEG:
+			yrot.y -= 1
+		yrot_helper.rotation_degrees = yrot
 	var result = .process_rotation(need_to_update_collisions)
 	if angle_rad_x == 0:
 		return { "rotate_x" : false, "rotate_y" : result.rotate_y }
