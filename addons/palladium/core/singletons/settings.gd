@@ -50,10 +50,6 @@ const JOYPAD_NINTENDO = 2
 const JOYPAD_PS = 1
 const JOYPAD_XBOX = 0
 
-const CAMERA_VIEW_FIRST_PERSON = 0
-const CAMERA_VIEW_THIRD_PERSON_STRICT = 1
-const CAMERA_VIEW_THIRD_PERSON_FOLLOW = 2
-
 enum InputType {
 	NONE = 0,
 	KEY = 1,
@@ -66,7 +62,7 @@ var tablet_orientation = TABLET_HORIZONTAL
 var joypad_type = JOYPAD_XBOX
 var performance_stats = false
 var hide_quick_item_key_labels = false
-var camera_view = CAMERA_VIEW_THIRD_PERSON_STRICT
+var camera_view = PLDDB.CAMERA_VIEW_TYPE_DEFAULT
 var pause_on_joy_disconnected = true
 var disable_mouse_if_joy_connected = false
 var cutoff_enabled = false

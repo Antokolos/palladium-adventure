@@ -42,7 +42,7 @@ func _ready():
 func get_rotation_helper():
 	return (
 		rotation_helper
-			if __PLDRT.settings.get_camera_view() == PLDSettings.CAMERA_VIEW_FIRST_PERSON
+			if __PLDRT.settings.get_camera_view() == PLDDB.CAMERA_VIEW_FIRST_PERSON
 			else rotation_helper_tp
 	)
 
@@ -128,7 +128,7 @@ func process_rotation(need_to_update_collisions):
 	camera_rot.x = clamp(camera_rot.x, CAMERA_ROT_MIN_DEG, CAMERA_ROT_MAX_DEG)
 	rotation_helper.rotation_degrees = camera_rot
 	model_rot.x = clamp(model_rot.x, MODEL_ROT_MIN_DEG, MODEL_ROT_MAX_DEG)
-	if __PLDRT.settings.get_camera_view() == PLDSettings.CAMERA_VIEW_FIRST_PERSON:
+	if __PLDRT.settings.get_camera_view() == PLDDB.CAMERA_VIEW_FIRST_PERSON:
 		get_model_holder().rotation_degrees = model_rot
 	shape_rot.x = clamp(shape_rot.x, SHAPE_ROT_MIN_DEG, SHAPE_ROT_MAX_DEG)
 	upper_body_shape.rotation_degrees = shape_rot

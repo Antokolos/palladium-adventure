@@ -48,6 +48,7 @@ const COLLISION_LAYER_INTERACTIVE = 3
 const COLLISION_LAYER_PLAYER = 11
 const COLLISION_LAYER_ENEMY = 12
 const COLLISION_LAYER_OBSTACLES = 13
+const BACKTRACE_RATIO = 0.9
 const FIRST_PERSON_CAMERA_PATH = "Rotation_Helper/FirstPersonCamera"
 const THIRD_PERSON_CAMERA_PATH = "Rotation_HelperX/Rotation_HelperY/ThirdPersonCamera"
 const TRANSLATOR_NODE_PATH = "Rotation_Helper/FirstPersonCamera/TranslatorNode"
@@ -333,7 +334,7 @@ func get_cam_holder_path():
 func get_cam_holder():
 	return (
 		first_person_camera
-			if __PLDRT.settings.get_camera_view() == PLDSettings.CAMERA_VIEW_FIRST_PERSON
+			if __PLDRT.settings.get_camera_view() == PLDDB.CAMERA_VIEW_FIRST_PERSON
 			else third_person_collision_pos
 	)
 
@@ -345,7 +346,7 @@ func become_player():
 	if not is_in_party():
 		join_party()
 	var model = get_model()
-	model.set_simple_mode(__PLDRT.settings.get_camera_view() == PLDSettings.CAMERA_VIEW_FIRST_PERSON)
+	model.set_simple_mode(__PLDRT.settings.get_camera_view() == PLDDB.CAMERA_VIEW_FIRST_PERSON)
 	var player = __PLDRT.game_state.get_player()
 	var cam = __PLDRT.game_state.get_cam()
 	deactivate()
@@ -1052,14 +1053,14 @@ func move_backtrace(target: Vector3):
 			var cp = backtrace_ray.get_collision_point()
 			third_person_collision_pos.set_global_transform(Transform(
 				third_person_collision_pos.get_global_transform().basis,
-				cp
+				cp * BACKTRACE_RATIO + target * (1 - BACKTRACE_RATIO)
 			))
 			return
 	third_person_collision_pos.set_global_transform(tpct)
 
 func do_process(delta, is_player):
 	if (
-		__PLDRT.settings.get_camera_view() != PLDSettings.CAMERA_VIEW_FIRST_PERSON
+		__PLDRT.settings.get_camera_view() != PLDDB.CAMERA_VIEW_FIRST_PERSON
 		and third_person_camera
 		and character_nodes
 	):

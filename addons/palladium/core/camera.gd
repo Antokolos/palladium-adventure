@@ -49,7 +49,7 @@ func _ready():
 	if item_preview:
 		item_preview.connect("preview_opened", self, "_on_preview_opened")
 		item_preview.connect("preview_closed", self, "_on_preview_closed")
-	strict_following = __PLDRT.settings.get_camera_view() != PLDSettings.CAMERA_VIEW_THIRD_PERSON_FOLLOW
+	strict_following = __PLDRT.settings.get_camera_view() != PLDDB.CAMERA_VIEW_THIRD_PERSON_FOLLOW
 
 func get_use_point():
 	return get_node("Gun_Fire_Points/use_point") if has_node("Gun_Fire_Points/use_point") else null
@@ -172,12 +172,12 @@ func clear_item_use():
 		separated_viewport.visible = false
 
 func activate_transporting():
-	if __PLDRT.settings.get_camera_view() != PLDSettings.CAMERA_VIEW_FIRST_PERSON:
+	if __PLDRT.settings.get_camera_view() != PLDDB.CAMERA_VIEW_FIRST_PERSON:
 		return
 	separated_viewport.visible = true
 
 func deactivate_transporting():
-	if __PLDRT.settings.get_camera_view() != PLDSettings.CAMERA_VIEW_FIRST_PERSON:
+	if __PLDRT.settings.get_camera_view() != PLDDB.CAMERA_VIEW_FIRST_PERSON:
 		return
 	if not item_use or not item_use.get_item_in_use():
 		separated_viewport.visible = false

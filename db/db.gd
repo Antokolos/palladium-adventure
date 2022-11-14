@@ -15,6 +15,10 @@ const BUBBLES_RATE = 20
 const PLAYER_OXYGEN_CURRENT_DEFAULT = 100
 const PLAYER_OXYGEN_MAX_DEFAULT = 100
 
+const CAMERA_VIEW_FIRST_PERSON = 0
+const CAMERA_VIEW_THIRD_PERSON_STRICT = 1
+const CAMERA_VIEW_THIRD_PERSON_FOLLOW = 2
+
 var _pldrt = null
 
 func _init(pldrt):
@@ -84,6 +88,8 @@ func can_execute_custom_action(item, action = "item_preview_action_1", event = n
 	return item_constraints_satisfied(item, action)
 
 ### CODE THAT MUST BE INCLUDED IN THE GAME-SPECIFIC PART ###
+
+#const CAMERA_VIEW_TYPE_DEFAULT = CAMERA_VIEW_FIRST_PERSON
 
 #const STORY_VARS_DEFAULT = {
 #	"flashlight_on" : false
@@ -195,6 +201,8 @@ func can_execute_custom_action(item, action = "item_preview_action_1", event = n
 #			pass
 
 ### GAME-SPECIFIC PART ###
+
+const CAMERA_VIEW_TYPE_DEFAULT = CAMERA_VIEW_THIRD_PERSON_STRICT
 
 const STORY_VARS_DEFAULT = {
 	"flashlight_on" : false
