@@ -13,8 +13,8 @@ const Z_DIR = Vector3(0, 0, 1)
 
 const DRAW_PATH = true
 
-const ROTATION_ANGLE_MIN_RAD = 0.02
-const ROTATION_ANGLE_SPEED_RAD = 0.03
+const ROTATION_ANGLE_MIN_RAD = 0.025
+const ROTATION_ANGLE_SPEED_RAD = 0.05
 const KEY_LOOK_SPEED_FACTOR = 10
 
 const MAX_RANGE = 10
@@ -286,7 +286,7 @@ func get_follow_parameters(target, current_transform, next_position) -> PLDMovem
 	if need_moving:
 		data.with_distance(d).with_dir(next_dir)
 	cur_dir.y = 0
-#	next_dir.y = 0
+	next_dir.y = 0
 	
 	if target:
 		var t = target.get_global_transform()
@@ -294,7 +294,7 @@ func get_follow_parameters(target, current_transform, next_position) -> PLDMovem
 		var target_dir = t.basis.xform(Z_DIR)
 		target_dir.y = 0
 		var mov_vec = target_position - current_position
-#		mov_vec.y = 0
+		mov_vec.y = 0
 		var ratt = (
 			get_rotation_angle(cur_dir, mov_vec)
 				if mov_vec.length() > ALIGNMENT_RANGE
@@ -302,7 +302,11 @@ func get_follow_parameters(target, current_transform, next_position) -> PLDMovem
 		)
 		var ra = (
 			get_rotation_angle(cur_dir, next_dir)
-				if not point_of_interest and (in_party or need_moving)
+				if (
+					not point_of_interest
+					and (in_party or need_moving)
+					and not is_zero_rotation(ratt)
+				)
 				else ratt
 		)
 		return data \
@@ -457,6 +461,8 @@ func update_state(data : PLDMovementData):
 						if ra < -ROTATION_ANGLE_SPEED_RAD
 						else ra
 				)
+			else:
+				angle_rad_y = ra
 	if data.has_rest_state(): 
 		change_rest_state_to(data.get_rest_state())
 	data.emit_sgnl_if_exists(self)

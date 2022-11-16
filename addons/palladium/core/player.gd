@@ -1,7 +1,7 @@
 extends PLDCharacter
 class_name PLDPlayer
 
-const YROT_THRESHOLD_RAD = 0.005
+const YROT_THRESHOLD_RAD = 0.02
 const THIRD_PERSON_YROT_MIN_DEG = -33
 const THIRD_PERSON_YROT_MAX_DEG = 33
 const CAMERA_ROT_MIN_DEG = -88
