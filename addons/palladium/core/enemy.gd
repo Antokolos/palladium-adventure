@@ -48,6 +48,8 @@ func get_usage_code(player_node):
 	var uc = .get_usage_code(player_node)
 	if not uc.empty():
 		return uc
+	if __PLDRT.game_state.is_tactical_view():
+		return ""
 	var attacker = get_possible_attacker()
 	if player_node.equals(attacker):
 		return "ACTION_SHOOT"

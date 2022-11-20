@@ -205,7 +205,8 @@ func can_execute_custom_action(item, action = "item_preview_action_1", event = n
 const CAMERA_VIEW_TYPE_DEFAULT = CAMERA_VIEW_THIRD_PERSON_STRICT
 
 const STORY_VARS_DEFAULT = {
-	"flashlight_on" : false
+	"flashlight_on" : false,
+	"tactical_view_on" : true
 }
 
 enum LightIds {

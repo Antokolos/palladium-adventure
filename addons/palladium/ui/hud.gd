@@ -524,7 +524,10 @@ func get_mouse_cursor():
 
 func update_hud():
 	synchronize_items()
-	set_crouch_indicator(__PLDRT.game_state.get_player().is_crouching())
+	var pl = __PLDRT.game_state.get_player()
+	if not pl:
+		return
+	set_crouch_indicator(pl.is_crouching())
 
 func _on_Inventory_visibility_changed():
 	set_quick_items_dimmed(inventory.is_visible_in_tree())
@@ -547,9 +550,21 @@ func _input(event):
 			inventory.visible = false
 			select_active_quick_item()
 		elif event.is_action_pressed("active_item_back"):
+			if __PLDRT.game_state.is_tactical_view():
+				var ev = InputEventAction.new()
+				ev.set_action("tactical_view_zoom_out")
+				ev.set_pressed(true)
+				Input.parse_input_event(ev)
+				return
 			if not set_active_item(active_item_idx - 1):
 				shift_items_right()
 		elif event.is_action_pressed("active_item_next"):
+			if __PLDRT.game_state.is_tactical_view():
+				var ev = InputEventAction.new()
+				ev.set_action("tactical_view_zoom_in")
+				ev.set_pressed(true)
+				Input.parse_input_event(ev)
+				return
 			if not set_active_item(active_item_idx + 1):
 				shift_items_left()
 		elif event.is_action_pressed("active_item_toggle"):
@@ -576,8 +591,20 @@ func _input(event):
 			__PLDRT.game_state.get_hud().queue_popup_message("MESSAGE_CONTROLS_TOGGLE_ITEM_2")
 			select_active_item()
 		elif event.is_action_pressed("active_item_back"):
+			if __PLDRT.game_state.is_tactical_view():
+				var ev = InputEventAction.new()
+				ev.set_action("tactical_view_zoom_out")
+				ev.set_pressed(true)
+				Input.parse_input_event(ev)
+				return
 			set_active_quick_item(active_quick_item_idx - 1)
 		elif event.is_action_pressed("active_item_next"):
+			if __PLDRT.game_state.is_tactical_view():
+				var ev = InputEventAction.new()
+				ev.set_action("tactical_view_zoom_in")
+				ev.set_pressed(true)
+				Input.parse_input_event(ev)
+				return
 			set_active_quick_item(active_quick_item_idx + 1)
 		if event.is_action_pressed("active_item_1"):
 			set_active_quick_item(0)

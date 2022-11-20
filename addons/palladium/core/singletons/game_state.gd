@@ -364,6 +364,12 @@ func change_flashlight_state(camera, flashlight_on):
 	_pldrt.game_state.story_vars.flashlight_on = flashlight_on
 	emit_signal("flashlight_state_changed", camera, flashlight_on)
 
+func is_tactical_view():
+	return _pldrt.game_state.story_vars.tactical_view_on
+
+func change_tactical_view(tactical_view_val):
+	_pldrt.game_state.story_vars.tactical_view_on = tactical_view_val
+
 func set_surge(player, enable):
 	emit_signal("player_surge", player, enable)
 

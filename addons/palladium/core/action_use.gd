@@ -90,7 +90,7 @@ func highlight_custom_action():
 func highlight(player_node):
 	if __PLDRT.game_state.get_hud().is_in_conversation():
 		return ""
-	if player_node.is_hidden():
+	if player_node and player_node.is_hidden():
 		if player_node.is_too_late_to_unhide():
 			return ""
 		return __PLDRT.common_utils.get_action_input_control() + tr("ACTION_UNHIDE") + " | " + tr("MESSAGE_CONTROLS_FLASHLIGHT") % __PLDRT.common_utils.get_input_control("flashlight", false)
@@ -120,7 +120,7 @@ func ray_highlight(ray, player_node):
 	if ray.is_colliding():
 		var collision_vec = ray.to_local(ray.get_collision_point())
 		body = ray.get_collider()
-		d = 0 if player_node.equals(body) else collision_vec.length()
+		d = 0 if player_node and player_node.equals(body) else collision_vec.length()
 	return switch_highlight(player_node, body, d)
 
 func get_use_distance():

@@ -29,6 +29,7 @@ var is_in_jump = false
 func _ready():
 	if is_player() or (
 			initial_player \
+			and not __PLDRT.game_state.is_tactical_view()
 			and not __PLDRT.game_state.is_loading() \
 			and not __PLDRT.game_state.is_transition()
 		):
@@ -89,6 +90,8 @@ func get_usage_code(player_node):
 	var uc = .get_usage_code(player_node)
 	if not uc.empty():
 		return uc
+	if __PLDRT.game_state.is_tactical_view():
+		return ""
 	if not is_in_party() \
 		and __PLDRT.conversation_manager.meeting_is_finished(get_name_hint(), player_node.get_name_hint()):
 		return ""

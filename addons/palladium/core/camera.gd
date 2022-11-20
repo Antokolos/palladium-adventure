@@ -1,6 +1,9 @@
 extends Camera
 class_name PLDCamera
 
+const TACTICAL_MOVEMENT_THRESHOLD = 10
+const TACTICAL_MOVEMENT_SPEED_SCALE = 0.3
+
 # The factor to use for asymptotical translation lerping.
 # If 0, the camera will stop moving. If 1, the camera will move instantly.
 export(float) var translate_speed = 0.95
@@ -41,6 +44,14 @@ onready var item_preview = get_node("viewpoint/item_preview") if has_node("viewp
 onready var item_use = get_node("viewpoint/item_use") if has_node("viewpoint/item_use") else null
 
 onready var separated_viewport = get_node("separated_viewport") if has_node("separated_viewport") else null
+
+var input_movement_vector = Vector2()
+var input_movement_reset = false
+var tactical_view_rotation = false
+var angle_rad_x = 0
+var angle_x_reset = false
+var angle_rad_y = 0
+var angle_y_reset = false
 
 func _ready():
 	change_quality(__PLDRT.settings.quality)
@@ -236,6 +247,31 @@ func _process(delta):
 		__PLDRT.game_state.get_hud().main_hud.get_node("HBoxHints/ActionHintLabel").text = use_point.highlight(player)
 	change_culling()
 	
+	if __PLDRT.game_state.is_tactical_view():
+		var zoom = 0
+		if Input.is_action_just_pressed("tactical_view_zoom_in"):
+			zoom = 1
+		elif Input.is_action_just_pressed("tactical_view_zoom_out"):
+			zoom = -1
+		translate_object_local(Vector3(input_movement_vector.x, 0, -zoom) * TACTICAL_MOVEMENT_SPEED_SCALE)
+		var roty = global_rotation.y
+		var x = -sin(roty) * input_movement_vector.y
+		var y = -cos(roty) * input_movement_vector.y
+		global_translate(Vector3(x, 0, y) * TACTICAL_MOVEMENT_SPEED_SCALE)
+		rotate_object_local(Vector3(1, 0, 0), -angle_rad_x)
+		global_rotate(Vector3(0, 1, 0), angle_rad_y)
+		if input_movement_reset:
+			input_movement_vector.x = 0
+			input_movement_vector.y = 0
+			input_movement_reset = false
+		if angle_x_reset:
+			angle_rad_x = 0
+			angle_x_reset = false
+		if angle_y_reset:
+			angle_rad_y = 0
+			angle_y_reset = false
+		return
+
 	if not has_node(target_path):
 		return
 	var target_node = get_node(target_path)
@@ -279,6 +315,55 @@ func _input(event):
 		return
 	var player = __PLDRT.game_state.get_player()
 	if not player or player.is_hidden():
+		if __PLDRT.game_state.is_tactical_view():
+			if event.is_action_pressed("movement_forward") \
+				and input_movement_vector.y == 0:
+				input_movement_vector.y = 1
+			elif event.is_action_released("movement_forward") \
+				and input_movement_vector.y == 1:
+				input_movement_vector.y = 0
+			elif event.is_action_pressed("movement_backward") \
+				and input_movement_vector.y == 0:
+				input_movement_vector.y = -1
+			elif event.is_action_released("movement_backward") \
+				and input_movement_vector.y == -1:
+				input_movement_vector.y = 0
+			
+			if event.is_action_pressed("movement_left") \
+				and input_movement_vector.x == 0:
+				input_movement_vector.x = -1
+			elif event.is_action_released("movement_left") \
+				and input_movement_vector.x == -1:
+				input_movement_vector.x = 0
+			elif event.is_action_pressed("movement_right") \
+				and input_movement_vector.x == 0:
+				input_movement_vector.x = 1
+			elif event.is_action_released("movement_right") \
+				and input_movement_vector.x == 1:
+				input_movement_vector.x = 0
+			
+			if event.is_action_pressed("tactical_view_rotation"):
+				tactical_view_rotation = true
+			elif event.is_action_released("tactical_view_rotation"):
+				tactical_view_rotation = false
+			if event is InputEventMouseMotion:
+				if tactical_view_rotation:
+					angle_rad_x = deg2rad(event.relative.y * __PLDRT.settings.get_sensitivity() * __PLDRT.settings.get_yaxis_coeff())
+					angle_rad_y = deg2rad(event.relative.x * __PLDRT.settings.get_sensitivity() * -1)
+					angle_x_reset = true
+					angle_y_reset = true
+				else:
+					input_movement_vector.x = (
+						1
+						if event.relative.x > TACTICAL_MOVEMENT_THRESHOLD
+						else (-1 if event.relative.x < -TACTICAL_MOVEMENT_THRESHOLD else 0)
+					)
+					input_movement_vector.y = (
+						-1
+						if event.relative.y > TACTICAL_MOVEMENT_THRESHOLD
+						else (1 if event.relative.y < -TACTICAL_MOVEMENT_THRESHOLD else 0)
+					)
+					input_movement_reset = true
 		return
 	if item_preview and event.is_action_pressed("item_preview_toggle"):
 		if item_preview.is_opened():
