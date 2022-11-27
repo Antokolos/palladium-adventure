@@ -125,3 +125,6 @@ func ray_highlight(ray, player_node):
 
 func get_use_distance():
 	return use_distance
+
+func get_collision_point():
+	return ray_use_targets.get_collision_point() if ray_use_targets.is_colliding() else null

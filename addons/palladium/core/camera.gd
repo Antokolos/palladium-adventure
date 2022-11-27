@@ -224,6 +224,19 @@ func _on_preview_closed(item):
 	if not item_use or not item_use.get_item_in_use():
 		separated_viewport.visible = false
 
+func rotate_around(point, axis, angle):
+	# Get transform
+	var trans = global_transform # if global else transform
+
+	# Rotate its basis
+	var rotated_basis = trans.basis.rotated(axis, angle)
+
+	# Rotate its origin
+	var rotated_origin = point + (trans.origin - point).rotated(axis, angle)
+
+	# Set the result back (set to transform if not global)
+	global_transform = Transform(rotated_basis, rotated_origin)
+
 func _process(delta):
 	if not __PLDRT.game_state.is_level_ready():
 		return
@@ -258,8 +271,21 @@ func _process(delta):
 		var x = -sin(roty) * input_movement_vector.y
 		var y = -cos(roty) * input_movement_vector.y
 		global_translate(Vector3(x, 0, y) * TACTICAL_MOVEMENT_SPEED_SCALE)
-		rotate_object_local(Vector3(1, 0, 0), -angle_rad_x)
-		global_rotate(Vector3(0, 1, 0), angle_rad_y)
+		var point = use_point.get_collision_point()
+		if point:
+			rotate_around(
+				point,
+				Vector3(0, 1, 0),
+				angle_rad_y
+			)
+			rotate_around(
+				point,
+				Vector3(cos(global_rotation.y), 0, -sin(global_rotation.y)),
+				-angle_rad_x
+			)
+		else:
+			rotate_object_local(Vector3(1, 0, 0), -angle_rad_x)
+			global_rotate(Vector3(0, 1, 0), angle_rad_y)
 		if input_movement_reset:
 			input_movement_vector.x = 0
 			input_movement_vector.y = 0
