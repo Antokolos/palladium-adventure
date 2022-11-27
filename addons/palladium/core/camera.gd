@@ -1,6 +1,8 @@
 extends Camera
 class_name PLDCamera
 
+const TACTICAL_CAMERA_ROT_MIN_RAD = deg2rad(20)
+const TACTICAL_CAMERA_ROT_MAX_RAD = deg2rad(80)
 const TACTICAL_CAMERA_DISTANCE_MIN = 8
 const TACTICAL_CAMERA_DISTANCE_MAX = 18
 const TACTICAL_MOVEMENT_THRESHOLD = 10
@@ -226,16 +228,21 @@ func _on_preview_closed(item):
 	if not item_use or not item_use.get_item_in_use():
 		separated_viewport.visible = false
 
-func rotate_around(point, axis, angle):
+func rotate_around(point, axis, angle, normal = null):
+	var a = angle
+	if normal:
+		var at = normal.angle_to(global_transform.origin - point)
+		var ata = at + angle
+		if ata < TACTICAL_CAMERA_ROT_MIN_RAD:
+			a = at - TACTICAL_CAMERA_ROT_MIN_RAD
+		elif ata > TACTICAL_CAMERA_ROT_MAX_RAD:
+			a = TACTICAL_CAMERA_ROT_MAX_RAD - at
 	# Get transform
 	var trans = global_transform # if global else transform
-
 	# Rotate its basis
-	var rotated_basis = trans.basis.rotated(axis, angle)
-
+	var rotated_basis = trans.basis.rotated(axis, a)
 	# Rotate its origin
-	var rotated_origin = point + (trans.origin - point).rotated(axis, angle)
-
+	var rotated_origin = point + (trans.origin - point).rotated(axis, a)
 	# Set the result back (set to transform if not global)
 	global_transform = Transform(rotated_basis, rotated_origin)
 
@@ -274,6 +281,7 @@ func _process(delta):
 		var y = -cos(roty) * input_movement_vector.y
 		var point = use_point.get_collision_point()
 		if point:
+			var normal = use_point.get_collision_normal()
 			var diff = Vector3(0, 0, 0)
 			var v = global_transform.origin - point
 			var vl = v.length()
@@ -283,20 +291,22 @@ func _process(delta):
 				diff.y = v.y * r
 				diff.z = v.z * r
 			if vl > TACTICAL_CAMERA_DISTANCE_MAX:
-				var r = -((vl - TACTICAL_CAMERA_DISTANCE_MAX) / TACTICAL_CAMERA_DISTANCE_MAX)
-				diff.x = v.x * r
-				diff.y = v.y * r
-				diff.z = v.z * r
+				var r = ((vl - TACTICAL_CAMERA_DISTANCE_MAX) / TACTICAL_CAMERA_DISTANCE_MAX)
+				diff.x = -v.x * r
+				diff.y = -v.y * r
+				diff.z = -v.z * r
 			global_translate(Vector3(x + diff.x, diff.y, y + diff.z) * TACTICAL_MOVEMENT_SPEED_SCALE)
 			rotate_around(
 				point,
 				Vector3(0, 1, 0),
-				angle_rad_y
+				angle_rad_y,
+				normal
 			)
 			rotate_around(
 				point,
 				Vector3(cos(global_rotation.y), 0, -sin(global_rotation.y)),
-				-angle_rad_x
+				-angle_rad_x,
+				normal
 			)
 		else:
 			global_translate(Vector3(x, 0, y) * TACTICAL_MOVEMENT_SPEED_SCALE)

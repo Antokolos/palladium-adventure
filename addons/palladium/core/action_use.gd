@@ -128,3 +128,6 @@ func get_use_distance():
 
 func get_collision_point():
 	return ray_use_targets.get_collision_point() if ray_use_targets.is_colliding() else null
+
+func get_collision_normal():
+	return ray_use_targets.get_collision_normal() if ray_use_targets.is_colliding() else null
