@@ -1,6 +1,8 @@
 extends Camera
 class_name PLDCamera
 
+const TACTICAL_CAMERA_DISTANCE_MIN = 8
+const TACTICAL_CAMERA_DISTANCE_MAX = 18
 const TACTICAL_MOVEMENT_THRESHOLD = 10
 const TACTICAL_MOVEMENT_SPEED_SCALE = 0.3
 
@@ -270,9 +272,22 @@ func _process(delta):
 		var roty = global_rotation.y
 		var x = -sin(roty) * input_movement_vector.y
 		var y = -cos(roty) * input_movement_vector.y
-		global_translate(Vector3(x, 0, y) * TACTICAL_MOVEMENT_SPEED_SCALE)
 		var point = use_point.get_collision_point()
 		if point:
+			var diff = Vector3(0, 0, 0)
+			var v = global_transform.origin - point
+			var vl = v.length()
+			if vl < TACTICAL_CAMERA_DISTANCE_MIN:
+				var r = ((TACTICAL_CAMERA_DISTANCE_MIN - vl) / TACTICAL_CAMERA_DISTANCE_MIN)
+				diff.x = v.x * r
+				diff.y = v.y * r
+				diff.z = v.z * r
+			if vl > TACTICAL_CAMERA_DISTANCE_MAX:
+				var r = -((vl - TACTICAL_CAMERA_DISTANCE_MAX) / TACTICAL_CAMERA_DISTANCE_MAX)
+				diff.x = v.x * r
+				diff.y = v.y * r
+				diff.z = v.z * r
+			global_translate(Vector3(x + diff.x, diff.y, y + diff.z) * TACTICAL_MOVEMENT_SPEED_SCALE)
 			rotate_around(
 				point,
 				Vector3(0, 1, 0),
@@ -284,6 +299,7 @@ func _process(delta):
 				-angle_rad_x
 			)
 		else:
+			global_translate(Vector3(x, 0, y) * TACTICAL_MOVEMENT_SPEED_SCALE)
 			rotate_object_local(Vector3(1, 0, 0), -angle_rad_x)
 			global_rotate(Vector3(0, 1, 0), angle_rad_y)
 		if input_movement_reset:
