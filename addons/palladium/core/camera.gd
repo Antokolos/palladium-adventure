@@ -42,6 +42,7 @@ onready var env_opt = preload("res://addons/palladium/env_opt.tres")
 onready var env_good = preload("res://addons/palladium/env_good.tres")
 onready var env_high = preload("res://addons/palladium/env_high.tres")
 
+onready var backtrace_ray = get_node("BacktraceRay") if has_node("BacktraceRay") else null
 onready var culling_rays = get_node("culling_rays") if has_node("culling_rays") else null
 onready var shader_cache = get_node("viewpoint/shader_cache") if has_node("viewpoint/shader_cache") else null
 onready var item_preview = get_node("viewpoint/item_preview") if has_node("viewpoint/item_preview") else null
@@ -278,14 +279,18 @@ func _process(delta):
 	change_culling()
 	
 	if __PLDRT.game_state.is_tactical_view():
+		if backtrace_ray and not backtrace_ray.enabled:
+			backtrace_ray.enabled = true
 		var zoom = 0
 		if Input.is_action_just_pressed("tactical_view_zoom_in"):
 			zoom = 1
 		elif Input.is_action_just_pressed("tactical_view_zoom_out"):
 			zoom = -1
 		translate_object_local(Vector3(input_movement_vector.x, 0, -zoom) * TACTICAL_MOVEMENT_SPEED)
-		var diff = Vector3(0, 0, 0)
-		use_point.force_raycast_update()
+		var roty = global_rotation.y
+		var x = -sin(roty) * input_movement_vector.y
+		var y = -cos(roty) * input_movement_vector.y
+		global_translate(Vector3(x, 0, y) * TACTICAL_MOVEMENT_SPEED)
 		var point = use_point.get_collision_point()
 		if point:
 			var normal = use_point.get_collision_normal()
@@ -295,31 +300,36 @@ func _process(delta):
 				-angle_rad_x,
 				normal
 			)
-			var n = Vector3.UP
 			rotate_around(
 				point,
-				n,
+				Vector3.UP,
 				angle_rad_y
 			)
-			var v = global_transform.origin - point
-			var vl = v.length()
-			if vl < TACTICAL_CAMERA_DISTANCE_MIN:
-				var r = ((TACTICAL_CAMERA_DISTANCE_MIN - vl) / TACTICAL_CAMERA_DISTANCE_MIN)
-				diff.x = v.x * r
-				diff.y = v.y * r
-				diff.z = v.z * r
-			if vl > TACTICAL_CAMERA_DISTANCE_MAX:
-				var r = ((vl - TACTICAL_CAMERA_DISTANCE_MAX) / TACTICAL_CAMERA_DISTANCE_MAX)
-				diff.x = -v.x * r
-				diff.y = -v.y * r
-				diff.z = -v.z * r
+			var diff = Vector3(0, 0, 0)
+			var origin = global_transform.origin
+			var v = origin - point
+			backtrace_ray.set_global_transform(Transform(
+				backtrace_ray.get_global_transform().basis,
+				point + v * 0.1
+			))
+			backtrace_ray.cast_to = backtrace_ray.to_local(origin)
+			backtrace_ray.force_raycast_update()
+			if backtrace_ray.is_colliding():
+				var cp = (
+					backtrace_ray.get_collision_point()
+					+ 0.1 * backtrace_ray.get_collision_normal()
+				)
+				diff = cp - origin
+			else:
+				var vl = v.length()
+				if vl < TACTICAL_CAMERA_DISTANCE_MIN:
+					diff = (TACTICAL_CAMERA_DISTANCE_MIN - vl) * (origin - point).normalized()
+				if vl > TACTICAL_CAMERA_DISTANCE_MAX:
+					diff = (vl - TACTICAL_CAMERA_DISTANCE_MAX) * (point - origin).normalized()
+			global_translate(diff)
 		else:
 			rotate_object_local(Vector3(1, 0, 0), -angle_rad_x)
 			global_rotate(Vector3(0, 1, 0), angle_rad_y)
-		var roty = global_rotation.y
-		var x = -sin(roty) * input_movement_vector.y
-		var y = -cos(roty) * input_movement_vector.y
-		global_translate(Vector3(x + diff.x, diff.y, y + diff.z) * TACTICAL_MOVEMENT_SPEED)
 		if input_movement_reset:
 			input_movement_vector.x = 0
 			input_movement_vector.y = 0
@@ -331,6 +341,8 @@ func _process(delta):
 			angle_rad_y = 0
 			angle_y_reset = false
 		return
+	elif backtrace_ray and backtrace_ray.enabled:
+		backtrace_ray.enabled = false
 
 	if not has_node(target_path):
 		return
