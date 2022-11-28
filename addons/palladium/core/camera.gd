@@ -6,7 +6,7 @@ const TACTICAL_CAMERA_ROT_MAX_RAD = deg2rad(80)
 const TACTICAL_CAMERA_DISTANCE_MIN = 8
 const TACTICAL_CAMERA_DISTANCE_MAX = 18
 const TACTICAL_MOVEMENT_THRESHOLD = 10
-const TACTICAL_MOVEMENT_SPEED_SCALE = 0.3
+const TACTICAL_MOVEMENT_SPEED = 0.3
 
 # The factor to use for asymptotical translation lerping.
 # If 0, the camera will stop moving. If 1, the camera will move instantly.
@@ -228,21 +228,29 @@ func _on_preview_closed(item):
 	if not item_use or not item_use.get_item_in_use():
 		separated_viewport.visible = false
 
-func rotate_around(point, axis, angle, normal = null):
-	var a = angle
+func rotate_around(point, axis, angle, normal = null, up = Vector3.UP):
 	if normal:
-		var at = normal.angle_to(global_transform.origin - point)
-		var ata = at + angle
-		if ata < TACTICAL_CAMERA_ROT_MIN_RAD:
-			a = at - TACTICAL_CAMERA_ROT_MIN_RAD
-		elif ata > TACTICAL_CAMERA_ROT_MAX_RAD:
-			a = TACTICAL_CAMERA_ROT_MAX_RAD - at
+		var v = global_transform.origin - point
+		var nv = normal.angle_to(v)
+		var nva = nv + angle
+		var uv = up.angle_to(v)
+		var uva = uv + angle
+		var un = up.angle_to(normal)
+		if (
+			nva < un
+			or uva < un
+			or nva < TACTICAL_CAMERA_ROT_MIN_RAD
+			or nva > TACTICAL_CAMERA_ROT_MAX_RAD
+			or uva < TACTICAL_CAMERA_ROT_MIN_RAD
+			or uva > TACTICAL_CAMERA_ROT_MAX_RAD
+		):
+			return
 	# Get transform
 	var trans = global_transform # if global else transform
 	# Rotate its basis
-	var rotated_basis = trans.basis.rotated(axis, a)
+	var rotated_basis = trans.basis.rotated(axis, angle)
 	# Rotate its origin
-	var rotated_origin = point + (trans.origin - point).rotated(axis, a)
+	var rotated_origin = point + (trans.origin - point).rotated(axis, angle)
 	# Set the result back (set to transform if not global)
 	global_transform = Transform(rotated_basis, rotated_origin)
 
@@ -275,14 +283,24 @@ func _process(delta):
 			zoom = 1
 		elif Input.is_action_just_pressed("tactical_view_zoom_out"):
 			zoom = -1
-		translate_object_local(Vector3(input_movement_vector.x, 0, -zoom) * TACTICAL_MOVEMENT_SPEED_SCALE)
-		var roty = global_rotation.y
-		var x = -sin(roty) * input_movement_vector.y
-		var y = -cos(roty) * input_movement_vector.y
+		translate_object_local(Vector3(input_movement_vector.x, 0, -zoom) * TACTICAL_MOVEMENT_SPEED)
+		var diff = Vector3(0, 0, 0)
+		use_point.force_raycast_update()
 		var point = use_point.get_collision_point()
 		if point:
 			var normal = use_point.get_collision_normal()
-			var diff = Vector3(0, 0, 0)
+			rotate_around(
+				point,
+				Vector3(cos(global_rotation.y), 0, -sin(global_rotation.y)),
+				-angle_rad_x,
+				normal
+			)
+			var n = Vector3.UP
+			rotate_around(
+				point,
+				n,
+				angle_rad_y
+			)
 			var v = global_transform.origin - point
 			var vl = v.length()
 			if vl < TACTICAL_CAMERA_DISTANCE_MIN:
@@ -295,23 +313,13 @@ func _process(delta):
 				diff.x = -v.x * r
 				diff.y = -v.y * r
 				diff.z = -v.z * r
-			global_translate(Vector3(x + diff.x, diff.y, y + diff.z) * TACTICAL_MOVEMENT_SPEED_SCALE)
-			rotate_around(
-				point,
-				Vector3(0, 1, 0),
-				angle_rad_y,
-				normal
-			)
-			rotate_around(
-				point,
-				Vector3(cos(global_rotation.y), 0, -sin(global_rotation.y)),
-				-angle_rad_x,
-				normal
-			)
 		else:
-			global_translate(Vector3(x, 0, y) * TACTICAL_MOVEMENT_SPEED_SCALE)
 			rotate_object_local(Vector3(1, 0, 0), -angle_rad_x)
 			global_rotate(Vector3(0, 1, 0), angle_rad_y)
+		var roty = global_rotation.y
+		var x = -sin(roty) * input_movement_vector.y
+		var y = -cos(roty) * input_movement_vector.y
+		global_translate(Vector3(x + diff.x, diff.y, y + diff.z) * TACTICAL_MOVEMENT_SPEED)
 		if input_movement_reset:
 			input_movement_vector.x = 0
 			input_movement_vector.y = 0
