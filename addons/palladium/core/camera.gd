@@ -1,14 +1,15 @@
 extends Camera
 class_name PLDCamera
 
-const TACTICAL_CAMERA_ROT_EPS = deg2rad(1)
+const TACTICAL_CAMERA_ROT_EPS = deg2rad(0.5)
 const TACTICAL_CAMERA_ROT_MIN_RAD = deg2rad(20)
 const TACTICAL_CAMERA_ROT_MAX_RAD = deg2rad(75)
+const TACTICAL_CAMERA_DISTANCE_EPS = 0.15
 const TACTICAL_CAMERA_DISTANCE_MIN = 3
 const TACTICAL_CAMERA_DISTANCE_MAX = 18
 const TACTICAL_MOVEMENT_THRESHOLD = 10
-const TACTICAL_MOVEMENT_SPEED = 0.4
-const TACTICAL_ZOOM_SPEED = 5
+const TACTICAL_MOVEMENT_SPEED = 0.3
+const TACTICAL_ZOOM_SPEED = 4
 const TACTICAL_CAMERA_BACKTRACE_INDENT = 0.05
 
 # The factor to use for asymptotical translation lerping.
@@ -284,7 +285,8 @@ func estimate_position(point, normal = null, up = Vector3.UP):
 			diff = PI - 2 * uva if vdu else 0
 	return {
 		"acceptable" : false,
-		"diff" : diff
+		"diff" : diff,
+		"emergency" : vdn or vdu
 	}
 
 func rotate_around(point, axis, angle, normal = null, up = Vector3.UP):
@@ -298,16 +300,24 @@ func rotate_around(point, axis, angle, normal = null, up = Vector3.UP):
 	global_transform = Transform(rotated_basis, rotated_origin)
 	return estimate_position(point, normal)
 
+func emergency(origin, point, normal):
+	var l = TACTICAL_CAMERA_DISTANCE_MIN + TACTICAL_CAMERA_DISTANCE_EPS
+	var ucn = Vector3.UP.cross(normal)
+	var position = (
+		(point + (normal + ucn.normalized()) * l)
+			if ucn.length() > 0
+			else origin
+	)
+	look_at_from_position(position, point, Vector3.UP)
+
 func process_tactical_camera_movement(zoom):
-	var prev_origin = global_transform.origin
 	var roty = global_rotation.y
 	var x = -sin(roty) * input_movement_vector.y
 	var y = -cos(roty) * input_movement_vector.y
 	global_translate(Vector3(x, 0, y) * TACTICAL_MOVEMENT_SPEED)
 	var point = use_point.get_collision_point()
 	if point:
-		var pv = prev_origin - point
-		var pvl = pv.length()
+		var pvl = (global_transform.origin - point).length()
 		var z = (
 			zoom
 				if zoom < 0
@@ -320,15 +330,29 @@ func process_tactical_camera_movement(zoom):
 		translate_object_local(
 			Vector3(input_movement_vector.x, 0, -z) * TACTICAL_MOVEMENT_SPEED
 		)
+		var diff = Vector3.ZERO
+		var origin = global_transform.origin
+		pvl = (origin - point).length()
+		if pvl < TACTICAL_CAMERA_DISTANCE_MIN:
+			diff = (TACTICAL_CAMERA_DISTANCE_MIN - pvl) * (origin - point).normalized()
+		if pvl > TACTICAL_CAMERA_DISTANCE_MAX:
+			diff = (pvl - TACTICAL_CAMERA_DISTANCE_MAX) * (point - origin).normalized()
+		global_translate(diff * TACTICAL_MOVEMENT_SPEED)
 		var normal = use_point.get_collision_normal()
 		var axis = Vector3(cos(global_rotation.y), 0, -sin(global_rotation.y))
 		var epx = rotate_around(point, axis, -angle_rad_x, normal)
 		if not epx.acceptable:
-			rotate_around(point, axis, -epx.diff, normal)
+			if epx.emergency:
+				emergency(origin, point, normal)
+			else:
+				rotate_around(point, axis, -epx.diff, normal)
 		var epy = rotate_around(point, Vector3.UP, angle_rad_y, normal)
 		if not epy.acceptable:
-			rotate_around(point, Vector3.UP, -epy.diff, normal)
-		var origin = global_transform.origin
+			if epy.emergency:
+				emergency(origin, point, normal)
+			else:
+				rotate_around(point, Vector3.UP, -epy.diff, normal)
+		origin = global_transform.origin
 		var v = origin - point
 		var backtrace_origin = point + v * TACTICAL_CAMERA_BACKTRACE_INDENT
 		backtrace_ray.set_global_transform(Transform(
@@ -342,23 +366,18 @@ func process_tactical_camera_movement(zoom):
 				backtrace_ray.get_collision_normal() * TACTICAL_MOVEMENT_SPEED
 			)
 		else:
-			var diff = Vector3.ZERO
-			var vl = v.length()
-			if vl < TACTICAL_CAMERA_DISTANCE_MIN:
-				diff = (TACTICAL_CAMERA_DISTANCE_MIN - vl) * (origin - point).normalized()
-			if vl > TACTICAL_CAMERA_DISTANCE_MAX:
-				diff = (vl - TACTICAL_CAMERA_DISTANCE_MAX) * (point - origin).normalized()
-			global_translate(diff * TACTICAL_MOVEMENT_SPEED)
-			#if not estimate_position(point, normal).acceptable:
-			#	return PLDTacticalCameraMovement.new().create_error(
-			#		normal * TACTICAL_MOVEMENT_SPEED
-			#	)
+			var ep = estimate_position(point, normal)
+			if not ep.acceptable:
+				if ep.emergency:
+					emergency(origin, point, normal)
+				else:
+					look_at_from_position(origin, point, Vector3.UP)
 	else:
 		translate_object_local(
 			Vector3(input_movement_vector.x, 0, -zoom) * TACTICAL_MOVEMENT_SPEED
 		)
 		rotate_object_local(Vector3(1, 0, 0), -angle_rad_x)
-		global_rotate(Vector3(0, 1, 0), angle_rad_y)
+		global_rotate(Vector3.UP, angle_rad_y)
 	return PLDTacticalCameraMovement.new().create_ok()
 
 func _process(delta):
