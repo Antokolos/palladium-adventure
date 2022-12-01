@@ -371,7 +371,13 @@ func enable_areas_and_raycasts(enable):
 	melee_damage_area.get_node("CollisionShape").disabled = not enable
 
 func is_visible_to_player():
-	return visible_to_player and not has_obstacles_between(__PLDRT.game_state.get_player())
+	return (
+		visible_to_player
+		and (
+			__PLDRT.game_state.is_tactical_view()
+			or not has_obstacles_between(__PLDRT.game_state.get_player())
+		)
+	)
 
 func is_low_ceiling():
 	# Make sure you've set proper collision layer bit for ceiling

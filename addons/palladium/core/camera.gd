@@ -6,7 +6,7 @@ const TACTICAL_CAMERA_ROT_MIN_RAD = deg2rad(20)
 const TACTICAL_CAMERA_ROT_MAX_RAD = deg2rad(75)
 const TACTICAL_CAMERA_DISTANCE_EPS = 0.15
 const TACTICAL_CAMERA_DISTANCE_MIN = 3
-const TACTICAL_CAMERA_DISTANCE_MAX = 18
+const TACTICAL_CAMERA_DISTANCE_MAX = 36
 const TACTICAL_MOVEMENT_THRESHOLD = 10
 const TACTICAL_MOVEMENT_SPEED = 0.3
 const TACTICAL_ZOOM_SPEED = 4
@@ -57,6 +57,7 @@ onready var separated_viewport = get_node("separated_viewport") if has_node("sep
 var input_movement_vector = Vector2()
 var input_movement_reset = false
 var tactical_view_rotation = false
+var tactical_view_action = false
 var angle_rad_x = 0
 var angle_x_reset = false
 var angle_rad_y = 0
@@ -413,6 +414,17 @@ func _process(delta):
 		if not m.get_data().result:
 			global_transform = prev_transform # revert anything
 			global_translate(m.get_data().push_back_vector)
+		if tactical_view_action:
+			var point = use_point.get_collision_point()
+			if point:
+				var pos3d = Position3D.new()
+				__PLDRT.game_state.get_level().add_child(pos3d)
+				pos3d.global_transform.origin = point
+				var p = __PLDRT.game_state.get_character("player")
+				if not p.is_activated():
+					p.activate()
+				p.set_target_node(pos3d)
+			tactical_view_action = false
 		if input_movement_reset:
 			input_movement_vector.x = 0
 			input_movement_vector.y = 0
@@ -519,6 +531,10 @@ func _input(event):
 						else (1 if event.relative.y < -TACTICAL_MOVEMENT_THRESHOLD else 0)
 					)
 					input_movement_reset = true
+			
+			if use_point and event.is_action_pressed("action"):
+				tactical_view_action = true
+			
 		return
 	if item_preview and event.is_action_pressed("item_preview_toggle"):
 		if item_preview.is_opened():
