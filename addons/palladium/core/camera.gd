@@ -237,7 +237,7 @@ func estimate_position(point, normal = null, up = Vector3.UP):
 	var v = global_transform.origin - point
 	var nva = normal.angle_to(v) if normal else 0
 	var uva = up.angle_to(v)
-	var vdn = (v.dot(normal) < 0) if normal else 0
+	var vdn = (v.dot(normal) < 0) if normal else false
 	var vdu = (v.dot(up) < 0)
 	if not (
 			(
@@ -256,37 +256,32 @@ func estimate_position(point, normal = null, up = Vector3.UP):
 	):
 		return {
 			"acceptable" : true,
-			"diff" : 0
+			"diff" : 0,
+			"emergency" : false
+		}
+	if vdn or vdu:
+		return {
+			"acceptable" : false,
+			"diff" : 0,
+			"emergency" : true
 		}
 	var diff = 0
 	if normal:
 		if nva < TACTICAL_CAMERA_ROT_MIN_RAD:
 			diff = TACTICAL_CAMERA_ROT_MIN_RAD + TACTICAL_CAMERA_ROT_EPS - nva
-			if vdn:
-				diff += PI - 2 * (TACTICAL_CAMERA_ROT_MIN_RAD + TACTICAL_CAMERA_ROT_EPS)
 			diff = -diff
 		elif nva > TACTICAL_CAMERA_ROT_MAX_RAD:
 			diff = nva - TACTICAL_CAMERA_ROT_MAX_RAD + TACTICAL_CAMERA_ROT_EPS
-			if vdn:
-				diff = PI - 2 * (TACTICAL_CAMERA_ROT_MAX_RAD - TACTICAL_CAMERA_ROT_EPS) - diff
-		else:
-			diff = PI - 2 * nva if vdn else 0
 	if diff == 0:
 		if uva < TACTICAL_CAMERA_ROT_MIN_RAD:
 			diff = TACTICAL_CAMERA_ROT_MIN_RAD + TACTICAL_CAMERA_ROT_EPS - uva
-			if vdu:
-				diff += PI - 2 * TACTICAL_CAMERA_ROT_MIN_RAD
 			diff = -diff
 		elif uva > TACTICAL_CAMERA_ROT_MAX_RAD:
 			diff = uva - TACTICAL_CAMERA_ROT_MAX_RAD + TACTICAL_CAMERA_ROT_EPS
-			if vdu:
-				diff = PI - 2 * (TACTICAL_CAMERA_ROT_MAX_RAD - TACTICAL_CAMERA_ROT_EPS) - diff
-		else:
-			diff = PI - 2 * uva if vdu else 0
 	return {
 		"acceptable" : false,
 		"diff" : diff,
-		"emergency" : vdn or vdu
+		"emergency" : (diff == 0)
 	}
 
 func rotate_around(point, axis, angle, normal = null, up = Vector3.UP):
@@ -302,9 +297,11 @@ func rotate_around(point, axis, angle, normal = null, up = Vector3.UP):
 
 func emergency(origin, point, normal):
 	var l = TACTICAL_CAMERA_DISTANCE_MIN + TACTICAL_CAMERA_DISTANCE_EPS
-	var ucn = Vector3.UP.cross(normal)
+	var v = origin - point
+	var ucn = v.cross(normal).rotated(normal, -PI/2)
+	var alpha = TACTICAL_CAMERA_ROT_MIN_RAD + TACTICAL_CAMERA_ROT_EPS
 	var position = (
-		(point + (normal + ucn.normalized()) * l)
+		point + l * (normal * cos(alpha) + ucn.normalized() * sin(alpha))
 			if ucn.length() > 0
 			else origin
 	)
