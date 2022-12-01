@@ -2,7 +2,7 @@ extends Camera
 class_name PLDCamera
 
 const TACTICAL_CAMERA_ROT_EPS = deg2rad(1)
-const TACTICAL_CAMERA_ROT_MIN_RAD = deg2rad(15)
+const TACTICAL_CAMERA_ROT_MIN_RAD = deg2rad(20)
 const TACTICAL_CAMERA_ROT_MAX_RAD = deg2rad(75)
 const TACTICAL_CAMERA_DISTANCE_MIN = 3
 const TACTICAL_CAMERA_DISTANCE_MAX = 18
@@ -270,7 +270,7 @@ func estimate_position(point, normal = null, up = Vector3.UP):
 				diff = PI - 2 * (TACTICAL_CAMERA_ROT_MAX_RAD - TACTICAL_CAMERA_ROT_EPS) - diff
 		else:
 			diff = PI - 2 * nva if vdn else 0
-	else:
+	if diff == 0:
 		if uva < TACTICAL_CAMERA_ROT_MIN_RAD:
 			diff = TACTICAL_CAMERA_ROT_MIN_RAD + TACTICAL_CAMERA_ROT_EPS - uva
 			if vdu:
@@ -349,10 +349,10 @@ func process_tactical_camera_movement(zoom):
 			if vl > TACTICAL_CAMERA_DISTANCE_MAX:
 				diff = (vl - TACTICAL_CAMERA_DISTANCE_MAX) * (point - origin).normalized()
 			global_translate(diff * TACTICAL_MOVEMENT_SPEED)
-			if not estimate_position(point, normal).acceptable:
-				return PLDTacticalCameraMovement.new().create_error(
-					normal * TACTICAL_MOVEMENT_SPEED
-				)
+			#if not estimate_position(point, normal).acceptable:
+			#	return PLDTacticalCameraMovement.new().create_error(
+			#		normal * TACTICAL_MOVEMENT_SPEED
+			#	)
 	else:
 		translate_object_local(
 			Vector3(input_movement_vector.x, 0, -zoom) * TACTICAL_MOVEMENT_SPEED
