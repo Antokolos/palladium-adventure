@@ -56,11 +56,12 @@ onready var item_use = get_node("viewpoint/item_use") if has_node("viewpoint/ite
 
 onready var separated_viewport = get_node("separated_viewport") if has_node("separated_viewport") else null
 
-var input_movement_vector = Vector2()
+var input_movement_vector = Vector2(0, 0)
 var tactical_view_rotation = false
 var tactical_view_action = false
 var tactical_view_double_click = false
 var tactical_player_character = null
+var tactical_camera_distance = (TACTICAL_CAMERA_DISTANCE_MIN + TACTICAL_CAMERA_DISTANCE_MAX) / 2
 var angle_rad_x = 0
 var angle_x_reset = false
 var angle_rad_y = 0
@@ -312,13 +313,28 @@ func emergency(origin, point, normal):
 	look_at_from_position(position, point, Vector3.UP)
 
 func process_tactical_camera_movement(zoom):
+	var result = PLDTacticalCameraMovement.new()
 	var roty = global_rotation.y
 	var x = -sin(roty) * input_movement_vector.y
 	var y = -cos(roty) * input_movement_vector.y
 	global_translate(Vector3(x, 0, y) * TACTICAL_MOVEMENT_SPEED)
+	translate_object_local(Vector3(input_movement_vector.x, 0, 0) * TACTICAL_MOVEMENT_SPEED)
 	var point = use_point.get_collision_point()
 	if point:
-		var pvl = (global_transform.origin - point).length()
+		result.with_point(point)
+		tactical_camera_distance = clamp(
+			tactical_camera_distance,
+			TACTICAL_CAMERA_DISTANCE_MIN,
+			TACTICAL_CAMERA_DISTANCE_MAX
+		)
+		var diff = Vector3.ZERO
+		var origin = global_transform.origin
+		var pvl = (origin - point).length()
+		if pvl < tactical_camera_distance:
+			diff = (tactical_camera_distance - pvl) * (origin - point).normalized()
+		if pvl > tactical_camera_distance:
+			diff = (pvl - tactical_camera_distance) * (point - origin).normalized()
+		global_translate(diff)
 		var z = (
 			zoom
 				if zoom < 0
@@ -328,11 +344,8 @@ func process_tactical_camera_movement(zoom):
 						else 0
 				)
 		)
-		translate_object_local(
-			Vector3(input_movement_vector.x, 0, -z) * TACTICAL_MOVEMENT_SPEED
-		)
-		var diff = Vector3.ZERO
-		var origin = global_transform.origin
+		translate_object_local(Vector3(0, 0, -z) * TACTICAL_MOVEMENT_SPEED)
+		origin = global_transform.origin
 		pvl = (origin - point).length()
 		if pvl < TACTICAL_CAMERA_DISTANCE_MIN:
 			diff = (TACTICAL_CAMERA_DISTANCE_MIN - pvl) * (origin - point).normalized()
@@ -363,7 +376,7 @@ func process_tactical_camera_movement(zoom):
 		backtrace_ray.cast_to = backtrace_ray.to_local(origin)
 		backtrace_ray.force_raycast_update()
 		if backtrace_ray.is_colliding():
-			return PLDTacticalCameraMovement.new().create_error(
+			return result.create_error(
 				backtrace_ray.get_collision_normal() * TACTICAL_MOVEMENT_SPEED
 			)
 		else:
@@ -374,12 +387,10 @@ func process_tactical_camera_movement(zoom):
 				else:
 					look_at_from_position(origin, point, Vector3.UP)
 	else:
-		translate_object_local(
-			Vector3(input_movement_vector.x, 0, -zoom) * TACTICAL_MOVEMENT_SPEED
-		)
+		translate_object_local(Vector3(0, 0, -zoom) * TACTICAL_MOVEMENT_SPEED)
 		rotate_object_local(Vector3(1, 0, 0), -angle_rad_x)
 		global_rotate(Vector3.UP, angle_rad_y)
-	return PLDTacticalCameraMovement.new().create_ok()
+	return result.create_ok()
 
 func is_tactical_player_character(character : PLDCharacter):
 	if not tactical_player_character:
@@ -494,6 +505,9 @@ func _process(delta):
 		if not m.get_data().result:
 			global_transform = prev_transform # revert anything
 			global_translate(m.get_data().push_back_vector)
+		if m.get_data().point:
+			var v = global_transform.origin - m.get_data().point
+			tactical_camera_distance = v.length()
 		if tactical_view_action:
 			process_tactical_view_action()
 			tactical_view_action = false
@@ -624,6 +638,15 @@ func _input(event):
 			
 			if use_point and event.is_action_pressed("action"):
 				tactical_view_action = true
+			
+			if (
+				tactical_player_character
+				and (
+					event.is_action_pressed("crouch")
+					or event.is_action_released("crouch")
+				)
+			):
+				tactical_player_character.toggle_crouch()
 			
 		return
 	if item_preview and event.is_action_pressed("item_preview_toggle"):
