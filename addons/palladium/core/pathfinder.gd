@@ -191,6 +191,9 @@ func is_taking_damage():
 func is_movement_disabled():
 	return get_model().is_movement_disabled()
 
+func has_target_node():
+	return true if target_node else false
+
 func get_target_node():
 	return target_node
 

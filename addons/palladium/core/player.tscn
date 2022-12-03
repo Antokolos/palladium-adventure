@@ -135,4 +135,11 @@ target_desired_distance = 2.0
 navigation_layers = 3
 radius = 0.25
 
+[node name="selection_mark" type="CSGTorus" parent="."]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.05, 0 )
+visible = false
+inner_radius = 1.0
+outer_radius = 1.1
+sides = 32
+
 [connection signal="velocity_computed" from="NavigationAgent" to="." method="_on_NavigationAgent_velocity_computed"]

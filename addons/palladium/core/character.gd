@@ -67,6 +67,7 @@ onready var third_person_camera = get_node(THIRD_PERSON_CAMERA_PATH) if has_node
 onready var third_person_collision_pos = third_person_camera.get_node("CameraCollisionPos") if third_person_camera and third_person_camera.has_node("CameraCollisionPos") else null
 onready var backtrace_ray = third_person_camera.get_node("BacktraceRay") if third_person_camera and third_person_camera.has_node("BacktraceRay") else null
 onready var translator_node = get_node(TRANSLATOR_NODE_PATH) if has_node(TRANSLATOR_NODE_PATH) else null
+onready var selection_mark = get_node("selection_mark") if has_node("selection_mark") else null
 
 var vel = Vector3()
 
@@ -137,8 +138,11 @@ func can_hide():
 func can_read():
 	return can_read
 
+func get_possible_attack_target(update_collisions):
+	return character_nodes.get_possible_attack_target(update_collisions)
+
 func handle_attack():
-	var possible_target = character_nodes.get_possible_attack_target(false)
+	var possible_target = get_possible_attack_target(false)
 	if not possible_target:
 		stop_attack()
 		return
@@ -260,6 +264,10 @@ func enable_collisions_and_interaction(enable):
 	set_collision_mask_bit(COLLISION_LAYER_ENEMY, enable)
 	set_collision_mask_bit(COLLISION_LAYER_OBSTACLES, enable)
 	set_collision_layer_bit(COLLISION_LAYER_INTERACTIVE, not enable)
+
+func enable_selection_mark(enable):
+	if selection_mark:
+		selection_mark.visible = enable
 
 ### Use target ###
 

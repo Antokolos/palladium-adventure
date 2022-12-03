@@ -59,6 +59,7 @@ onready var separated_viewport = get_node("separated_viewport") if has_node("sep
 var input_movement_vector = Vector2()
 var tactical_view_rotation = false
 var tactical_view_action = false
+var tactical_player_character = null
 var angle_rad_x = 0
 var angle_x_reset = false
 var angle_rad_y = 0
@@ -379,6 +380,65 @@ func process_tactical_camera_movement(zoom):
 		global_rotate(Vector3.UP, angle_rad_y)
 	return PLDTacticalCameraMovement.new().create_ok()
 
+func clear_projection_ray():
+	if projection_ray:
+		projection_ray.cast_to = Vector3.ZERO
+
+func process_tactical_view_action():
+	var point = (
+		projection_ray.get_collision_point()
+			if projection_ray.is_colliding()
+			else null
+	)
+	if point:
+		var collider = projection_ray.get_collider()
+		if collider and collider is PLDCharacter:
+			if tactical_player_character:
+				if ((
+						tactical_player_character is PLDPlayer
+						and collider is PLDEnemy
+					) or (
+						tactical_player_character is PLDEnemy
+						and collider is PLDPlayer
+					)
+				):
+					var current_target = tactical_player_character.get_target_node()
+					if (
+						not current_target
+						or not collider.equals(current_target)
+					):
+						tactical_player_character.set_target_node(collider)
+					return
+				tactical_player_character.enable_selection_mark(false)
+			tactical_player_character = collider
+			tactical_player_character.enable_selection_mark(true)
+			return
+		if not tactical_player_character:
+			return
+		if not tactical_player_character.is_activated():
+			tactical_player_character.activate()
+		var pos3d = Position3D.new()
+		var level = __PLDRT.game_state.get_level()
+		if level.has_node("patrol_area"):
+			level.get_node("patrol_area").add_child(pos3d)
+		else:
+			level.add_child(pos3d)
+		pos3d.global_transform.origin = point
+		tactical_player_character.set_target_node(pos3d)
+
+func process_tactical_player_attack():
+	var possible_attack_target = (
+		tactical_player_character.get_possible_attack_target(false)
+	)
+	if (
+		possible_attack_target
+		and possible_attack_target.equals(tactical_player_character.get_target_node())
+	):
+		if possible_attack_target.is_dead():
+			tactical_player_character.clear_target_node()
+		else:
+			tactical_player_character.attack_start(possible_attack_target)
+
 func _process(delta):
 	if not __PLDRT.game_state.is_level_ready():
 		return
@@ -418,20 +478,11 @@ func _process(delta):
 			global_transform = prev_transform # revert anything
 			global_translate(m.get_data().push_back_vector)
 		if tactical_view_action:
-			var point = (
-				projection_ray.get_collision_point()
-					if projection_ray.is_colliding()
-					else null
-			)
-			if point:
-				var pos3d = Position3D.new()
-				__PLDRT.game_state.get_level().add_child(pos3d)
-				pos3d.global_transform.origin = point
-				var p = __PLDRT.game_state.get_character("player")
-				if not p.is_activated():
-					p.activate()
-				p.set_target_node(pos3d)
+			process_tactical_view_action()
+			clear_projection_ray()
 			tactical_view_action = false
+		elif tactical_player_character:
+			process_tactical_player_attack()
 		if angle_x_reset:
 			angle_rad_x = 0
 			angle_x_reset = false
