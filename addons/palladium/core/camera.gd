@@ -59,6 +59,7 @@ onready var separated_viewport = get_node("separated_viewport") if has_node("sep
 var input_movement_vector = Vector2()
 var tactical_view_rotation = false
 var tactical_view_action = false
+var tactical_view_double_click = false
 var tactical_player_character = null
 var angle_rad_x = 0
 var angle_x_reset = false
@@ -380,9 +381,13 @@ func process_tactical_camera_movement(zoom):
 		global_rotate(Vector3.UP, angle_rad_y)
 	return PLDTacticalCameraMovement.new().create_ok()
 
-func clear_projection_ray():
-	if projection_ray:
-		projection_ray.cast_to = Vector3.ZERO
+func is_tactical_player_character(character : PLDCharacter):
+	if not tactical_player_character:
+		return false
+	return tactical_player_character.equals(character)
+
+func process_tactical_player_sprinting():
+	tactical_player_character.set_sprinting(tactical_view_double_click)
 
 func process_tactical_view_action():
 	var point = (
@@ -390,9 +395,18 @@ func process_tactical_view_action():
 			if projection_ray.is_colliding()
 			else null
 	)
+	var collider = (
+		projection_ray.get_collider()
+			if point
+			else null
+	)
+	projection_ray.cast_to = Vector3.ZERO
 	if point:
-		var collider = projection_ray.get_collider()
-		if collider and collider is PLDCharacter:
+		if (
+			collider
+			and collider is PLDCharacter
+			and not collider.equals(tactical_player_character)
+		):
 			if tactical_player_character:
 				if ((
 						tactical_player_character is PLDPlayer
@@ -408,8 +422,10 @@ func process_tactical_view_action():
 						or not collider.equals(current_target)
 					):
 						tactical_player_character.set_target_node(collider)
-					return
+						process_tactical_player_sprinting()
+						return
 				tactical_player_character.enable_selection_mark(false)
+				tactical_player_character.set_sprinting(false)
 			tactical_player_character = collider
 			tactical_player_character.enable_selection_mark(true)
 			return
@@ -425,6 +441,7 @@ func process_tactical_view_action():
 			level.add_child(pos3d)
 		pos3d.global_transform.origin = point
 		tactical_player_character.set_target_node(pos3d)
+		process_tactical_player_sprinting()
 
 func process_tactical_player_attack():
 	var possible_attack_target = (
@@ -479,7 +496,6 @@ func _process(delta):
 			global_translate(m.get_data().push_back_vector)
 		if tactical_view_action:
 			process_tactical_view_action()
-			clear_projection_ray()
 			tactical_view_action = false
 		elif tactical_player_character:
 			process_tactical_player_attack()
@@ -547,6 +563,7 @@ func _input(event):
 			):
 				var pln = project_local_ray_normal(event.global_position)
 				projection_ray.cast_to = TACTICAL_CAMERA_PROJECTION_LENGTH * pln
+				tactical_view_double_click = event.doubleclick
 			
 			if event.is_action_pressed("movement_forward") \
 				and input_movement_vector.y == 0:

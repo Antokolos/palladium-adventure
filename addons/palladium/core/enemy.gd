@@ -136,7 +136,10 @@ func _physics_process(delta):
 	var d = do_process(delta, false)
 	if is_dying() or d.cannot_move:
 		return
-	if __PLDRT.game_state.is_tactical_view():
+	if (
+		__PLDRT.game_state.is_tactical_view()
+		and __PLDRT.game_state.get_cam().is_tactical_player_character(self)
+	):
 		return
 	set_states()
 	if not is_aggressive():
