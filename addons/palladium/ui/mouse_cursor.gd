@@ -21,12 +21,12 @@ func _on_joy_connection_changed(device_id, is_connected):
 			return
 		warp_mouse_in_center()
 
-func _on_mouse_mode_changed(mouse_mode):
+func _on_mouse_mode_changed(mouse_mode, visible_anyway):
 	match mouse_mode:
 		Input.MOUSE_MODE_VISIBLE:
 			cursor_normal.visible = true
 		_:
-			cursor_normal.visible = false
+			cursor_normal.visible = visible_anyway
 
 func click_the_left_mouse_button():
 	var evt = InputEventMouseButton.new()
@@ -100,7 +100,21 @@ func _notification(what):
 		# the game window just lost focus from the operating system
 			in_focus = false
 
+func is_tactical_rotation():
+	return (
+		__PLDRT.game_state.is_tactical_view()
+		and Input.is_action_pressed("tactical_view_rotation")
+	)
+
 func _input(event):
+	if __PLDRT.game_state.is_tactical_view():
+		if event.is_action_pressed("tactical_view_rotation"):
+			__PLDRT.common_utils.set_mouse_mode(Input.MOUSE_MODE_CAPTURED, true)
+			return
+		elif event.is_action_released("tactical_view_rotation"):
+			__PLDRT.common_utils.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+			warp_mouse(cursor_normal.position)
+			return
 	if not in_focus or __PLDRT.common_utils.is_mouse_captured():
 		return
 	if event is InputEventJoypadMotion:
@@ -110,13 +124,21 @@ func _input(event):
 			set_rel_pos_x(JOY_SENSITIVITY * v if nonzero else 0)
 		if event.get_axis() == JOY_AXIS_3:  # Joypad Right Stick Vertical Axis
 			set_rel_pos_y(JOY_SENSITIVITY * v if nonzero else 0)
-	elif has_no_rel_pos() and event is InputEventMouseMotion:
+	elif (
+		has_no_rel_pos()
+		and event is InputEventMouseMotion
+		and not is_tactical_rotation()
+	):
 		cursor_normal.position = viewport.get_mouse_position()
 
 func _process(delta):
 	if warping_mutex.try_lock() == ERR_BUSY:
 		return
-	if not in_focus or __PLDRT.common_utils.is_mouse_captured():
+	if (
+		not in_focus
+		or __PLDRT.common_utils.is_mouse_captured()
+		or is_tactical_rotation()
+	):
 		return
 	if has_no_rel_pos():
 		return

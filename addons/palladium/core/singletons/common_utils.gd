@@ -1,6 +1,6 @@
 extends Node
 
-signal mouse_mode_changed(mouse_mode)
+signal mouse_mode_changed(mouse_mode, visible_anyway)
 
 const APP_STEAM_ID = 1137270
 onready var _steam = Engine.get_singleton("Steam") if Engine.has_singleton("Steam") else null
@@ -34,14 +34,14 @@ func _on_joy_connection_changed(device_id, is_connected):
 			toggle_pause_menu()
 		set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 
-func set_mouse_mode(mode):
+func set_mouse_mode(mode, visible_anyway = false):
 	mouse_mode = mode
 	match mode:
 		Input.MOUSE_MODE_VISIBLE:
 			Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 		_:
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	emit_signal("mouse_mode_changed", mouse_mode)
+	emit_signal("mouse_mode_changed", mouse_mode, visible_anyway)
 
 func enter_hidden_mouse_mode():
 	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
@@ -66,7 +66,11 @@ func show_mouse_cursor_if_needed(show, force = false):
 		set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 
 func show_mouse_cursor_if_needed_in_game(hud):
-	set_mouse_mode(Input.MOUSE_MODE_VISIBLE if hud.is_menu_hud() else Input.MOUSE_MODE_CAPTURED)
+	set_mouse_mode(
+		Input.MOUSE_MODE_VISIBLE
+			if hud.is_menu_hud() or _pldrt.game_state.is_tactical_view()
+			else Input.MOUSE_MODE_CAPTURED
+	)
 
 func toggle_pause_menu():
 	var ev = InputEventAction.new()

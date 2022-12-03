@@ -7,6 +7,7 @@ const TACTICAL_CAMERA_ROT_MAX_RAD = deg2rad(75)
 const TACTICAL_CAMERA_DISTANCE_EPS = 0.15
 const TACTICAL_CAMERA_DISTANCE_MIN = 3
 const TACTICAL_CAMERA_DISTANCE_MAX = 36
+const TACTICAL_CAMERA_PROJECTION_LENGTH = 9999
 const TACTICAL_MOVEMENT_THRESHOLD = 10
 const TACTICAL_MOVEMENT_SPEED = 0.3
 const TACTICAL_ZOOM_SPEED = 4
@@ -47,6 +48,7 @@ onready var env_good = preload("res://addons/palladium/env_good.tres")
 onready var env_high = preload("res://addons/palladium/env_high.tres")
 
 onready var backtrace_ray = get_node("BacktraceRay") if has_node("BacktraceRay") else null
+onready var projection_ray = get_node("ProjectionRay") if has_node("ProjectionRay") else null
 onready var culling_rays = get_node("culling_rays") if has_node("culling_rays") else null
 onready var shader_cache = get_node("viewpoint/shader_cache") if has_node("viewpoint/shader_cache") else null
 onready var item_preview = get_node("viewpoint/item_preview") if has_node("viewpoint/item_preview") else null
@@ -55,7 +57,6 @@ onready var item_use = get_node("viewpoint/item_use") if has_node("viewpoint/ite
 onready var separated_viewport = get_node("separated_viewport") if has_node("separated_viewport") else null
 
 var input_movement_vector = Vector2()
-var input_movement_reset = false
 var tactical_view_rotation = false
 var tactical_view_action = false
 var angle_rad_x = 0
@@ -404,6 +405,8 @@ func _process(delta):
 	if __PLDRT.game_state.is_tactical_view():
 		if backtrace_ray and not backtrace_ray.enabled:
 			backtrace_ray.enabled = true
+		if projection_ray and not projection_ray.enabled:
+			projection_ray.enabled = true
 		var zoom = 0
 		if Input.is_action_just_pressed("tactical_view_zoom_in"):
 			zoom = TACTICAL_ZOOM_SPEED
@@ -415,7 +418,11 @@ func _process(delta):
 			global_transform = prev_transform # revert anything
 			global_translate(m.get_data().push_back_vector)
 		if tactical_view_action:
-			var point = use_point.get_collision_point()
+			var point = (
+				projection_ray.get_collision_point()
+					if projection_ray.is_colliding()
+					else null
+			)
 			if point:
 				var pos3d = Position3D.new()
 				__PLDRT.game_state.get_level().add_child(pos3d)
@@ -425,10 +432,6 @@ func _process(delta):
 					p.activate()
 				p.set_target_node(pos3d)
 			tactical_view_action = false
-		if input_movement_reset:
-			input_movement_vector.x = 0
-			input_movement_vector.y = 0
-			input_movement_reset = false
 		if angle_x_reset:
 			angle_rad_x = 0
 			angle_x_reset = false
@@ -436,8 +439,11 @@ func _process(delta):
 			angle_rad_y = 0
 			angle_y_reset = false
 		return
-	elif backtrace_ray and backtrace_ray.enabled:
-		backtrace_ray.enabled = false
+	else:
+		if backtrace_ray and backtrace_ray.enabled:
+			backtrace_ray.enabled = false
+		if projection_ray and projection_ray.enabled:
+			projection_ray.enabled = false
 
 	if not has_node(target_path):
 		return
@@ -483,6 +489,14 @@ func _input(event):
 	var player = __PLDRT.game_state.get_player()
 	if not player or player.is_hidden():
 		if __PLDRT.game_state.is_tactical_view():
+			if (
+				event is InputEventMouseButton
+				and event.pressed
+				and event.button_index == BUTTON_LEFT
+			):
+				var pln = project_local_ray_normal(event.global_position)
+				projection_ray.cast_to = TACTICAL_CAMERA_PROJECTION_LENGTH * pln
+			
 			if event.is_action_pressed("movement_forward") \
 				and input_movement_vector.y == 0:
 				input_movement_vector.y = 1
@@ -519,18 +533,26 @@ func _input(event):
 					angle_rad_y = deg2rad(event.relative.x * __PLDRT.settings.get_sensitivity() * -1)
 					angle_x_reset = true
 					angle_y_reset = true
-				else:
-					input_movement_vector.x = (
-						1
-						if event.relative.x > TACTICAL_MOVEMENT_THRESHOLD
-						else (-1 if event.relative.x < -TACTICAL_MOVEMENT_THRESHOLD else 0)
+				elif (
+					not (
+						Input.is_action_pressed("movement_forward")
+						or Input.is_action_pressed("movement_backward")
+						or Input.is_action_pressed("movement_left")
+						or Input.is_action_pressed("movement_right")
 					)
-					input_movement_vector.y = (
-						-1
-						if event.relative.y > TACTICAL_MOVEMENT_THRESHOLD
-						else (1 if event.relative.y < -TACTICAL_MOVEMENT_THRESHOLD else 0)
-					)
-					input_movement_reset = true
+				):
+					input_movement_vector.x = 0
+					input_movement_vector.y = 0
+					var viewport = __PLDRT.game_state.get_viewport()
+					var pos = viewport.get_mouse_position()
+					if pos.x < TACTICAL_MOVEMENT_THRESHOLD:
+						input_movement_vector.x = -1
+					if pos.y < TACTICAL_MOVEMENT_THRESHOLD:
+						input_movement_vector.y = 1
+					if pos.x > viewport.size.x - TACTICAL_MOVEMENT_THRESHOLD:
+						input_movement_vector.x = 1
+					if pos.y > viewport.size.y - TACTICAL_MOVEMENT_THRESHOLD:
+						input_movement_vector.y = -1
 			
 			if use_point and event.is_action_pressed("action"):
 				tactical_view_action = true
