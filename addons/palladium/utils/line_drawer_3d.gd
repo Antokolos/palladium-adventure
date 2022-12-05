@@ -7,7 +7,7 @@ export(LineType) var line_type = LineType.STRIP
 
 var lines = []
 var width = 0.2
-var gap = 0.2
+var gap = 0.0
 
 class Line:
 	var start : Vector3
@@ -39,19 +39,19 @@ func draw_strip():
 		var cv = Vector3.UP.cross(v).normalized() * width
 
 		set_normal(Vector3(0, 1, 0))
-		set_uv(Vector2(0, 1))
+		set_uv(Vector2(0, 0))
 		add_vertex(line.start + gap * v + cv)
 
 		set_normal(Vector3(0, 1, 0))
-		set_uv(Vector2(1, 1))
+		set_uv(Vector2(1, 0))
 		add_vertex(line.end - gap * v + cv)
 
 		set_normal(Vector3(0, 1, 0))
-		set_uv(Vector2(0, 0))
+		set_uv(Vector2(0, 1))
 		add_vertex(line.start + gap * v - cv)
 
 		set_normal(Vector3(0, 1, 0))
-		set_uv(Vector2(1, 0))
+		set_uv(Vector2(1, 1))
 		add_vertex(line.end - gap * v - cv)
 		
 	end()
