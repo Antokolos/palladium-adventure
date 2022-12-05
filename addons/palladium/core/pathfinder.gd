@@ -217,9 +217,8 @@ func update_navpath_to_target():
 	else:
 		clear_path()
 	if __PLDRT.settings.show_path:
-		var path_holder = navigation_node.get_node("path_holder")
-		for ch in path_holder.get_children():
-			ch.queue_free()
+		var path_drawer = navigation_node.get_node("path_drawer")
+		path_drawer.clear_points()
 
 func clear_target_node():
 	return set_target_node(null)
@@ -385,57 +384,15 @@ func has_path():
 	return not navigation_agent.is_navigation_finished()
 
 func draw_path():
-	var path_holder = navigation_node.get_node("path_holder")
-	var child_count = path_holder.get_child_count()
+	var path_drawer = navigation_node.get_node("path_drawer")
+	path_drawer.clear_points()
 	var np = navigation_agent.get_nav_path()
-	var nps = np.size()
-	if child_count >= nps:
-		var i = 1
-		var j = 0
-		for ch in path_holder.get_children():
-			if j <= child_count - nps:
-				ch.visible = false
-				j += 1
-				continue
-			ch.visible = true
-			var npi = np[i]
-			i += 1
-			var mat = ch.mesh.surface_get_material(0)
-			mat.albedo_color = Color(
-				mat.albedo_color.r,
-				mat.albedo_color.g,
-				mat.albedo_color.b,
-				mat.albedo_color.a * 0.9
-			)
-			var l = (ch.global_transform.origin - npi).length()
-			if l < PATH_POINT_THRESHOLD:
-				continue
-			mat.albedo_color = Color(
-				mat.albedo_color.r,
-				mat.albedo_color.g,
-				mat.albedo_color.b,
-				1.0
-			)
-			ch.global_transform.origin = npi
-		return
-	else:
-		for ch in path_holder.get_children():
-			ch.queue_free()
-	for p in np:
-		var mat = SpatialMaterial.new()
-		mat.set_flag(SpatialMaterial.FLAG_UNSHADED, true)
-		mat.set_feature(SpatialMaterial.FEATURE_TRANSPARENT, true)
-		var m = MeshInstance.new()
-		m.mesh = SphereMesh.new()
-		m.mesh.surface_set_material(0, mat)
-		m.mesh.radius = PATH_POINT_RADIUS
-		m.mesh.height = 2 * PATH_POINT_RADIUS
-		path_holder.add_child(m)
-		m.global_transform.origin = p
+	for i in range(1, np.size()):
+		path_drawer.add_line(np[i], np[i - 1])
 
 func clear_path():
-	for ch in navigation_node.get_node("path_holder").get_children():
-		navigation_node.get_node("path_holder").remove_child(ch)
+	var path_drawer = navigation_node.get_node("path_drawer")
+	path_drawer.clear_points()
 	navigation_agent.set_target_location(get_global_transform().origin)
 
 func get_distance_to(pos):

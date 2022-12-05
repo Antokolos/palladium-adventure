@@ -71,9 +71,7 @@ script = ExtResource( 53 )
 is_inside = false
 cam_path = NodePath("camera")
 
-[node name="path_holder" type="Spatial" parent="ViewportContainer/Viewport/Pyramid"]
-
-[node name="LineDrawer3D" type="ImmediateGeometry" parent="ViewportContainer/Viewport/Pyramid/path_holder"]
+[node name="path_drawer" type="ImmediateGeometry" parent="ViewportContainer/Viewport/Pyramid"]
 script = ExtResource( 23 )
 
 [node name="patrol_area" type="Area" parent="ViewportContainer/Viewport/Pyramid"]
