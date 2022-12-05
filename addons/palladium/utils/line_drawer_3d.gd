@@ -5,48 +5,54 @@ enum LineType { LINES, STRIP }
 
 export(LineType) var line_type = LineType.STRIP
 
-var points = []
+var lines = []
 var width = 0.2
 var gap = 0.2
-#var color = Color(0, 1, 0, 1)
 
-func clear_points():
-	points.clear()
+class Line:
+	var start : Vector3
+	var end : Vector3
+	func _init(start, end):
+		self.start = start
+		self.end = end
 
-func add_line(p1 : Vector3, p2 : Vector3):
-	points.push_back(p1)
-	points.push_back(p2)
+func clear_lines():
+	lines.clear()
+
+func add_line(start : Vector3, end : Vector3):
+	var line = Line.new(start, end)
+	lines.push_back(line)
 
 func draw_lines():
 	clear()
 	begin(Mesh.PRIMITIVE_LINES)
-	for i in range(0, points.size()):
-		add_vertex(points[i])
+	for line in lines:
+		add_vertex(line.start)
+		add_vertex(line.end)
 	end()
 
 func draw_strip():
 	clear()
 	begin(Mesh.PRIMITIVE_TRIANGLE_STRIP, null)
-
-	for i in range(1, points.size(), 2):
-		var v = points[i] - points[i - 1]
+	for line in lines:
+		var v = line.end - line.start
 		var cv = Vector3.UP.cross(v).normalized() * width
-		
+
 		set_normal(Vector3(0, 1, 0))
 		set_uv(Vector2(0, 1))
-		add_vertex(points[i - 1] + gap * v - cv)
+		add_vertex(line.start + gap * v + cv)
 
 		set_normal(Vector3(0, 1, 0))
 		set_uv(Vector2(1, 1))
-		add_vertex(points[i - 1] + gap * v + cv)
+		add_vertex(line.end - gap * v + cv)
 
 		set_normal(Vector3(0, 1, 0))
 		set_uv(Vector2(0, 0))
-		add_vertex(points[i] - gap * v - cv)
+		add_vertex(line.start + gap * v - cv)
 
 		set_normal(Vector3(0, 1, 0))
 		set_uv(Vector2(1, 0))
-		add_vertex(points[i] - gap * v + cv)
+		add_vertex(line.end - gap * v - cv)
 		
 	end()
 

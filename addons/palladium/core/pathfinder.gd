@@ -21,8 +21,6 @@ const CLOSEUP_RANGE = 2
 const POINT_BLANK_RANGE = 1.2
 const ALIGNMENT_RANGE = 0.2
 const USE_DISTANCE_COMMON = 2.2
-const PATH_POINT_RADIUS = 0.2
-const PATH_POINT_THRESHOLD = 0.6
 
 export(float) var max_lower_limit_y : float = -999.1
 export(float) var use_distance : float = USE_DISTANCE_COMMON
@@ -31,6 +29,7 @@ export(NodePath) var navigation_path = NodePath("..")
 
 onready var navigation_node = get_node(navigation_path) if navigation_path and has_node(navigation_path) else null
 onready var navigation_agent = get_node("NavigationAgent") if has_node("NavigationAgent") else null
+onready var path_drawer = navigation_node.get_node("path_drawer") if navigation_node.has_node("path_drawer") else null
 
 var cached_model_holder = null
 var cached_model = null
@@ -216,9 +215,8 @@ func update_navpath_to_target():
 		update_navpath(current_position, target_position)
 	else:
 		clear_path()
-	if __PLDRT.settings.show_path:
-		var path_drawer = navigation_node.get_node("path_drawer")
-		path_drawer.clear_points()
+	if path_drawer and __PLDRT.settings.show_path:
+		path_drawer.clear_lines()
 
 func clear_target_node():
 	return set_target_node(null)
@@ -384,15 +382,16 @@ func has_path():
 	return not navigation_agent.is_navigation_finished()
 
 func draw_path():
-	var path_drawer = navigation_node.get_node("path_drawer")
-	path_drawer.clear_points()
+	if not path_drawer:
+		return
+	path_drawer.clear_lines()
 	var np = navigation_agent.get_nav_path()
 	for i in range(1, np.size()):
-		path_drawer.add_line(np[i], np[i - 1])
+		path_drawer.add_line(np[i - 1], np[i])
 
 func clear_path():
-	var path_drawer = navigation_node.get_node("path_drawer")
-	path_drawer.clear_points()
+	if path_drawer:
+		path_drawer.clear_lines()
 	navigation_agent.set_target_location(get_global_transform().origin)
 
 func get_distance_to(pos):
