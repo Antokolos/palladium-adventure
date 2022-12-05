@@ -334,6 +334,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/inkgd/runtime/content/void.gd"
 }, {
+"base": "ImmediateGeometry",
+"class": "LineDrawer3D",
+"language": "GDScript",
+"path": "res://addons/palladium/utils/line_drawer_3d.gd"
+}, {
 "base": "Spatial",
 "class": "PLDActivatable",
 "language": "GDScript",
@@ -700,6 +705,7 @@ _global_script_class_icons={
 "InkVariableReference": "",
 "InkVariablesState": "",
 "InkVoid": "",
+"LineDrawer3D": "",
 "PLDActivatable": "",
 "PLDBoneAttachment": "",
 "PLDButtonActivator": "",

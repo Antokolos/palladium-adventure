@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=2]
+[gd_scene load_steps=33 format=2]
 
 [ext_resource path="res://addons/zylann.hterrain/hterrain.gd" type="Script" id=1]
 [ext_resource path="res://addons/palladium/ui/game_window.gd" type="Script" id=2]
@@ -22,6 +22,7 @@
 [ext_resource path="res://addons/palladium/core/camera.tscn" type="PackedScene" id=20]
 [ext_resource path="res://addons/palladium/core/ai/patrol_area.gd" type="Script" id=21]
 [ext_resource path="res://addons/palladium/ui/hud.tscn" type="PackedScene" id=22]
+[ext_resource path="res://addons/palladium/utils/line_drawer_3d.gd" type="Script" id=23]
 [ext_resource path="res://addons/palladium/ui/viewport.tscn" type="PackedScene" id=50]
 [ext_resource path="res://addons/palladium/core/player.tscn" type="PackedScene" id=51]
 [ext_resource path="res://vasya.tscn" type="PackedScene" id=52]
@@ -71,6 +72,9 @@ is_inside = false
 cam_path = NodePath("camera")
 
 [node name="path_holder" type="Spatial" parent="ViewportContainer/Viewport/Pyramid"]
+
+[node name="LineDrawer3D" type="ImmediateGeometry" parent="ViewportContainer/Viewport/Pyramid/path_holder"]
+script = ExtResource( 23 )
 
 [node name="patrol_area" type="Area" parent="ViewportContainer/Viewport/Pyramid"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 160.051, 0, 243.821 )

@@ -11,8 +11,6 @@ const X_DIR = Vector3(1, 0, 0)
 const Y_DIR = Vector3(0, 1, 0)
 const Z_DIR = Vector3(0, 0, 1)
 
-const DRAW_PATH = true
-
 const ROTATION_ANGLE_MIN_RAD = 0.025
 const ROTATION_ANGLE_SPEED_RAD = 0.05
 const KEY_LOOK_SPEED_FACTOR = 10
@@ -23,6 +21,8 @@ const CLOSEUP_RANGE = 2
 const POINT_BLANK_RANGE = 1.2
 const ALIGNMENT_RANGE = 0.2
 const USE_DISTANCE_COMMON = 2.2
+const PATH_POINT_RADIUS = 0.2
+const PATH_POINT_THRESHOLD = 0.6
 
 export(float) var max_lower_limit_y : float = -999.1
 export(float) var use_distance : float = USE_DISTANCE_COMMON
@@ -216,6 +216,10 @@ func update_navpath_to_target():
 		update_navpath(current_position, target_position)
 	else:
 		clear_path()
+	if __PLDRT.settings.show_path:
+		var path_holder = navigation_node.get_node("path_holder")
+		for ch in path_holder.get_children():
+			ch.queue_free()
 
 func clear_target_node():
 	return set_target_node(null)
@@ -376,23 +380,58 @@ func follow(current_transform, next_position):
 
 func update_navpath(pstart, pend):
 	navigation_agent.set_target_location(pend)
-	if DRAW_PATH:
-		draw_path()
 
 func has_path():
 	return not navigation_agent.is_navigation_finished()
 
 func draw_path():
-	for ch in navigation_node.get_node("path_holder").get_children():
-		navigation_node.get_node("path_holder").remove_child(ch)
-	var k = 1.0
-	for p in navigation_agent.get_nav_path():
+	var path_holder = navigation_node.get_node("path_holder")
+	var child_count = path_holder.get_child_count()
+	var np = navigation_agent.get_nav_path()
+	var nps = np.size()
+	if child_count >= nps:
+		var i = 1
+		var j = 0
+		for ch in path_holder.get_children():
+			if j <= child_count - nps:
+				ch.visible = false
+				j += 1
+				continue
+			ch.visible = true
+			var npi = np[i]
+			i += 1
+			var mat = ch.mesh.surface_get_material(0)
+			mat.albedo_color = Color(
+				mat.albedo_color.r,
+				mat.albedo_color.g,
+				mat.albedo_color.b,
+				mat.albedo_color.a * 0.9
+			)
+			var l = (ch.global_transform.origin - npi).length()
+			if l < PATH_POINT_THRESHOLD:
+				continue
+			mat.albedo_color = Color(
+				mat.albedo_color.r,
+				mat.albedo_color.g,
+				mat.albedo_color.b,
+				1.0
+			)
+			ch.global_transform.origin = npi
+		return
+	else:
+		for ch in path_holder.get_children():
+			ch.queue_free()
+	for p in np:
+		var mat = SpatialMaterial.new()
+		mat.set_flag(SpatialMaterial.FLAG_UNSHADED, true)
+		mat.set_feature(SpatialMaterial.FEATURE_TRANSPARENT, true)
 		var m = MeshInstance.new()
 		m.mesh = SphereMesh.new()
-		m.mesh.radius = 0.1 * k
-		k = k + 0.1
-		navigation_node.get_node("path_holder").add_child(m)
-		m.global_translate(p)
+		m.mesh.surface_set_material(0, mat)
+		m.mesh.radius = PATH_POINT_RADIUS
+		m.mesh.height = 2 * PATH_POINT_RADIUS
+		path_holder.add_child(m)
+		m.global_transform.origin = p
 
 func clear_path():
 	for ch in navigation_node.get_node("path_holder").get_children():
@@ -475,4 +514,14 @@ func _on_character_dead(player):
 		deactivate()
 
 func _on_character_dying(player):
+	pass
+
+func _on_NavigationAgent_navigation_finished():
+	pass
+
+func _on_NavigationAgent_path_changed():
+	if __PLDRT.settings.show_path:
+		draw_path()
+
+func _on_NavigationAgent_target_reached():
 	pass
