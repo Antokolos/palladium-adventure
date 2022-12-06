@@ -1,4 +1,4 @@
-[gd_scene load_steps=34 format=2]
+[gd_scene load_steps=36 format=2]
 
 [ext_resource path="res://addons/zylann.hterrain/hterrain.gd" type="Script" id=1]
 [ext_resource path="res://addons/palladium/ui/game_window.gd" type="Script" id=2]
@@ -23,6 +23,8 @@
 [ext_resource path="res://addons/palladium/core/ai/patrol_area.gd" type="Script" id=21]
 [ext_resource path="res://addons/palladium/ui/hud.tscn" type="PackedScene" id=22]
 [ext_resource path="res://addons/palladium/utils/line_drawer_3d.gd" type="Script" id=23]
+[ext_resource path="res://addons/palladium/core/enemy.tscn" type="PackedScene" id=24]
+[ext_resource path="res://scenes/enemies/squig.tscn" type="PackedScene" id=25]
 [ext_resource path="res://addons/palladium/ui/viewport.tscn" type="PackedScene" id=50]
 [ext_resource path="res://addons/palladium/core/player.tscn" type="PackedScene" id=51]
 [ext_resource path="res://vasya.tscn" type="PackedScene" id=52]
@@ -91,9 +93,34 @@ shape = SubResource( 6 )
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 160.051, 0, 243.821 )
 
 [node name="enemy_emitter" parent="ViewportContainer/Viewport/Pyramid/enemies" instance=ExtResource( 6 )]
+enabled = false
 enemies_count_max = 3
 enemy_model_path = "res://scenes/enemies/squig.tscn"
 navigation_path = NodePath("../..")
+
+[node name="enemy_x" parent="ViewportContainer/Viewport/Pyramid/enemies" instance=ExtResource( 24 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -25.8768 )
+name_hint = "enemy_x"
+navigation_path = NodePath("../..")
+has_melee_attack = true
+can_hide = false
+max_hits = 1
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Pyramid/enemies/enemy_x"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Pyramid/enemies/enemy_x/Model" instance=ExtResource( 25 )]
+
+[node name="enemy_y" parent="ViewportContainer/Viewport/Pyramid/enemies" instance=ExtResource( 24 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -13.8864 )
+name_hint = "enemy_y"
+navigation_path = NodePath("../..")
+has_melee_attack = true
+can_hide = false
+max_hits = 1
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Pyramid/enemies/enemy_y"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Pyramid/enemies/enemy_y/Model" instance=ExtResource( 25 )]
 
 [node name="curly_palm" parent="ViewportContainer/Viewport/Pyramid" instance=ExtResource( 19 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 145.533, -0.15782, 284.479 )

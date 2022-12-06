@@ -66,6 +66,7 @@ var camera_view = PLDDB.CAMERA_VIEW_TYPE_DEFAULT
 var pause_on_joy_disconnected = true
 var disable_mouse_if_joy_connected = false
 var cutoff_enabled = false
+var show_path = false
 var shader_cache_enabled = true
 var vsync = true
 var fullscreen = true
@@ -152,6 +153,9 @@ func load_settings():
 	if ("cutoff_enabled" in d):
 		cutoff_enabled = bool(d.cutoff_enabled)
 
+	if ("show_path" in d):
+		show_path = bool(d.show_path)
+
 	if ("shader_cache_enabled" in d):
 		shader_cache_enabled = bool(d.shader_cache_enabled)
 
@@ -226,6 +230,7 @@ func save_settings():
 		"pause_on_joy_disconnected" : pause_on_joy_disconnected,
 		"disable_mouse_if_joy_connected" : disable_mouse_if_joy_connected,
 		"cutoff_enabled" : cutoff_enabled,
+		"show_path" : show_path,
 		"shader_cache_enabled" : shader_cache_enabled,
 		"vsync" : vsync,
 		"fullscreen" : fullscreen,
@@ -424,6 +429,9 @@ func set_sensitivity_coef(val):
 
 func get_sensitivity():
 	return BASE_SENSITIVITY * sensitivity_coef
+
+func set_show_path(sp):
+	show_path = sp
 
 func set_cutoff_enabled(ce):
 	cutoff_enabled = ce

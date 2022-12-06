@@ -153,3 +153,7 @@ func _physics_process(delta):
 
 func _on_NavigationAgent_velocity_computed(safe_velocity):
 	._on_NavigationAgent_velocity_computed(safe_velocity)
+
+func _on_NavigationAgent_path_changed():
+	if __PLDRT.game_state.is_tactical_view():
+		._on_NavigationAgent_path_changed()

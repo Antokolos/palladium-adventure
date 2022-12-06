@@ -268,7 +268,8 @@ func show_tablet(is_show, activation_mode = PLDTablet.ActivationMode.DESKTOP):
 		pause_game(true)
 		tablet.activate(activation_mode)
 	else:
-		__PLDRT.common_utils.show_mouse_cursor_if_needed(false)
+		if not __PLDRT.game_state.is_tactical_view():
+			__PLDRT.common_utils.show_mouse_cursor_if_needed(false)
 		tablet.visible = false
 		pause_game(false)
 		__PLDRT.settings.save_settings()

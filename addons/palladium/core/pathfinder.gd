@@ -215,9 +215,9 @@ func update_navpath_to_target():
 		update_navpath(current_position, target_position)
 	else:
 		clear_path()
-	if path_drawer:
-		path_drawer.reset_alpha()
-		path_drawer.clear_lines()
+	if __PLDRT.settings.show_path and path_drawer:
+		path_drawer.reset_alpha(name_hint)
+		path_drawer.clear_lines(name_hint)
 
 func clear_target_node():
 	return set_target_node(null)
@@ -383,16 +383,20 @@ func has_path():
 	return not navigation_agent.is_navigation_finished()
 
 func draw_path():
-	if not path_drawer:
+	path_drawer.clear_lines(name_hint)
+	if (
+		not __PLDRT.settings.show_path
+		or not path_drawer
+		or navigation_agent.is_navigation_finished()
+	):
 		return
-	path_drawer.clear_lines()
 	var np = navigation_agent.get_nav_path()
 	for i in range(1, np.size()):
-		path_drawer.add_line(np[i - 1], np[i])
+		path_drawer.add_line(name_hint, np[i - 1], np[i])
 
 func clear_path():
 	if path_drawer:
-		path_drawer.clear_lines()
+		path_drawer.clear_lines(name_hint)
 	navigation_agent.set_target_location(get_global_transform().origin)
 
 func get_distance_to(pos):
@@ -473,11 +477,5 @@ func _on_character_dead(player):
 func _on_character_dying(player):
 	pass
 
-func _on_NavigationAgent_navigation_finished():
-	pass
-
 func _on_NavigationAgent_path_changed():
 	draw_path()
-
-func _on_NavigationAgent_target_reached():
-	pass
