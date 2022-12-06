@@ -36,7 +36,8 @@ onready var joypad_type = joypad_type_parent.get_node("JoypadType")
 onready var vsync = settings_app.get_node("VBoxContainer/HVsync/Vsync")
 onready var fullscreen = settings_app.get_node("VBoxContainer/HFullscreen/Fullscreen")
 onready var invert_yaxis = settings_app.get_node("VBoxContainer/HInvertYAxis/InvertYAxis")
-onready var show_path = settings_app.get_node("VBoxContainer/HShowPath/ShowPath")
+onready var show_path_holder = settings_app.get_node("VBoxContainer/HShowPath")
+onready var show_path = show_path_holder.get_node("ShowPath")
 onready var cutoff_enabled = settings_app.get_node("VBoxContainer/HCutoffEnabled/CutoffEnabled")
 onready var pause_on_joypad_disconnected_parent = settings_app.get_node("VBoxContainer/HJoypadType/HPauseOnJoypadDisconnected")
 onready var pause_on_joypad_disconnected = pause_on_joypad_disconnected_parent.get_node("PauseOnJoypadDisconnected")
@@ -213,7 +214,7 @@ func _ready():
 func activate(mode):
 	visible = true
 	var level = __PLDRT.game_state.get_level()
-	show_path.visible = level and level.has_node("path_drawer")
+	show_path_holder.visible = level and level.has_node("path_drawer")
 	var has_joypads = __PLDRT.common_utils.has_joypads()
 	joypad_type_parent.visible = has_joypads
 	pause_on_joypad_disconnected_parent.visible = has_joypads

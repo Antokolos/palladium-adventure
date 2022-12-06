@@ -383,12 +383,13 @@ func has_path():
 	return not navigation_agent.is_navigation_finished()
 
 func draw_path():
-	path_drawer.clear_lines(name_hint)
 	if (
 		not __PLDRT.settings.show_path
 		or not path_drawer
-		or navigation_agent.is_navigation_finished()
 	):
+		return
+	path_drawer.clear_lines(name_hint)
+	if navigation_agent.is_navigation_finished():
 		return
 	var np = navigation_agent.get_nav_path()
 	for i in range(1, np.size()):

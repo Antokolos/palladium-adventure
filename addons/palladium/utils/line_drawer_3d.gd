@@ -1,5 +1,5 @@
 extends ImmediateGeometry
-class_name LineDrawer3D
+class_name PLDLineDrawer3D
 
 const LINES_REROUTE_THRESHOLD = 0.9
 const ALPHA_COEF = 0.96
