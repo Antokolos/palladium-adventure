@@ -1,4 +1,4 @@
-[gd_scene load_steps=35 format=2]
+[gd_scene load_steps=34 format=2]
 
 [ext_resource path="res://addons/zylann.hterrain/hterrain.gd" type="Script" id=1]
 [ext_resource path="res://addons/palladium/ui/game_window.gd" type="Script" id=2]
@@ -23,7 +23,6 @@
 [ext_resource path="res://addons/palladium/core/ai/patrol_area.gd" type="Script" id=21]
 [ext_resource path="res://addons/palladium/ui/hud.tscn" type="PackedScene" id=22]
 [ext_resource path="res://addons/palladium/utils/line_drawer_3d.gd" type="Script" id=23]
-[ext_resource path="res://assets/path/chocolatewaferstraw.png" type="Texture" id=24]
 [ext_resource path="res://addons/palladium/ui/viewport.tscn" type="PackedScene" id=50]
 [ext_resource path="res://addons/palladium/core/player.tscn" type="PackedScene" id=51]
 [ext_resource path="res://vasya.tscn" type="PackedScene" id=52]
@@ -31,9 +30,9 @@
 [ext_resource path="res://pyramid_room_manager.gd" type="Script" id=54]
 
 [sub_resource type="SpatialMaterial" id=7]
+flags_transparent = true
 flags_unshaded = true
-albedo_texture = ExtResource( 24 )
-uv1_triplanar = true
+albedo_color = Color( 0.0941176, 0.772549, 0.0705882, 1 )
 
 [sub_resource type="BoxShape" id=6]
 extents = Vector3( 28.9742, 1, 28.0324 )

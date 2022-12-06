@@ -211,23 +211,6 @@ margin_right = 197.0
 margin_bottom = 19.0
 text = "SETTINGS_INVERT_YAXIS"
 
-[node name="HShowPath" type="HBoxContainer" parent="TabletPanel/TabletScreen/apps/settings_app/VBoxContainer"]
-margin_top = 249.0
-margin_right = 1574.0
-margin_bottom = 273.0
-custom_constants/separation = 20
-
-[node name="ShowPath" type="CheckBox" parent="TabletPanel/TabletScreen/apps/settings_app/VBoxContainer/HShowPath"]
-margin_right = 24.0
-margin_bottom = 24.0
-
-[node name="Label" type="Label" parent="TabletPanel/TabletScreen/apps/settings_app/VBoxContainer/HShowPath"]
-margin_left = 44.0
-margin_top = 5.0
-margin_right = 225.0
-margin_bottom = 19.0
-text = "SETTINGS_SHOW_PATH"
-
 [node name="HCutoffEnabled" type="HBoxContainer" parent="TabletPanel/TabletScreen/apps/settings_app/VBoxContainer"]
 margin_top = 249.0
 margin_right = 1574.0
@@ -1337,7 +1320,6 @@ texture_focused = ExtResource( 38 )
 [connection signal="pressed" from="TabletPanel/TabletScreen/apps/settings_app/VBoxContainer/HVsync/Vsync" to="." method="_on_Vsync_pressed"]
 [connection signal="pressed" from="TabletPanel/TabletScreen/apps/settings_app/VBoxContainer/HFullscreen/Fullscreen" to="." method="_on_Fullscreen_pressed"]
 [connection signal="pressed" from="TabletPanel/TabletScreen/apps/settings_app/VBoxContainer/HInvertYAxis/InvertYAxis" to="." method="_on_InvertYAxis_pressed"]
-[connection signal="pressed" from="TabletPanel/TabletScreen/apps/settings_app/VBoxContainer/HShowPath/ShowPath" to="." method="_on_ShowPath_pressed"]
 [connection signal="pressed" from="TabletPanel/TabletScreen/apps/settings_app/VBoxContainer/HCutoffEnabled/CutoffEnabled" to="." method="_on_CutoffEnabled_pressed"]
 [connection signal="pressed" from="TabletPanel/TabletScreen/apps/settings_app/VBoxContainer/HDisableMouseIfJoypadConnected/DisableMouseIfJoypadConnected" to="." method="_on_DisableMouseIfJoypadConnected_pressed"]
 [connection signal="value_changed" from="TabletPanel/TabletScreen/apps/settings_app/VBoxContainer/HSensitivityCoef/VBoxContainer/SensitivityCoef" to="." method="_on_SensitivityCoef_value_changed"]

@@ -215,7 +215,8 @@ func update_navpath_to_target():
 		update_navpath(current_position, target_position)
 	else:
 		clear_path()
-	if path_drawer and __PLDRT.settings.show_path:
+	if path_drawer:
+		path_drawer.reset_alpha()
 		path_drawer.clear_lines()
 
 func clear_target_node():
@@ -476,8 +477,7 @@ func _on_NavigationAgent_navigation_finished():
 	pass
 
 func _on_NavigationAgent_path_changed():
-	if __PLDRT.settings.show_path:
-		draw_path()
+	draw_path()
 
 func _on_NavigationAgent_target_reached():
 	pass
