@@ -474,6 +474,8 @@ func update_state(data : PLDMovementData):
 func _on_character_dead(player):
 	if equals(player):
 		deactivate()
+	if path_drawer:
+		path_drawer.remove_character(player.get_name_hint())
 
 func _on_character_dying(player):
 	pass

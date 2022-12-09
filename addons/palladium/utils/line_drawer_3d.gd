@@ -29,6 +29,10 @@ func lm(name_hint : String):
 		lines_map[name_hint] = Lines.new()
 	return lines_map[name_hint]
 
+func remove_character(name_hint):
+	if lines_map.has(name_hint):
+		lines_map.erase(name_hint)
+
 func reset_alpha(name_hint):
 	lm(name_hint).alpha = 1.0
 
