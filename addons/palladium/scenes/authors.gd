@@ -7,7 +7,7 @@ onready var scrollbar = authors_label.get_v_scroll()
 
 func activate():
 	show()
-	var lang = TranslationServer.get_locale()
+	var lang = __PLDRT.conversation_manager.get_locale()
 	var fallback_filename = "res://authors_en.txt"
 	var filename = "res://authors_%s.txt" % lang if lang else fallback_filename
 	authors_label.bbcode_enabled = true

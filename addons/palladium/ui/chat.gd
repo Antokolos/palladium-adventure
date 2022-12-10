@@ -9,7 +9,7 @@ var max_choice = 0
 func load_chat():
 	__PLDRT.story_node.load_story("Chat.ink.json", true, false)
 	__PLDRT.story_node.init_variables()
-	chat_window.bbcode_text = __PLDRT.story_node.current_log(TranslationServer.get_locale())
+	chat_window.bbcode_text = __PLDRT.story_node.current_log(__PLDRT.conversation_manager.get_locale())
 	if __PLDRT.story_node.chat_driven() and __PLDRT.story_node.can_choose():
 		display_choices(true)
 	continue_story(0)
@@ -44,7 +44,7 @@ func continue_story(option_number):
 
 func story_proceed(choice_response):
 	__PLDRT.story_node.continue(choice_response)
-	chat_window.bbcode_text = __PLDRT.story_node.current_log(TranslationServer.get_locale())
+	chat_window.bbcode_text = __PLDRT.story_node.current_log(__PLDRT.conversation_manager.get_locale())
 	info_label.text = "...typing..." if __PLDRT.story_node.can_continue() else ""
 	in_choice = false
 	if __PLDRT.story_node.can_continue():
@@ -62,7 +62,7 @@ func story_choose(idx):
 
 func display_choices(can_choose):
 	in_choice = true
-	var ch = __PLDRT.story_node.get_choices(TranslationServer.get_locale())
+	var ch = __PLDRT.story_node.get_choices(__PLDRT.conversation_manager.get_locale())
 	var i = 1
 	info_label.text = ""
 	for c in ch:

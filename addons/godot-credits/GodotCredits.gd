@@ -62,7 +62,7 @@ var credits = [
 ]
 
 func _ready():
-	var fname = "res://credits_%s.txt" % TranslationServer.get_locale()
+	var fname = "res://credits_%s.txt" % __PLDRT.conversation_manager.get_locale()
 	var c = load_file(fname, "res://credits_en.txt")
 	if c:
 		credits = c

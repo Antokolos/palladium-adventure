@@ -253,7 +253,7 @@ func init_variables() -> void:
 	var keys = storyVars.keys()
 	var party_keys = _pldrt.game_state.get_name_hints()
 	for locale in AvailableLocales:
-		var is_current_locale = (locale == TranslationServer.get_locale())
+		var is_current_locale = (locale == _pldrt.conversation_manager.get_locale())
 		if _inkStory.has(locale):
 			var palladiumStory : PLDStory = _inkStory[locale]
 			var story = palladiumStory.get_ink_story() # Story

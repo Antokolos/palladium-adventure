@@ -218,13 +218,16 @@ func conversation_is_not_finished(conversation_name, target_name_hint = null):
 func conversation_result_was_achieved(conversation_name, result = 0, target_name_hint = null):
 	return check_story_result_was_achieved(conversation_name, result, target_name_hint)
 
+func get_locale():
+	return TranslationServer.get_locale().get_slice("_", 0)
+
 func get_story_path(conversation_name, target_name_hint = null):
 	var cp = (("%s/" % target_name_hint) if target_name_hint else "") + "%s.ink.json" % conversation_name
 	var cp_story
 	if story_state_cache.has(cp):
 		cp_story = story_state_cache.get(cp)
 	else:
-		var locale = TranslationServer.get_locale()
+		var locale = get_locale()
 		var f = File.new()
 		var fpath = "res://ink-scripts/%s/%s" % [locale, cp]
 		var exists_cp = f.file_exists(fpath)
@@ -304,8 +307,8 @@ func clear_actors_and_texts(player, conversation):
 	var conversation_actor = conversation.get_node("VBox/VBoxText/HBoxText/ActorName")
 	var conversation_actor_prev = conversation.get_node("VBox/VBoxText/HBoxTextPrev/ActorName")
 	conversation_actor_prev.text = ""
-	var tags = _pldrt.story_node.get_current_tags_for_locale(TranslationServer.get_locale())
-	var cur_text = _pldrt.story_node.current_text(TranslationServer.get_locale())
+	var tags = _pldrt.story_node.get_current_tags_for_locale(get_locale())
+	var cur_text = _pldrt.story_node.current_text(get_locale())
 	if tags.has("finalizer") or cur_text.empty():
 		conversation_text.text = ""
 		conversation_actor.text = ""
@@ -345,9 +348,9 @@ func story_choose(player, idx):
 		_pldrt.story_node.choose(idx)
 		if _pldrt.story_node.can_continue():
 			var texts = _pldrt.story_node.continue(true)
-			conversation_text.text = texts[TranslationServer.get_locale()].strip_edges()
+			conversation_text.text = texts[get_locale()].strip_edges()
 			var tags_dict = _pldrt.story_node.get_current_tags()
-			var tags = tags_dict[TranslationServer.get_locale()]
+			var tags = tags_dict[get_locale()]
 			is_finalizing = tags and tags.has("finalizer")
 			if is_finalizing:
 				last_result = 0 if tags["finalizer"].empty() else tags["finalizer"].to_int()
@@ -390,10 +393,10 @@ func story_proceed(player):
 		var conversation_text = conversation.get_node("VBox/VBoxText/HBoxText/ConversationText")
 		move_current_text_to_prev(conversation)
 		var texts = _pldrt.story_node.continue(false)
-		conversation_text.text = texts[TranslationServer.get_locale()].strip_edges()
+		conversation_text.text = texts[get_locale()].strip_edges()
 		var conversation_actor = conversation.get_node("VBox/VBoxText/HBoxText/ActorName")
 		var tags_dict = _pldrt.story_node.get_current_tags()
-		var tags = tags_dict[TranslationServer.get_locale()]
+		var tags = tags_dict[get_locale()]
 		is_finalizing = tags and tags.has("finalizer")
 		if is_finalizing:
 			last_result = 0 if tags["finalizer"].empty() else tags["finalizer"].to_int()
@@ -415,7 +418,7 @@ func story_proceed(player):
 		change_stretch_ratio(conversation)
 	var can_continue = not is_finalizing and _pldrt.story_node.can_continue()
 	var can_choose = not is_finalizing and _pldrt.story_node.can_choose()
-	var choices = _pldrt.story_node.get_choices(TranslationServer.get_locale()) if can_choose else ([tr("CONVERSATION_CONTINUE")] if can_continue else [tr("CONVERSATION_END")])
+	var choices = _pldrt.story_node.get_choices(get_locale()) if can_choose else ([tr("CONVERSATION_CONTINUE")] if can_continue else [tr("CONVERSATION_END")])
 	if not can_continue and not can_choose and not has_voiceover:
 		if autoclose_timer.is_stopped():
 			autoclose_timer.start()

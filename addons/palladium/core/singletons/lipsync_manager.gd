@@ -158,7 +158,7 @@ func continue_conversation():
 	elif _pldrt.story_node.can_continue():
 		_pldrt.conversation_manager.story_proceed(player)
 	elif _pldrt.story_node.can_choose():
-		var ch = _pldrt.story_node.get_choices(TranslationServer.get_locale())
+		var ch = _pldrt.story_node.get_choices(_pldrt.conversation_manager.get_locale())
 		if ch.size() == 1:
 			_pldrt.conversation_manager.story_choose(player, 0)
 	else:
