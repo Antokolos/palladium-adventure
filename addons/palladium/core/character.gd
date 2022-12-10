@@ -1077,7 +1077,7 @@ func do_process(delta, is_player):
 		var dp = character_nodes.get_damage_point()
 		third_person_camera.look_at(dp, Vector3.UP)
 		move_backtrace(dp)
-	elif backtrace_ray:
+	elif backtrace_ray and backtrace_ray.enabled:
 		backtrace_ray.enabled = false
 	var characters = __PLDRT.game_state.get_characters()
 	var d = {

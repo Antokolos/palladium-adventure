@@ -366,7 +366,7 @@ func stop_all():
 func enable_areas_and_raycasts(enable):
 	standing_raycast.enabled = enable
 	under_feet_raycast.enabled = true # under_feet_raycast is always enabled
-	ranged_damage_raycast.enabled = enable
+	ranged_damage_raycast.enabled = enable and character.has_ranged_attack()
 	melee_attack_area.get_node("CollisionShape").disabled = not enable
 	melee_damage_area.get_node("CollisionShape").disabled = not enable
 
