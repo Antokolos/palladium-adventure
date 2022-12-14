@@ -150,6 +150,7 @@ static func sanitize_items(items):
 func _ready():
 	cleanup_paths()
 	reset_variables()
+	clear_caches()
 
 func is_level_ready():
 	return is_level_ready
@@ -157,9 +158,12 @@ func is_level_ready():
 func set_level_ready(level_ready):
 	is_level_ready = level_ready
 	if level_ready:
-		characters_cache.clear()
+		clear_caches()
 	else:
 		get_tree().paused = true # To prevent possible NPEs
+
+func clear_caches():
+	characters_cache.clear()
 
 func cleanup_paths():
 	player_paths.clear()
@@ -255,7 +259,8 @@ func get_character(name_hint):
 	if characters_cache.has(name_hint):
 		return characters_cache[name_hint]
 	var ch = get_node(player_paths[name_hint]) if has_character(name_hint) else null
-	characters_cache[name_hint] = ch
+	if ch:
+		characters_cache[name_hint] = ch
 	return ch
 
 func get_characters():
@@ -482,6 +487,7 @@ func is_transition():
 func finish_load():
 	var is_loading = is_loading()
 	if is_loading:
+		clear_caches()
 		load_state(slot_to_load_from)
 		slot_to_load_from = -1
 	else:

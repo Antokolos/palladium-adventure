@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://addons/palladium/core/environment/ladder.gd" type="Script" id=1]
+
+[node name="ladder" type="StaticBody" groups=["restorable_state"]]
+script = ExtResource( 1 )
+
+[node name="positions_in" type="Spatial" parent="."]
+
+[node name="positions_out" type="Spatial" parent="."]

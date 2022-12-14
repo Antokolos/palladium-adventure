@@ -502,11 +502,13 @@ func _process(delta):
 			zoom = -TACTICAL_ZOOM_SPEED
 		var prev_transform = global_transform
 		var m = process_tactical_camera_movement(zoom)
-		if not m.get_data().result:
+		if not m.get_result():
 			global_transform = prev_transform # revert anything
-			global_translate(m.get_data().push_back_vector)
-		if m.get_data().point:
-			var v = global_transform.origin - m.get_data().point
+			var push_back_vector = m.get_push_back_vector()
+			if push_back_vector:
+				global_translate(push_back_vector)
+		if m.get_point():
+			var v = global_transform.origin - m.get_point()
 			tactical_camera_distance = v.length()
 		if tactical_view_action:
 			process_tactical_view_action()
