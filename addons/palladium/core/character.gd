@@ -36,6 +36,8 @@ const PUSH_STRENGTH = 10
 const PUSH_BACK_STRENGTH = 30
 const NONCHAR_PUSH_STRENGTH = 2
 
+const YROT_LADDER_MIN_DEG = -33
+const YROT_LADDER_MAX_DEG = 33
 const MAX_SLOPE_ANGLE_RAD = deg2rad(70)
 const AXIS_VALUE_THRESHOLD = 0.15
 
@@ -81,6 +83,10 @@ var is_crouching = false
 var is_sprinting = false
 var is_underwater = false  # is_underwater flag is not stored in the save file
 var is_air_pocket = false  # is_air_pocket flag is not stored in the save file
+var is_on_ladder = false setget set_on_ladder, is_on_ladder
+var ladder_rotation_deg = 0 setget set_ladder_rotation_deg, get_ladder_rotation_deg
+var ladder_ymin = 0 setget set_ladder_ymin, get_ladder_ymin
+var ladder_ymax = 0 setget set_ladder_ymax, get_ladder_ymax
 var is_poisoned = false
 #var char_code : int = 0 setget set_char_code, get_char_code
 var intoxication : int = 0
@@ -429,6 +435,30 @@ func is_air_pocket():
 func set_air_pocket(enable):
 	is_air_pocket = enable
 
+func is_on_ladder():
+	return is_on_ladder
+
+func set_on_ladder(enable):
+	is_on_ladder = enable
+
+func get_ladder_rotation_deg():
+	return ladder_rotation_deg
+
+func set_ladder_rotation_deg(angle_deg):
+	ladder_rotation_deg = angle_deg
+
+func get_ladder_ymin():
+	return ladder_ymin
+
+func set_ladder_ymin(ymin):
+	ladder_ymin = ymin
+
+func get_ladder_ymax():
+	return ladder_ymax
+
+func set_ladder_ymax(ymax):
+	ladder_ymax = ymax
+
 func is_poisoned():
 	return is_poisoned
 
@@ -724,6 +754,10 @@ func process_rotation(need_to_update_collisions):
 	if angle_rad_y == 0 or is_dying():
 		return { "rotate_y" : false }
 	self.rotate_y(angle_rad_y)
+	if is_on_ladder:
+		var rot = self.rotation_degrees
+		rot.y = clamp(rot.y, ladder_rotation_deg + YROT_LADDER_MIN_DEG, ladder_rotation_deg + YROT_LADDER_MAX_DEG)
+		self.rotation_degrees = rot
 	if angle_y_reset:
 		angle_rad_y = 0
 		angle_y_reset = false
@@ -750,6 +784,8 @@ func is_need_to_use_physics(characters):
 		return true
 	if force_no_physics:
 		return false
+	if is_on_ladder:
+		return false
 	if is_player_controlled() or not character_nodes.has_floor_collision():
 		return true
 	if has_path():
@@ -774,7 +810,11 @@ func has_horz_movement(v):
 	)
 
 func has_vert_movement(v, fc):
-	return v.y >= MIN_MOVEMENT or (not is_air_pocket and not fc)
+	return (
+		v.y >= MIN_MOVEMENT
+		or (is_on_ladder and v.y <= -MIN_MOVEMENT)
+		or (not is_air_pocket and not is_on_ladder and not fc)
+	)
 
 func has_movement(v, fc):
 	return has_horz_movement(v) or has_vert_movement(v, fc)
@@ -806,8 +846,17 @@ func process_movement(delta, dir, characters):
 		target.y = 0
 	target = target.normalized()
 
-	if is_air_pocket:
+	if is_on_ladder:
+		var current_transform = get_global_transform()
+		var ynew = current_transform.origin.y + target.y
+		if ynew < ladder_ymin or ynew > ladder_ymax:
+			vel.y = 0
+			target.y = 0
+		else:
+			vel.y += target.y
+	elif is_air_pocket:
 		vel.y = 0
+		target.y = 0
 	else:
 		vel.y -= delta * get_gravity()
 
@@ -828,7 +877,7 @@ func process_movement(delta, dir, characters):
 	else:
 		accel = DEACCEL
 
-	hvel = hvel.linear_interpolate(target, accel*delta)
+	hvel = hvel.linear_interpolate(target, accel * delta)
 	vel.x = hvel.x
 	vel.z = hvel.z
 	
@@ -1095,6 +1144,7 @@ func do_process(delta, is_player):
 	var has_floor_collision = has_floor_collision()
 	var should_fall = (
 		not is_air_pocket
+		and not is_on_ladder
 		and not character_nodes.has_floor_collision()
 	)
 	

@@ -6,12 +6,18 @@ const THIRD_PERSON_YROT_MIN_DEG = -33
 const THIRD_PERSON_YROT_MAX_DEG = 33
 const CAMERA_ROT_MIN_DEG = -88
 const CAMERA_ROT_MAX_DEG = 88
+const CAMERA_ROT_LADDER_MIN_DEG = -33
+const CAMERA_ROT_LADDER_MAX_DEG = 33
 const MODEL_ROT_MIN_DEG = -88
 const MODEL_ROT_MAX_DEG = 0
-const SHAPE_ROT_MIN_DEG = -90-88
-const SHAPE_ROT_MAX_DEG = -90+88
-const SHAPE_ROT_MIN_DISABLED_DEG = -90-20
-const SHAPE_ROT_MAX_DISABLED_DEG = -90+20
+const MODEL_ROT_LADDER_MIN_DEG = -33
+const MODEL_ROT_LADDER_MAX_DEG = 0
+const SHAPE_ROT_MIN_DEG = -90 - 88
+const SHAPE_ROT_MAX_DEG = -90 + 88
+const SHAPE_ROT_LADDER_MIN_DEG = -90 - 33
+const SHAPE_ROT_LADDER_MAX_DEG = -90 + 33
+const SHAPE_ROT_MIN_DISABLED_DEG = -90 - 20
+const SHAPE_ROT_MAX_DISABLED_DEG = -90 + 20
 const YROT_HELPER_PATH = "Rotation_HelperX/Rotation_HelperY"
 
 export var initial_player = true
@@ -21,7 +27,7 @@ onready var upper_body_shape = $UpperBody_CollisionShape
 onready var rotation_helper = $Rotation_Helper
 onready var rotation_helper_tp = $Rotation_HelperX
 
-var input_movement_vector = Vector2()
+var input_movement_vector = Vector3()
 var angle_rad_x = 0
 var angle_x_reset = false
 var is_in_jump = false
@@ -105,6 +111,24 @@ func set_simple_mode(enable):
 func remove_item_from_hand():
 	get_model().remove_item_from_hand()
 
+func get_camera_rot_min_deg():
+	return CAMERA_ROT_LADDER_MIN_DEG if is_on_ladder() else CAMERA_ROT_MIN_DEG
+
+func get_camera_rot_max_deg():
+	return CAMERA_ROT_LADDER_MAX_DEG if is_on_ladder() else CAMERA_ROT_MAX_DEG
+
+func get_model_rot_min_deg():
+	return MODEL_ROT_LADDER_MIN_DEG if is_on_ladder() else MODEL_ROT_MIN_DEG
+
+func get_model_rot_max_deg():
+	return MODEL_ROT_LADDER_MAX_DEG if is_on_ladder() else MODEL_ROT_MAX_DEG
+
+func get_shape_rot_min_deg():
+	return SHAPE_ROT_LADDER_MIN_DEG if is_on_ladder() else SHAPE_ROT_MIN_DEG
+
+func get_shape_rot_max_deg():
+	return SHAPE_ROT_LADDER_MAX_DEG if is_on_ladder() else SHAPE_ROT_MAX_DEG
+
 func process_rotation(need_to_update_collisions):
 	if yrot_helper:
 		var yrot = yrot_helper.rotation_degrees
@@ -128,12 +152,12 @@ func process_rotation(need_to_update_collisions):
 	var camera_rot = rotation_helper.rotation_degrees
 	var model_rot = Vector3(camera_rot.x, camera_rot.y, camera_rot.z)
 	var shape_rot = upper_body_shape.rotation_degrees
-	camera_rot.x = clamp(camera_rot.x, CAMERA_ROT_MIN_DEG, CAMERA_ROT_MAX_DEG)
+	camera_rot.x = clamp(camera_rot.x, get_camera_rot_min_deg(), get_camera_rot_max_deg())
 	rotation_helper.rotation_degrees = camera_rot
-	model_rot.x = clamp(model_rot.x, MODEL_ROT_MIN_DEG, MODEL_ROT_MAX_DEG)
+	model_rot.x = clamp(model_rot.x, get_model_rot_min_deg(), get_model_rot_max_deg())
 	if __PLDRT.settings.get_camera_view() == PLDDB.CAMERA_VIEW_FIRST_PERSON:
 		get_model_holder().rotation_degrees = model_rot
-	shape_rot.x = clamp(shape_rot.x, SHAPE_ROT_MIN_DEG, SHAPE_ROT_MAX_DEG)
+	shape_rot.x = clamp(shape_rot.x, get_shape_rot_min_deg(), get_shape_rot_max_deg())
 	upper_body_shape.rotation_degrees = shape_rot
 	upper_body_shape.disabled = shape_rot.x >= SHAPE_ROT_MIN_DISABLED_DEG and shape_rot.x <= SHAPE_ROT_MAX_DISABLED_DEG
 	if angle_x_reset:
@@ -187,6 +211,25 @@ func _input(event):
 		elif event.is_action_pressed("dialogue_next"):
 			__PLDRT.conversation_manager.proceed_story_immediately(self)
 	if is_in_party() and not __PLDRT.cutscene_manager.is_cutscene():
+		var on_ladder = is_on_ladder()
+		if on_ladder:
+			input_movement_vector.x = 0
+			input_movement_vector.y = 0
+			if event.is_action_pressed("movement_forward") \
+				and input_movement_vector.y == 0:
+				input_movement_vector.z = 1
+			elif event.is_action_released("movement_forward") \
+				and input_movement_vector.z == 1:
+				input_movement_vector.z = 0
+			elif event.is_action_pressed("movement_backward") \
+				and input_movement_vector.z == 0:
+				input_movement_vector.z = -1
+			elif event.is_action_released("movement_backward") \
+				and input_movement_vector.z == -1:
+				input_movement_vector.z = 0
+		else:
+			input_movement_vector.z = 0
+		
 		if (
 			__PLDRT.common_utils.is_mouse_captured()
 			and event is InputEventMouseMotion
@@ -203,7 +246,7 @@ func _input(event):
 				angle_rad_y = deg2rad(KEY_LOOK_SPEED_FACTOR * __PLDRT.settings.get_sensitivity() * -v) if nonzero else 0
 			if event.get_axis() == JOY_AXIS_3:  # Joypad Right Stick Vertical Axis
 				angle_rad_x = deg2rad(KEY_LOOK_SPEED_FACTOR * __PLDRT.settings.get_sensitivity() * v * __PLDRT.settings.get_yaxis_coeff()) if nonzero else 0
-		else:
+		elif not on_ladder:
 			if event.is_action_pressed("movement_forward") \
 				and input_movement_vector.y == 0:
 				input_movement_vector.y = 1
@@ -266,8 +309,11 @@ func get_movement_data(is_player):
 			var dir_input = Vector3()
 			var cam_xform = cam.get_global_transform()
 			var n = input_movement_vector.normalized()
-			dir_input += -cam_xform.basis.z.normalized() * n.y
-			dir_input += cam_xform.basis.x.normalized() * n.x
+			if is_on_ladder():
+				dir_input += Vector3.UP * n.z
+			else:
+				dir_input += -cam_xform.basis.z.normalized() * n.y
+				dir_input += cam_xform.basis.x.normalized() * n.x
 			cam.walk_initiate(self)
 			var data = PLDMovementData.new().with_dir(dir_input).with_rest_state(false)
 			if cam_xform.origin.y < max_lower_limit_y:

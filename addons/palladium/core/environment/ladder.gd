@@ -12,11 +12,20 @@ onready var positions_out_holder = get_node("positions_out")
 var positions_in = []
 var positions_out = []
 var state = STATE_VACANT
+var ymin = DISTANCE_INFINITY
+var ymax = -DISTANCE_INFINITY
 
 func init_positions():
 	if positions_in.empty():
+		ymin = DISTANCE_INFINITY
+		ymax = -DISTANCE_INFINITY
 		for pos in positions_in_holder.get_children():
 			positions_in.append(pos)
+			var posy = pos.get_global_transform().origin.y
+			if posy > ymax:
+				ymax = posy
+			if posy < ymin:
+				ymin = posy
 	if positions_out.empty():
 		for pos in positions_out_holder.get_children():
 			positions_out.append(pos)
@@ -48,6 +57,10 @@ func use(player_node, camera_node):
 		__PLDRT.game_state.set_multistate_state(get_path(), STATE_OCCUPIED)
 		var pos = find_closest_pos(player, positions_in)
 		player.teleport(pos)
+		player.set_on_ladder(true)
+		player.set_ladder_rotation_deg(pos.rotation_degrees.y)
+		player.set_ladder_ymax(ymax)
+		player.set_ladder_ymin(ymin)
 		state = STATE_OCCUPIED
 	elif state == STATE_OCCUPIED:
 		if positions_out.empty():
@@ -55,6 +68,10 @@ func use(player_node, camera_node):
 		__PLDRT.game_state.set_multistate_state(get_path(), STATE_VACANT)
 		var pos = find_closest_pos(player, positions_out)
 		player.teleport(pos)
+		player.set_on_ladder(false)
+		player.set_ladder_rotation_deg(0)
+		player.set_ladder_ymax(ymax)
+		player.set_ladder_ymin(ymin)
 		state = STATE_VACANT
 	return true
 
@@ -62,6 +79,8 @@ func restore_state():
 	state = __PLDRT.game_state.get_multistate_state(get_path())
 	positions_in.clear()
 	positions_out.clear()
+	ymin = DISTANCE_INFINITY
+	ymax = -DISTANCE_INFINITY
 	if state == STATE_VACANT:
 		pass
 	elif state == STATE_OCCUPIED:

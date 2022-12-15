@@ -943,6 +943,18 @@ func set_character_data(dd, character):
 		elif not dd.is_crouching and character.is_crouching():
 			character.stand_up()
 	
+	if ("is_on_ladder" in dd):
+		character.set_on_ladder(dd.is_on_ladder)
+	
+	if ("ladder_rotation_deg" in dd):
+		character.set_ladder_rotation_deg(dd.ladder_rotation_deg)
+	
+	if ("ladder_ymin" in dd):
+		character.set_ladder_ymin(dd.ladder_ymin)
+	
+	if ("ladder_ymax" in dd):
+		character.set_ladder_ymax(dd.ladder_ymax)
+	
 	if ("is_poisoned" in dd and "intoxication" in dd):
 		character.intoxication = int(dd.intoxication)
 		set_poisoned(character, dd.is_poisoned, character.intoxication)
@@ -1089,6 +1101,10 @@ func get_character_data(character):
 		"pathfinding_enabled" : character.is_pathfinding_enabled(),
 		"in_party" : p,
 		"is_crouching" : character.is_crouching(),
+		"is_on_ladder" : character.is_on_ladder(),
+		"ladder_rotation_deg" : character.get_ladder_rotation_deg(),
+		"ladder_ymin" : character.get_ladder_ymin(),
+		"ladder_ymax" : character.get_ladder_ymax(),
 		"is_poisoned" : character.is_poisoned(),
 		"intoxication" : character.get_intoxication(),
 		"relationship" : character.get_relationship(),
