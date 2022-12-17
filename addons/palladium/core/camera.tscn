@@ -34,11 +34,6 @@ collision_mask = 6148
 [node name="culling_rays" type="Spatial" parent="."]
 script = ExtResource( 3 )
 
-[node name="RayCast" type="RayCast" parent="culling_rays"]
-enabled = true
-cast_to = Vector3( 0, 0, -23 )
-collision_mask = 18
-
 [node name="Gun_Fire_Points" type="Spatial" parent="."]
 transform = Transform( -1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, -0.05 )
 
@@ -81,6 +76,7 @@ include_in_bound = false
 layers = 33
 light_color = Color( 1, 0.913725, 0.768627, 1 )
 light_energy = 0.42
+light_bake_mode = 0
 light_cull_mask = 4293919777
 shadow_color = Color( 0.639216, 0.639216, 0.639216, 1 )
 shadow_bias = 0.3
@@ -96,6 +92,7 @@ include_in_bound = false
 layers = 33
 light_color = Color( 1, 0.913725, 0.768627, 1 )
 light_energy = 0.42
+light_bake_mode = 0
 light_cull_mask = 4293919777
 shadow_color = Color( 0.639216, 0.639216, 0.639216, 1 )
 shadow_bias = 0.3
@@ -112,6 +109,7 @@ include_in_bound = false
 layers = 33
 light_color = Color( 1, 0.913725, 0.768627, 1 )
 light_energy = 0.42
+light_bake_mode = 0
 light_cull_mask = 4293919777
 shadow_color = Color( 0.639216, 0.639216, 0.639216, 1 )
 shadow_bias = 0.3
@@ -127,6 +125,7 @@ include_in_bound = false
 layers = 33
 light_color = Color( 1, 0.913725, 0.768627, 1 )
 light_energy = 0.42
+light_bake_mode = 0
 light_cull_mask = 4293919777
 shadow_color = Color( 0.639216, 0.639216, 0.639216, 1 )
 shadow_bias = 0.3

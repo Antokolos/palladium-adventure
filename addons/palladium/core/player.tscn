@@ -109,7 +109,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.2 )
 [node name="CameraCollisionPos" type="Spatial" parent="Rotation_HelperX/Rotation_HelperY/ThirdPersonCamera"]
 
 [node name="BacktraceRay" type="RayCast" parent="Rotation_HelperX/Rotation_HelperY/ThirdPersonCamera"]
-enabled = true
 cast_to = Vector3( 0, 0, 0 )
 collision_mask = 1026
 
