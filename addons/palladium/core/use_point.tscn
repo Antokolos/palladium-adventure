@@ -8,7 +8,7 @@ script = ExtResource( 1 )
 [node name="RayCastUseTargets" type="RayCast" parent="."]
 enabled = true
 cast_to = Vector3( 0, 0, 123 )
-collision_mask = 1174
+collision_mask = 1206
 
 [node name="RayCastItems" type="RayCast" parent="."]
 enabled = true

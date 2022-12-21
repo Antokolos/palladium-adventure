@@ -1,5 +1,7 @@
 extends Spatial
 
+const CAMERA_LIMIT_INSIDE = 100
+const CAMERA_LIMIT_OUTSIDE = 2500
 const CAMERA_FOV_DEGREES = 55
 const STEPS = 2
 const ANGLE_COEFF = 0.5
@@ -63,7 +65,11 @@ func init():
 		y = y + ystep
 
 func get_camera_limit():
-	return 100 if __PLDRT.game_state.is_inside() else 330
+	return (
+		CAMERA_LIMIT_INSIDE
+			if __PLDRT.game_state.is_inside()
+			else CAMERA_LIMIT_OUTSIDE
+	)
 
 func get_max_distance(camera_origin):
 	var dsup = get_camera_limit()
