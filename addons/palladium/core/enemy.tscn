@@ -118,8 +118,8 @@ anims/crouch = SubResource( 4 )
 one_shot = true
 
 [node name="NavigationAgent" type="NavigationAgent" parent="."]
-path_desired_distance = 2.0
-target_desired_distance = 2.0
+path_desired_distance = 0.9
+target_desired_distance = 2.1
 radius = 0.25
 
 [node name="selection_mark" type="CSGTorus" parent="."]
