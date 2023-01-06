@@ -565,6 +565,14 @@ func _process(delta):
 				var new_fov := lerp(fov, camera.fov, fov_factor) as float
 				set_perspective(new_fov, new_near, new_far)
 
+func convert_mouse_event(event : InputEventMouse):
+	var mouseEvent = event.duplicate()
+	var viewport_size = __PLDRT.game_state.get_viewport().size
+	var root_viewport_size = get_node("/root").size
+	mouseEvent.position.x = (viewport_size.x / root_viewport_size.x) * event.global_position.x
+	mouseEvent.position.y = (viewport_size.y / root_viewport_size.y) * event.global_position.y
+	return mouseEvent
+
 func _input(event):
 	if get_tree().paused \
 		or __PLDRT.conversation_manager.conversation_is_in_progress():
@@ -577,7 +585,7 @@ func _input(event):
 				and event.pressed
 				and event.button_index == BUTTON_LEFT
 			):
-				var pln = project_local_ray_normal(event.global_position)
+				var pln = project_local_ray_normal(convert_mouse_event(event).position)
 				projection_ray.cast_to = TACTICAL_CAMERA_PROJECTION_LENGTH * pln
 				tactical_view_double_click = event.doubleclick
 			
