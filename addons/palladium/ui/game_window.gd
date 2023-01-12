@@ -28,8 +28,13 @@ func do_input(event):
 		and not event is InputEventMouseButton
 		and (event.is_action_pressed("action") or event.is_action_pressed("ui_accept"))
 	):
-		if not get_tree().paused \
-			or hud.is_tablet_visible() \
-			or hud.is_quit_dialog_visible():
+		if (
+			(
+				not get_tree().paused
+				and not __PLDRT.game_state.is_tactical_view()
+			)
+			or hud.is_tablet_visible()
+			or hud.is_quit_dialog_visible()
+		):
 			hud.get_mouse_cursor().click_the_left_mouse_button()
 	return 1

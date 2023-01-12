@@ -578,88 +578,91 @@ func _input(event):
 		or __PLDRT.conversation_manager.conversation_is_in_progress():
 		return
 	var player = __PLDRT.game_state.get_player()
-	if not player or player.is_hidden():
-		if __PLDRT.game_state.is_tactical_view():
-			if (
-				event is InputEventMouseButton
-				and event.pressed
-				and event.button_index == BUTTON_LEFT
-			):
-				var pln = project_local_ray_normal(convert_mouse_event(event).position)
-				projection_ray.cast_to = TACTICAL_CAMERA_PROJECTION_LENGTH * pln
-				tactical_view_double_click = event.doubleclick
-			
-			if event.is_action_pressed("movement_forward") \
-				and input_movement_vector.y == 0:
-				input_movement_vector.y = 1
-			elif event.is_action_released("movement_forward") \
-				and input_movement_vector.y == 1:
-				input_movement_vector.y = 0
-			elif event.is_action_pressed("movement_backward") \
-				and input_movement_vector.y == 0:
-				input_movement_vector.y = -1
-			elif event.is_action_released("movement_backward") \
-				and input_movement_vector.y == -1:
-				input_movement_vector.y = 0
-			
-			if event.is_action_pressed("movement_left") \
-				and input_movement_vector.x == 0:
-				input_movement_vector.x = -1
-			elif event.is_action_released("movement_left") \
-				and input_movement_vector.x == -1:
-				input_movement_vector.x = 0
-			elif event.is_action_pressed("movement_right") \
-				and input_movement_vector.x == 0:
-				input_movement_vector.x = 1
-			elif event.is_action_released("movement_right") \
-				and input_movement_vector.x == 1:
-				input_movement_vector.x = 0
-			
-			if event.is_action_pressed("tactical_view_rotation"):
-				tactical_view_rotation = true
-			elif event.is_action_released("tactical_view_rotation"):
-				tactical_view_rotation = false
-			if event is InputEventMouseMotion:
-				if tactical_view_rotation:
-					angle_rad_x = deg2rad(event.relative.y * __PLDRT.settings.get_sensitivity() * __PLDRT.settings.get_yaxis_coeff())
-					angle_rad_y = deg2rad(event.relative.x * __PLDRT.settings.get_sensitivity() * -1)
-					angle_x_reset = true
-					angle_y_reset = true
-				elif (
-					not (
-						Input.is_action_pressed("movement_forward")
-						or Input.is_action_pressed("movement_backward")
-						or Input.is_action_pressed("movement_left")
-						or Input.is_action_pressed("movement_right")
-					)
-				):
-					input_movement_vector.x = 0
-					input_movement_vector.y = 0
-					var viewport = __PLDRT.game_state.get_viewport()
-					var pos = viewport.get_mouse_position()
-					if pos.x < TACTICAL_MOVEMENT_THRESHOLD:
-						input_movement_vector.x = -1
-					if pos.y < TACTICAL_MOVEMENT_THRESHOLD:
-						input_movement_vector.y = 1
-					if pos.x > viewport.size.x - TACTICAL_MOVEMENT_THRESHOLD:
-						input_movement_vector.x = 1
-					if pos.y > viewport.size.y - TACTICAL_MOVEMENT_THRESHOLD:
-						input_movement_vector.y = -1
-			
-			if use_point and event.is_action_pressed("action"):
+	if player and player.is_hidden():
+		return
+	if __PLDRT.game_state.is_tactical_view():
+		if (
+			event is InputEventMouseButton
+			and event.pressed
+			and event.button_index == BUTTON_LEFT
+		):
+			var pln = project_local_ray_normal(convert_mouse_event(event).position)
+			projection_ray.cast_to = TACTICAL_CAMERA_PROJECTION_LENGTH * pln
+			tactical_view_double_click = event.doubleclick
+			if use_point:
 				tactical_view_action = true
-			
-			if (
-				tactical_player_character
-				and (
-					event.is_action_pressed("crouch")
-					or event.is_action_released("crouch")
+		
+		if event.is_action_pressed("movement_forward") \
+			and input_movement_vector.y == 0:
+			input_movement_vector.y = 1
+		elif event.is_action_released("movement_forward") \
+			and input_movement_vector.y == 1:
+			input_movement_vector.y = 0
+		elif event.is_action_pressed("movement_backward") \
+			and input_movement_vector.y == 0:
+			input_movement_vector.y = -1
+		elif event.is_action_released("movement_backward") \
+			and input_movement_vector.y == -1:
+			input_movement_vector.y = 0
+		
+		if event.is_action_pressed("movement_left") \
+			and input_movement_vector.x == 0:
+			input_movement_vector.x = -1
+		elif event.is_action_released("movement_left") \
+			and input_movement_vector.x == -1:
+			input_movement_vector.x = 0
+		elif event.is_action_pressed("movement_right") \
+			and input_movement_vector.x == 0:
+			input_movement_vector.x = 1
+		elif event.is_action_released("movement_right") \
+			and input_movement_vector.x == 1:
+			input_movement_vector.x = 0
+		
+		if event.is_action_pressed("tactical_view_rotation"):
+			tactical_view_rotation = true
+		elif event.is_action_released("tactical_view_rotation"):
+			tactical_view_rotation = false
+		if event is InputEventMouseMotion:
+			if tactical_view_rotation:
+				angle_rad_x = deg2rad(event.relative.y * __PLDRT.settings.get_sensitivity() * __PLDRT.settings.get_yaxis_coeff())
+				angle_rad_y = deg2rad(event.relative.x * __PLDRT.settings.get_sensitivity() * -1)
+				angle_x_reset = true
+				angle_y_reset = true
+			elif (
+				not (
+					Input.is_action_pressed("movement_forward")
+					or Input.is_action_pressed("movement_backward")
+					or Input.is_action_pressed("movement_left")
+					or Input.is_action_pressed("movement_right")
 				)
 			):
-				tactical_player_character.toggle_crouch()
-			
-		return
-	if item_preview and event.is_action_pressed("item_preview_toggle"):
+				input_movement_vector.x = 0
+				input_movement_vector.y = 0
+				var viewport = __PLDRT.game_state.get_viewport()
+				var pos = viewport.get_mouse_position()
+				if pos.x < TACTICAL_MOVEMENT_THRESHOLD:
+					input_movement_vector.x = -1
+				if pos.y < TACTICAL_MOVEMENT_THRESHOLD:
+					input_movement_vector.y = 1
+				if pos.x > viewport.size.x - TACTICAL_MOVEMENT_THRESHOLD:
+					input_movement_vector.x = 1
+				if pos.y > viewport.size.y - TACTICAL_MOVEMENT_THRESHOLD:
+					input_movement_vector.y = -1
+		
+		if (
+			tactical_player_character
+			and (
+				event.is_action_pressed("crouch")
+				or event.is_action_released("crouch")
+			)
+		):
+			tactical_player_character.toggle_crouch()
+	
+	if (
+		item_preview
+		and not tactical_view_rotation
+		and event.is_action_pressed("item_preview_toggle")
+	):
 		if item_preview.is_opened():
 			return
 		var hud = __PLDRT.game_state.get_hud()
@@ -671,7 +674,11 @@ func _input(event):
 		if not item:
 			return
 		item_preview.open_preview(item)
-	elif use_point and item_use and event.is_action_pressed("action"):
+	elif (
+		use_point
+		and not tactical_view_action
+		and item_use and event.is_action_pressed("action")
+	):
 		use_point.action(player, self)
 		item_use.action(player, self)
 		get_tree().set_input_as_handled()

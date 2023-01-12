@@ -77,16 +77,28 @@ func process_input():
 	elif Input.is_action_just_pressed("item_preview_zoom_out"):
 		if des_zoom > ZOOM_MIN:
 			des_zoom -= ZOOM_SPEED
-	elif __PLDRT.DB.can_execute_custom_action(item, "item_preview_action_1"):
+	elif (
+		Input.is_action_just_pressed("item_preview_action_1")
+		and __PLDRT.DB.can_execute_custom_action(item, "item_preview_action_1")
+	):
 		close_preview()
 		__PLDRT.DB.execute_custom_action(item, "item_preview_action_1")
-	elif __PLDRT.DB.can_execute_custom_action(item, "item_preview_action_2"):
+	elif (
+		Input.is_action_just_pressed("item_preview_action_2")
+		and __PLDRT.DB.can_execute_custom_action(item, "item_preview_action_2")
+	):
 		close_preview()
 		__PLDRT.DB.execute_custom_action(item, "item_preview_action_2")
-	elif __PLDRT.DB.can_execute_custom_action(item, "item_preview_action_3"):
+	elif (
+		Input.is_action_just_pressed("item_preview_action_3")
+		and __PLDRT.DB.can_execute_custom_action(item, "item_preview_action_3")
+	):
 		close_preview()
 		__PLDRT.DB.execute_custom_action(item, "item_preview_action_3")
-	elif __PLDRT.DB.can_execute_custom_action(item, "item_preview_action_4"):
+	elif (
+		Input.is_action_just_pressed("item_preview_action_4")
+		and __PLDRT.DB.can_execute_custom_action(item, "item_preview_action_4")
+	):
 		close_preview()
 		__PLDRT.DB.execute_custom_action(item, "item_preview_action_4")
 	else:

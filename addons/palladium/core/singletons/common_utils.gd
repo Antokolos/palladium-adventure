@@ -39,15 +39,23 @@ func set_mouse_mode(mode, visible_anyway = false):
 	match mode:
 		Input.MOUSE_MODE_VISIBLE:
 			Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
-		_:
+		Input.MOUSE_MODE_HIDDEN:
+			Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+		Input.MOUSE_MODE_CAPTURED:
 			Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+		_:
+			push_error("Unknown mouse mode " + str(mode))
 	emit_signal("mouse_mode_changed", mouse_mode, visible_anyway)
 
 func enter_hidden_mouse_mode():
-	Input.set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
+	set_mouse_mode(Input.MOUSE_MODE_HIDDEN)
 
 func exit_hidden_mouse_mode():
-	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	var tv = _pldrt.game_state.is_tactical_view()
+	set_mouse_mode(
+		Input.MOUSE_MODE_HIDDEN if tv else Input.MOUSE_MODE_CAPTURED,
+		tv
+	)
 
 func is_mouse_captured():
 	return mouse_mode == Input.MOUSE_MODE_CAPTURED

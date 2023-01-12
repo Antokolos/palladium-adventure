@@ -83,8 +83,6 @@ func can_execute_custom_action(item, action = "item_preview_action_1", event = n
 		return false
 	if event and not event.is_action_pressed(action):
 		return false
-	elif not event and not Input.is_action_just_pressed(action):
-		return false
 	return item_constraints_satisfied(item, action)
 
 ### CODE THAT MUST BE INCLUDED IN THE GAME-SPECIFIC PART ###

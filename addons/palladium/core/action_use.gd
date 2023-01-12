@@ -38,7 +38,7 @@ func body_is_usable(player_node, body, distance_to_body):
 	)
 
 func ray_action(ray, player_node, camera_node):
-	if not ray.enabled:
+	if not player_node or not ray.enabled:
 		return false
 	ray.force_raycast_update()
 	if ray.is_colliding():
