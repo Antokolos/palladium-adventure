@@ -2145,12 +2145,14 @@ tactical_view_zoom_out={
 3d_physics/layer_6="Abyss"
 3d_physics/layer_7="Floor Safe"
 3d_physics/layer_8="Use Target"
+3d_physics/layer_9="Waterways"
 3d_physics/layer_11="Ceiling Hint"
 3d_physics/layer_12="Player"
 3d_physics/layer_13="Enemy"
 3d_physics/layer_14="Obstacles"
 3d_navigation/layer_1="Default"
 3d_navigation/layer_2="Safe"
+3d_navigation/layer_3="Waterways"
 
 [locale]
 

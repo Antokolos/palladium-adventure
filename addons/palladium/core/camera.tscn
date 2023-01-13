@@ -29,7 +29,7 @@ collision_mask = 4
 
 [node name="ProjectionRay" type="RayCast" parent="."]
 cast_to = Vector3( 0, 0, 0 )
-collision_mask = 6148
+collision_mask = 6404
 
 [node name="culling_rays" type="Spatial" parent="."]
 script = ExtResource( 3 )
