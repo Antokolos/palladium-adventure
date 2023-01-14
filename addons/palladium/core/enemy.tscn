@@ -77,7 +77,7 @@ tracks/3/keys = {
 
 [node name="enemy" type="KinematicBody" groups=["enemies", "moving"]]
 collision_layer = 4096
-collision_mask = 14343
+collision_mask = 14631
 script = ExtResource( 1 )
 name_hint = "skeleton"
 
