@@ -287,7 +287,10 @@ func get_follow_parameters(target, current_transform, next_position) -> PLDMovem
 	var data : PLDMovementData = PLDMovementData.new()
 	var d = next_dir.length()
 	var hd = horz_dir.length()
-	var need_moving = d > ALIGNMENT_RANGE and hd > ALIGNMENT_RANGE
+	var need_moving = (
+		d > ALIGNMENT_RANGE
+		and (hd > ALIGNMENT_RANGE or has_path())
+	)
 	if need_moving:
 		data.with_distance(d).with_dir(next_dir)
 	cur_dir.y = 0
@@ -430,7 +433,9 @@ func get_movement_data(is_player):
 	if not target_position:
 		return data
 	if not is_player or not in_party or __PLDRT.cutscene_manager.is_cutscene():
-		update_navpath(current_transform.origin, target_position)
+		var tp = navigation_agent.get_target_location()
+		if target_position.distance_to(tp) > ALIGNMENT_RANGE:
+			update_navpath(current_transform.origin, target_position)
 		if navigation_agent.is_target_reachable():
 			return follow(current_transform, navigation_agent.get_next_location())
 		else:
@@ -467,7 +472,7 @@ func update_state(data : PLDMovementData):
 				)
 			else:
 				angle_rad_y = ra
-	if data.has_rest_state(): 
+	if data.has_rest_state():
 		change_rest_state_to(data.get_rest_state())
 	data.emit_sgnl_if_exists(self)
 

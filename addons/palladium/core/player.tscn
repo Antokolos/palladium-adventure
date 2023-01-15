@@ -129,7 +129,7 @@ shape = SubResource( 3 )
 anims/crouch = SubResource( 4 )
 
 [node name="NavigationAgent" type="NavigationAgent" parent="."]
-path_desired_distance = 0.9
+path_desired_distance = 0.3
 target_desired_distance = 2.1
 navigation_layers = 7
 radius = 0.25
