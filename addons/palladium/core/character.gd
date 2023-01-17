@@ -17,6 +17,7 @@ signal stun_started(player_node, weapon)
 signal stun_finished(player_node, prematurely)
 signal take_damage(player_node, fatal, hit_direction_node, hit_dir_vec)
 
+const BITMASK_WATERWAYS : int = 4 # Bit 2, value 4
 const GRAVITY_FALLING = 10.2
 const GRAVITY_DEFAULT = 3.2
 const GRAVITY_UNDERWATER = 0.2
@@ -274,6 +275,14 @@ func enable_collisions_and_interaction(enable):
 func enable_selection_mark(enable):
 	if selection_mark:
 		selection_mark.visible = enable
+
+func enable_waterways_navigation(enable):
+	var navigation_agent = get_node("NavigationAgent") if has_node("NavigationAgent") else null
+	if navigation_agent:
+		var nl = navigation_agent.get_navigation_layers()
+		navigation_agent.set_navigation_layers(
+			nl | BITMASK_WATERWAYS if enable else nl & ~BITMASK_WATERWAYS
+		)
 
 ### Use target ###
 
