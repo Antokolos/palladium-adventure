@@ -186,7 +186,7 @@ func load_story(storyPath : String, chatDriven : bool, repeatable : bool) -> voi
 			cachedPalladiumStory.set_chat_driven(chatDriven)
 			_inkStory[locale] = cachedPalladiumStory
 		else:
-			push_error("Story '%s' for locale '%s' was not found in cache")
+			push_error("Story '%s' for locale '%s' was not found in cache" % [storyPath, locale])
 			return
 		if repeatable:
 			_inkStory[locale].reset_state()
