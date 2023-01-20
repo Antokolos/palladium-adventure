@@ -62,6 +62,10 @@ var first_item_idx = 0
 var popup_message_queue = []
 
 func _ready():
+	for stat in char_stats:
+		stat.get_node("HealthBar").visible = PLDDB.USE_HEALTH
+		stat.get_node("ActionPointsBar").visible = PLDDB.USE_ACTION_POINTS
+	crosshair.visible = PLDDB.USE_CROSSHAIR
 	__PLDRT.game_state.connect("game_saved", self, "_on_game_saved")
 	__PLDRT.game_state.connect("shader_cache_processed", self, "_on_shader_cache_processed")
 	__PLDRT.game_state.connect("item_taken", self, "_on_item_taken")
@@ -83,7 +87,7 @@ func _ready():
 	show_game_ui(not cutscene_mode)
 
 func has_game_ui():
-	return info_panel.visible and indicators_panel.visible and crosshair.visible
+	return info_panel.visible and indicators_panel.visible and (crosshair.visible or not PLDDB.USE_CROSSHAIR)
 
 func show_game_ui(enable):
 	var v = enable and not cutscene_mode
@@ -91,7 +95,7 @@ func show_game_ui(enable):
 	indicators_panel.visible = v
 	quick_items_panel.visible = v
 	info_label.visible = v
-	crosshair.visible = v
+	crosshair.visible = v and PLDDB.USE_CROSSHAIR
 	if not v:
 		inventory.visible = false
 

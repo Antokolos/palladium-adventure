@@ -1,4 +1,4 @@
-[gd_scene load_steps=27 format=2]
+[gd_scene load_steps=31 format=2]
 
 [ext_resource path="res://addons/palladium/default_theme.tres" type="Theme" id=1]
 [ext_resource path="res://addons/palladium/ui/hud.gd" type="Script" id=2]
@@ -76,6 +76,18 @@ bg_color = Color( 1, 0.447059, 0, 1 )
 
 [sub_resource type="StyleBoxFlat" id=5]
 bg_color = Color( 0, 0.811765, 1, 1 )
+
+[sub_resource type="StyleBoxFlat" id=7]
+bg_color = Color( 0, 1, 0.184314, 1 )
+
+[sub_resource type="StyleBoxFlat" id=8]
+bg_color = Color( 0, 1, 0.184314, 1 )
+
+[sub_resource type="StyleBoxFlat" id=9]
+bg_color = Color( 0, 1, 0.184314, 1 )
+
+[sub_resource type="StyleBoxFlat" id=10]
+bg_color = Color( 0, 1, 0.184314, 1 )
 
 [sub_resource type="DynamicFont" id=6]
 size = 42
@@ -584,13 +596,13 @@ percent_visible = false
 [node name="OxygenBar" type="HBoxContainer" parent="Info/MainPlayer/Stats"]
 visible = false
 margin_top = 72.0
-margin_right = 369.0
+margin_right = 330.0
 margin_bottom = 104.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Label" type="Label" parent="Info/MainPlayer/Stats/OxygenBar"]
-margin_right = 91.0
+margin_right = 82.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
 text = "50/100"
@@ -598,15 +610,44 @@ align = 1
 valign = 1
 
 [node name="Progress" type="ProgressBar" parent="Info/MainPlayer/Stats/OxygenBar"]
-margin_left = 95.0
+margin_left = 86.0
 margin_top = 6.0
-margin_right = 369.0
+margin_right = 330.0
 margin_bottom = 26.0
 rect_min_size = Vector2( 0, 20 )
 size_flags_horizontal = 3
 size_flags_vertical = 4
 size_flags_stretch_ratio = 3.0
 custom_styles/fg = SubResource( 5 )
+value = 50.0
+percent_visible = false
+
+[node name="ActionPointsBar" type="HBoxContainer" parent="Info/MainPlayer/Stats"]
+visible = false
+margin_top = 72.0
+margin_right = 330.0
+margin_bottom = 104.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="Info/MainPlayer/Stats/ActionPointsBar"]
+margin_right = 82.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+text = "50/100"
+align = 1
+valign = 1
+
+[node name="Progress" type="ProgressBar" parent="Info/MainPlayer/Stats/ActionPointsBar"]
+margin_left = 86.0
+margin_top = 6.0
+margin_right = 330.0
+margin_bottom = 26.0
+rect_min_size = Vector2( 0, 20 )
+size_flags_horizontal = 3
+size_flags_vertical = 4
+size_flags_stretch_ratio = 3.0
+custom_styles/fg = SubResource( 7 )
 value = 50.0
 percent_visible = false
 
@@ -684,6 +725,35 @@ size_flags_horizontal = 3
 size_flags_vertical = 4
 size_flags_stretch_ratio = 3.0
 custom_styles/fg = SubResource( 5 )
+value = 50.0
+percent_visible = false
+
+[node name="ActionPointsBar" type="HBoxContainer" parent="Info/Companion_1/Stats"]
+visible = false
+margin_top = 36.0
+margin_right = 384.0
+margin_bottom = 68.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="Info/Companion_1/Stats/ActionPointsBar"]
+margin_right = 82.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+text = "50/100"
+align = 1
+valign = 1
+
+[node name="Progress" type="ProgressBar" parent="Info/Companion_1/Stats/ActionPointsBar"]
+margin_left = 86.0
+margin_top = 6.0
+margin_right = 384.0
+margin_bottom = 26.0
+rect_min_size = Vector2( 0, 20 )
+size_flags_horizontal = 3
+size_flags_vertical = 4
+size_flags_stretch_ratio = 3.0
+custom_styles/fg = SubResource( 8 )
 value = 50.0
 percent_visible = false
 
@@ -765,6 +835,35 @@ custom_styles/fg = SubResource( 5 )
 value = 50.0
 percent_visible = false
 
+[node name="ActionPointsBar" type="HBoxContainer" parent="Info/Companion_2/Stats"]
+visible = false
+margin_top = 36.0
+margin_right = 384.0
+margin_bottom = 68.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="Info/Companion_2/Stats/ActionPointsBar"]
+margin_right = 82.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+text = "50/100"
+align = 1
+valign = 1
+
+[node name="Progress" type="ProgressBar" parent="Info/Companion_2/Stats/ActionPointsBar"]
+margin_left = 86.0
+margin_top = 6.0
+margin_right = 384.0
+margin_bottom = 26.0
+rect_min_size = Vector2( 0, 20 )
+size_flags_horizontal = 3
+size_flags_vertical = 4
+size_flags_stretch_ratio = 3.0
+custom_styles/fg = SubResource( 9 )
+value = 50.0
+percent_visible = false
+
 [node name="Companion_3" type="HBoxContainer" parent="Info"]
 visible = false
 margin_left = 963.0
@@ -840,6 +939,35 @@ size_flags_horizontal = 3
 size_flags_vertical = 4
 size_flags_stretch_ratio = 3.0
 custom_styles/fg = SubResource( 5 )
+value = 50.0
+percent_visible = false
+
+[node name="ActionPointsBar" type="HBoxContainer" parent="Info/Companion_3/Stats"]
+visible = false
+margin_top = 36.0
+margin_right = 384.0
+margin_bottom = 68.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="Info/Companion_3/Stats/ActionPointsBar"]
+margin_right = 82.0
+margin_bottom = 32.0
+size_flags_horizontal = 3
+text = "50/100"
+align = 1
+valign = 1
+
+[node name="Progress" type="ProgressBar" parent="Info/Companion_3/Stats/ActionPointsBar"]
+margin_left = 86.0
+margin_top = 6.0
+margin_right = 384.0
+margin_bottom = 26.0
+rect_min_size = Vector2( 0, 20 )
+size_flags_horizontal = 3
+size_flags_vertical = 4
+size_flags_stretch_ratio = 3.0
+custom_styles/fg = SubResource( 10 )
 value = 50.0
 percent_visible = false
 

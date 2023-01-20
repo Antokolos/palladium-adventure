@@ -88,6 +88,9 @@ func can_execute_custom_action(item, action = "item_preview_action_1", event = n
 ### CODE THAT MUST BE INCLUDED IN THE GAME-SPECIFIC PART ###
 
 #const CAMERA_VIEW_TYPE_DEFAULT = CAMERA_VIEW_FIRST_PERSON
+#const USE_HEALTH = true
+#const USE_ACTION_POINTS = false
+#const USE_CROSSHAIR = true
 
 #const STORY_VARS_DEFAULT = {
 #	"flashlight_on" : false
@@ -201,6 +204,9 @@ func can_execute_custom_action(item, action = "item_preview_action_1", event = n
 ### GAME-SPECIFIC PART ###
 
 const CAMERA_VIEW_TYPE_DEFAULT = CAMERA_VIEW_THIRD_PERSON_STRICT
+const USE_HEALTH = true
+const USE_ACTION_POINTS = false
+const USE_CROSSHAIR = true
 
 const STORY_VARS_DEFAULT = {
 	"flashlight_on" : false,
