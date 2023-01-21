@@ -13,6 +13,7 @@ signal item_removed(item_id, count_total, count_removed)
 signal item_used(player_node, target, item_id, item_count)
 signal health_changed(name_hint, health_current, health_max)
 signal oxygen_changed(name_hint, oxygen_current, oxygen_max)
+signal action_points_changed(name_hint, action_points_current, action_points_max)
 signal flashlight_state_changed(camera, flashlight_on)
 
 enum DoorState {
@@ -87,7 +88,9 @@ const CHARACTER_STATS_DEFAULT = {
 	"health_current" : PLDDB.PLAYER_HEALTH_CURRENT_DEFAULT,
 	"health_max" : PLDDB.PLAYER_HEALTH_MAX_DEFAULT,
 	"oxygen_current" : PLDDB.PLAYER_OXYGEN_CURRENT_DEFAULT,
-	"oxygen_max" : PLDDB.PLAYER_OXYGEN_MAX_DEFAULT
+	"oxygen_max" : PLDDB.PLAYER_OXYGEN_MAX_DEFAULT,
+	"action_points_current" : PLDDB.PLAYER_ACTION_POINTS_CURRENT_DEFAULT,
+	"action_points_max" : PLDDB.PLAYER_ACTION_POINTS_MAX_DEFAULT
 }
 
 var characters_cache = {}
@@ -673,6 +676,13 @@ func set_oxygen(character, oxygen_current, oxygen_max):
 	party_stats[name_hint]["oxygen_max"] = oxygen_max
 	emit_signal("oxygen_changed", name_hint, oc, oxygen_max)
 
+func set_action_points(character, action_points_current, action_points_max):
+	var name_hint = character.get_name_hint()
+	var apc = action_points_current if action_points_current < action_points_max else action_points_max
+	party_stats[name_hint]["action_points_current"] = apc
+	party_stats[name_hint]["action_points_max"] = action_points_max
+	emit_signal("action_points_changed", name_hint, apc, action_points_max)
+
 func get_door_state(door_path):
 	var id = scene_path + ":" + door_path
 	if not doors.has(id):
@@ -1017,6 +1027,9 @@ func emit_stats_signals(name_hint):
 	ps["oxygen_current"] = int(ps["oxygen_current"])
 	ps["oxygen_max"] = int(ps["oxygen_max"])
 	emit_signal("oxygen_changed", name_hint, ps["oxygen_current"], ps["oxygen_max"])
+	ps["action_points_current"] = int(ps["action_points_current"])
+	ps["action_points_max"] = int(ps["action_points_max"])
+	emit_signal("action_points_changed", name_hint, ps["action_points_current"], ps["action_points_max"])
 
 func emit_stats_signals_for_everyone():
 	for name_hint in party_stats:

@@ -72,6 +72,7 @@ func _ready():
 	__PLDRT.game_state.connect("item_removed", self, "_on_item_removed")
 	__PLDRT.game_state.connect("health_changed", self, "on_health_changed")
 	__PLDRT.game_state.connect("oxygen_changed", self, "on_oxygen_changed")
+	__PLDRT.game_state.connect("action_points_changed", self, "on_action_points_changed")
 	__PLDRT.game_state.connect("player_surge", self, "set_surge")
 	__PLDRT.game_state.connect("player_underwater", self, "set_underwater")
 	__PLDRT.settings.connect("language_changed", self, "on_language_changed")
@@ -217,6 +218,18 @@ func on_oxygen_changed(name_hint, oxygen_current, oxygen_max):
 	oxygen_label.text = "%3d/%3d" % [oxygen_current, oxygen_max]
 	oxygen_progress.value = oxygen_current
 	oxygen_progress.max_value = oxygen_max
+
+func on_action_points_changed(name_hint, action_points_current, action_points_max):
+	var char_stat = get_char_stat(name_hint)
+	if not char_stat:
+		return
+	char_stat.get_node("LabelName").text = tr(name_hint)
+	var action_points_bar = char_stat.get_node("ActionPointsBar")
+	var action_points_label = action_points_bar.get_node("Label")
+	var action_points_progress = action_points_bar.get_node("Progress")
+	action_points_label.text = "%3d/%3d" % [action_points_current, action_points_max]
+	action_points_progress.value = action_points_current
+	action_points_progress.max_value = action_points_max
 
 func on_crouching_changed(player_node, previous_state, new_state):
 	if player_node and player_node.is_player():

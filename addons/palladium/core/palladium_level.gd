@@ -38,3 +38,19 @@ func is_inside():
 
 func get_cam():
 	return get_node(cam_path) if cam_path and has_node(cam_path) else null
+
+func can_create_waypoint(character, origin):
+	if not character:
+		return false
+	return true
+
+func create_waypoint(character, origin):
+	if not can_create_waypoint(character, origin):
+		return null
+	var pos3d = Position3D.new()
+	if has_node("patrol_area"):
+		get_node("patrol_area").add_child(pos3d)
+	else:
+		add_child(pos3d)
+	pos3d.global_transform.origin = origin
+	return pos3d

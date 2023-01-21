@@ -444,15 +444,11 @@ func process_tactical_view_action():
 			return
 		if not tactical_player_character.is_activated():
 			tactical_player_character.activate()
-		var pos3d = Position3D.new()
 		var level = __PLDRT.game_state.get_level()
-		if level.has_node("patrol_area"):
-			level.get_node("patrol_area").add_child(pos3d)
-		else:
-			level.add_child(pos3d)
-		pos3d.global_transform.origin = point
-		tactical_player_character.set_target_node(pos3d)
-		process_tactical_player_sprinting()
+		var pos3d = level.create_waypoint(tactical_player_character, point)
+		if pos3d:
+			tactical_player_character.set_target_node(pos3d)
+			process_tactical_player_sprinting()
 
 func process_tactical_player_attack():
 	var possible_attack_target = (
