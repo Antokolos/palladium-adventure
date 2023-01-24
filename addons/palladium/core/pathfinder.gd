@@ -7,6 +7,8 @@ signal arrived_to(player_node, target_node)
 signal arrived_to_boundary(player_node, target_node)
 signal out_of_bounds(player_node)
 
+const EPS = 0.001
+
 const X_DIR = Vector3(1, 0, 0)
 const Y_DIR = Vector3(0, 1, 0)
 const Z_DIR = Vector3(0, 0, 1)
@@ -265,6 +267,8 @@ func get_rotation_angle(cur_dir, target_dir):
 	var c = cur_dir.normalized()
 	var t = target_dir.normalized()
 	var cross = c.cross(t)
+	if cross.y > -EPS and cross.y < EPS:
+		return 0
 	var sgn = 1 if cross.y > 0 else -1
 	var dot = c.dot(t)
 	if dot > 1.0:

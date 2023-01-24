@@ -250,7 +250,7 @@ func set_look_transition_if_needed():
 	if need_to_set_look_transition():
 		get_model().set_look_transition(PLDCharacterModel.LOOK_TRANSITION_SQUATTING if is_crouching else PLDCharacterModel.LOOK_TRANSITION_STANDING)
 
-func enable_collisions_and_interaction(enable):
+func enable_collisions_and_interaction(enable, all_shapes = false):
 #	if has_node("UpperBody_CollisionShape"):
 #		$UpperBody_CollisionShape.disabled = not enable
 #	$Body_CollisionShape.disabled = not enable
@@ -259,10 +259,12 @@ func enable_collisions_and_interaction(enable):
 		if ch is CollisionShape:
 			ch.disabled = not enable
 	character_nodes.enable_areas_and_raycasts(enable)
-	$Feet_CollisionShape.disabled = false # Feet collision is always enabled to prevent falling through floor
+	# Feet collision is always enabled to prevent falling through floor, unless all_shapes is true
+	$Feet_CollisionShape.disabled = all_shapes and not enable
 	if is_transportable():
-		$Transport_CollisionShape1.disabled = enable # Transport collision is enabled when all others are disabled
-		$Transport_CollisionShape2.disabled = enable # Transport collision is enabled when all others are disabled
+		# Transport collisions are enabled when all others are disabled
+		$Transport_CollisionShape1.disabled = enable
+		$Transport_CollisionShape2.disabled = enable
 	set_collision_mask_bit(COLLISION_LAYER_DEFAULT, enable)
 	set_collision_mask_bit(COLLISION_LAYER_WALLS, enable)
 #		set_collision_mask_bit(COLLISION_LAYER_FLOOR, enable) -- always has floor collision

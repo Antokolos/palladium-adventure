@@ -2,6 +2,7 @@ extends Area
 class_name PLDPatrolArea
 
 export(NodePath) var agent_path = null
+export(bool) var revert_on_restart = true
 
 onready var agent : PLDCharacter = get_node(agent_path) if agent_path and has_node(agent_path) else null
 
@@ -66,8 +67,11 @@ func get_next_target():
 	if waypoint_idx < wp_size - 1:
 		waypoint_idx = waypoint_idx + 1
 	elif wp_size > 1:
-		waypoints.invert()
-		waypoint_idx = 1
+		if revert_on_restart:
+			waypoints.invert()
+			waypoint_idx = 1
+		else:
+			waypoint_idx = 0
 	else:
 		return null
 	return waypoints[waypoint_idx]

@@ -22,8 +22,8 @@ func use_hideout(player_node, hideout):
 	set_aggressive(false)
 	stop_attack()
 
-func enable_collisions_and_interaction(enable):
-	.enable_collisions_and_interaction(enable)
+func enable_collisions_and_interaction(enable, all_shapes = false):
+	.enable_collisions_and_interaction(enable, all_shapes)
 	set_collision_layer_bit(COLLISION_LAYER_ENEMY, enable)
 
 ### Use target ###

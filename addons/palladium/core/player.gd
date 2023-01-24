@@ -80,8 +80,8 @@ func reset_rotation():
 	if yrot_helper:
 		yrot_helper.set_rotation_degrees(Vector3(0, 0, 0))
 
-func enable_collisions_and_interaction(enable):
-	.enable_collisions_and_interaction(enable)
+func enable_collisions_and_interaction(enable, all_shapes = false):
+	.enable_collisions_and_interaction(enable, all_shapes)
 	set_collision_layer_bit(COLLISION_LAYER_PLAYER, enable)
 
 ### Use target ###
