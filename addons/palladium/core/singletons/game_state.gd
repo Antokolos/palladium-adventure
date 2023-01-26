@@ -151,6 +151,9 @@ static func sanitize_items(items):
 	return result
 
 func _ready():
+	reset_all()
+
+func reset_all():
 	cleanup_paths()
 	reset_variables()
 	clear_caches()
