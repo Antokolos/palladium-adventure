@@ -107,7 +107,7 @@ func is_player():
 	return equals(__PLDRT.game_state.get_player())
 
 func is_player_controlled():
-	return is_in_party() and is_player() and not __PLDRT.cutscene_manager.is_cutscene()
+	return is_in_party() and is_player() and not __PLDRT.cutscene_manager.is_cutscene() and not __PLDRT.game_state.is_tactical_view()
 
 func is_activated_flag():
 	# If we want to just check the activation flag and not the pause state
@@ -243,7 +243,15 @@ func clear_point_of_interest():
 	set_point_of_interest(null)
 
 func get_preferred_target():
-	return get_target_node() if not in_party else (__PLDRT.game_state.get_companion() if is_player() else __PLDRT.game_state.get_player())
+	return (
+		get_target_node()
+			if __PLDRT.game_state.is_tactical_view() or not in_party
+			else (
+				__PLDRT.game_state.get_companion()
+					if is_player()
+					else __PLDRT.game_state.get_player()
+			)
+	)
 
 func get_target_position():
 	var t = get_preferred_target()
@@ -436,7 +444,12 @@ func get_movement_data(is_player):
 	var target_position = get_target_position()
 	if not target_position:
 		return data
-	if not is_player or not in_party or __PLDRT.cutscene_manager.is_cutscene():
+	if (
+		__PLDRT.game_state.is_tactical_view()
+		or not is_player
+		or not in_party
+		or __PLDRT.cutscene_manager.is_cutscene()
+	):
 		var tp = navigation_agent.get_target_location()
 		if target_position.distance_to(tp) > ALIGNMENT_RANGE:
 			update_navpath(current_transform.origin, target_position)

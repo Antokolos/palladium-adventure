@@ -144,10 +144,13 @@ static func lookup_activatable_state_from_int(state : int):
 	return ActivatableState.DEFAULT
 
 # Because item_ids are saved as ints but should be enums
-static func sanitize_items(items):
-	var result = []
-	for item in items:
-		result.append({ "item_id" : PLDDB.lookup_takable_from_int(item.item_id) if item.item_id else null, "count" : int(item.count) })
+static func sanitize_items(inv):
+	var result = {}
+	for k in inv:
+		var items = inv[k]
+		result[k] = []
+		for item in items:
+			result[k].append({ "item_id" : PLDDB.lookup_takable_from_int(item.item_id) if item.item_id else null, "count" : int(item.count) })
 	return result
 
 func _ready():
@@ -190,7 +193,7 @@ func reset_variables():
 	scene_path = PLDDB.SCENE_PATH_DEFAULT
 	scenes_data = {}
 	player_name_hint = ""
-	party_stats[_pldrt.CHARS.PLAYER_NAME_HINT] = CHARACTER_STATS_DEFAULT.duplicate(true)
+	party_stats[PLDChars.PLAYER_NAME_HINT] = CHARACTER_STATS_DEFAULT.duplicate(true)
 	story_vars = PLDDB.STORY_VARS_DEFAULT.duplicate(true)
 	inventory = PLDDB.INVENTORY_DEFAULT.duplicate(true)
 	quick_items = PLDDB.QUICK_ITEMS_DEFAULT.duplicate(true)
@@ -510,20 +513,30 @@ func get_registered_item_data(item_id):
 func has_item(item_id):
 	return get_item_count(item_id) > 0
 
+func get_inventory():
+	if not inventory.has(player_name_hint):
+		inventory[player_name_hint] = []
+	return inventory[player_name_hint]
+
+func get_quick_items():
+	if not quick_items.has(player_name_hint):
+		quick_items[player_name_hint] = []
+	return quick_items[player_name_hint]
+
 func get_item_count(item_id):
 	if not item_id or item_id == PLDDB.TakableIds.NONE:
 		return 0
-	for quick_item in quick_items:
+	for quick_item in get_quick_items():
 		if item_id == quick_item.item_id:
 			return quick_item.count
-	for item in inventory:
+	for item in get_inventory():
 		if item_id == item.item_id:
 			return item.count
 	return 0
 
 func get_quick_items_count():
 	var result = 0
-	for quick_item in quick_items:
+	for quick_item in get_quick_items():
 		if quick_item.item_id and quick_item.item_id != PLDDB.TakableIds.NONE:
 			result = result + 1
 	return result
@@ -536,7 +549,7 @@ func take(item_id, count = 1, item_path = null):
 	if count > 1 and not is_stackable:
 		push_warning("Trying to take %d items with id = %d, which is not stackable" % [count, item_id])
 		return
-	for item in inventory:
+	for item in get_inventory():
 		if item_id == item.item_id:
 			if not is_stackable:
 				push_warning("Trying to stack item with id = %d, which is not stackable" % item_id)
@@ -546,7 +559,7 @@ func take(item_id, count = 1, item_path = null):
 			return
 	var maxpos = 0
 	var quick_item_candidate = null
-	for quick_item in quick_items:
+	for quick_item in get_quick_items():
 		if (
 			(
 				not quick_item.item_id
@@ -569,25 +582,25 @@ func take(item_id, count = 1, item_path = null):
 		emit_signal("item_taken", item_id, quick_item_candidate.count, count, item_path)
 		return
 	elif maxpos < PLDHUD.MAX_QUICK_ITEMS:
-		quick_items.append({ "item_id" : item_id, "count" : count })
+		get_quick_items().append({ "item_id" : item_id, "count" : count })
 		emit_signal("item_taken", item_id, count, count, item_path)
 		return
-	inventory.append({ "item_id" : item_id, "count" : count })
+	get_inventory().append({ "item_id" : item_id, "count" : count })
 	emit_signal("item_taken", item_id, count, count, item_path)
 	get_hud().queue_popup_message("MESSAGE_CONTROLS_INVENTORY", [_pldrt.common_utils.get_input_control("inventory_toggle", false)])
 
 func remove(item_id, count = 1):
 	var idx = 0
-	for item in inventory:
+	for item in get_inventory():
 		if item_id == item.item_id:
 			item.count = item.count - count
 			if item.count <= 0:
 				item.count = 0
-				inventory.remove(idx)
+				get_inventory().remove(idx)
 			emit_signal("item_removed", item_id, item.count, count)
 			return item.count
 		idx = idx + 1
-	for quick_item in quick_items:
+	for quick_item in get_quick_items():
 		if item_id == quick_item.item_id:
 			quick_item.count = quick_item.count - count
 			if quick_item.count <= 0:
@@ -603,26 +616,26 @@ func item_used(player_node, target, item_id, item_count):
 func set_quick_item(pos, item_id):
 	if pos >= PLDHUD.MAX_QUICK_ITEMS:
 		return
-	for i in range(quick_items.size(), pos + 1):
-		quick_items.append({ "item_id" : null, "count" : 0 })
-	var existing_quick_item = quick_items[pos]
-	for quick_item in quick_items:
+	for i in range(get_quick_items().size(), pos + 1):
+		get_quick_items().append({ "item_id" : null, "count" : 0 })
+	var existing_quick_item = get_quick_items()[pos]
+	for quick_item in get_quick_items():
 		if item_id == quick_item.item_id:
 			var new_item = { "item_id" : item_id, "count" : quick_item.count }
 			quick_item.item_id = existing_quick_item.item_id
 			quick_item.count = existing_quick_item.count
-			quick_items[pos] = new_item
+			get_quick_items()[pos] = new_item
 			return
 	var idx = 0
-	for item in inventory:
+	for item in get_inventory():
 		if item_id == item.item_id:
 			var new_item = { "item_id" : item_id, "count" : item.count }
 			if existing_quick_item.item_id:
 				item.item_id = existing_quick_item.item_id
 				item.count = existing_quick_item.count
 			else:
-				inventory.remove(idx)
-			quick_items[pos] = new_item
+				get_inventory().remove(idx)
+			get_quick_items()[pos] = new_item
 			return
 		idx = idx + 1
 
@@ -856,8 +869,10 @@ func leave_party(name_hint, new_target_node = null, and_teleport_to_target = fal
 
 func register_player(player):
 	var name_hint = player.get_name_hint()
+	var hud = get_hud()
 	player_paths[name_hint] = player.get_path()
-	player.connect("crouching_changed", get_hud(), "on_crouching_changed")
+	player.connect("crouching_changed", hud, "on_crouching_changed")
+	player.connect("player_changed", hud, "on_player_changed")
 	player.connect("party_joined", self, "on_party_joined")
 	player.connect("party_left", self, "on_party_left")
 	player.set_look_transition_if_needed()
@@ -1057,9 +1072,9 @@ func load_state(slot):
 	
 	scene_path = d.scene_path if ("scene_path" in d) else PLDDB.SCENE_PATH_DEFAULT
 	
-	player_name_hint = d.player_name_hint if ("player_name_hint" in d) else _pldrt.CHARS.PLAYER_NAME_HINT
+	player_name_hint = d.player_name_hint if ("player_name_hint" in d) else PLDChars.PLAYER_NAME_HINT
 	party_stats = d.party_stats if ("party_stats" in d) else {
-		_pldrt.CHARS.PLAYER_NAME_HINT : CHARACTER_STATS_DEFAULT.duplicate(true)
+		PLDChars.PLAYER_NAME_HINT : CHARACTER_STATS_DEFAULT.duplicate(true)
 	}
 	for name_hint in party_stats:
 		emit_stats_signals(name_hint)

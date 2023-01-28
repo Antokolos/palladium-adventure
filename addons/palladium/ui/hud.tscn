@@ -546,33 +546,33 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/separation = 30
 
-[node name="MainPlayer" type="HBoxContainer" parent="Info"]
+[node name="Character_0" type="HBoxContainer" parent="Info"]
 margin_right = 330.0
 margin_bottom = 68.0
 size_flags_horizontal = 4
 size_flags_vertical = 3
 
-[node name="Stats" type="VBoxContainer" parent="Info/MainPlayer"]
+[node name="Stats" type="VBoxContainer" parent="Info/Character_0"]
 margin_right = 330.0
 margin_bottom = 68.0
 rect_min_size = Vector2( 330, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 0
 
-[node name="LabelName" type="Label" parent="Info/MainPlayer/Stats"]
+[node name="LabelName" type="Label" parent="Info/Character_0/Stats"]
 margin_right = 330.0
 margin_bottom = 32.0
 text = "player"
 align = 1
 
-[node name="HealthBar" type="HBoxContainer" parent="Info/MainPlayer/Stats"]
+[node name="HealthBar" type="HBoxContainer" parent="Info/Character_0/Stats"]
 margin_top = 36.0
 margin_right = 330.0
 margin_bottom = 68.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="Info/MainPlayer/Stats/HealthBar"]
+[node name="Label" type="Label" parent="Info/Character_0/Stats/HealthBar"]
 margin_right = 82.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
@@ -580,7 +580,7 @@ text = "50/100"
 align = 1
 valign = 1
 
-[node name="Progress" type="ProgressBar" parent="Info/MainPlayer/Stats/HealthBar"]
+[node name="Progress" type="ProgressBar" parent="Info/Character_0/Stats/HealthBar"]
 margin_left = 86.0
 margin_top = 6.0
 margin_right = 330.0
@@ -593,7 +593,7 @@ custom_styles/fg = SubResource( 4 )
 value = 50.0
 percent_visible = false
 
-[node name="OxygenBar" type="HBoxContainer" parent="Info/MainPlayer/Stats"]
+[node name="OxygenBar" type="HBoxContainer" parent="Info/Character_0/Stats"]
 visible = false
 margin_top = 72.0
 margin_right = 330.0
@@ -601,7 +601,7 @@ margin_bottom = 104.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="Info/MainPlayer/Stats/OxygenBar"]
+[node name="Label" type="Label" parent="Info/Character_0/Stats/OxygenBar"]
 margin_right = 82.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
@@ -609,7 +609,7 @@ text = "50/100"
 align = 1
 valign = 1
 
-[node name="Progress" type="ProgressBar" parent="Info/MainPlayer/Stats/OxygenBar"]
+[node name="Progress" type="ProgressBar" parent="Info/Character_0/Stats/OxygenBar"]
 margin_left = 86.0
 margin_top = 6.0
 margin_right = 330.0
@@ -622,7 +622,7 @@ custom_styles/fg = SubResource( 5 )
 value = 50.0
 percent_visible = false
 
-[node name="ActionPointsBar" type="HBoxContainer" parent="Info/MainPlayer/Stats"]
+[node name="ActionPointsBar" type="HBoxContainer" parent="Info/Character_0/Stats"]
 visible = false
 margin_top = 72.0
 margin_right = 330.0
@@ -630,7 +630,7 @@ margin_bottom = 104.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="Info/MainPlayer/Stats/ActionPointsBar"]
+[node name="Label" type="Label" parent="Info/Character_0/Stats/ActionPointsBar"]
 margin_right = 82.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
@@ -638,7 +638,7 @@ text = "50/100"
 align = 1
 valign = 1
 
-[node name="Progress" type="ProgressBar" parent="Info/MainPlayer/Stats/ActionPointsBar"]
+[node name="Progress" type="ProgressBar" parent="Info/Character_0/Stats/ActionPointsBar"]
 margin_left = 86.0
 margin_top = 6.0
 margin_right = 330.0
@@ -651,34 +651,35 @@ custom_styles/fg = SubResource( 7 )
 value = 50.0
 percent_visible = false
 
-[node name="Companion_1" type="HBoxContainer" parent="Info"]
+[node name="Character_1" type="HBoxContainer" parent="Info"]
 margin_left = 360.0
-margin_right = 690.0
+margin_right = 360.0
 margin_bottom = 68.0
 size_flags_horizontal = 4
 size_flags_vertical = 3
 
-[node name="Stats" type="VBoxContainer" parent="Info/Companion_1"]
+[node name="Stats" type="VBoxContainer" parent="Info/Character_1"]
+visible = false
 margin_right = 330.0
 margin_bottom = 68.0
 rect_min_size = Vector2( 330, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 0
 
-[node name="LabelName" type="Label" parent="Info/Companion_1/Stats"]
+[node name="LabelName" type="Label" parent="Info/Character_1/Stats"]
 margin_right = 330.0
 margin_bottom = 32.0
 text = "companion_1"
 align = 1
 
-[node name="HealthBar" type="HBoxContainer" parent="Info/Companion_1/Stats"]
+[node name="HealthBar" type="HBoxContainer" parent="Info/Character_1/Stats"]
 margin_top = 36.0
 margin_right = 330.0
 margin_bottom = 68.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="Info/Companion_1/Stats/HealthBar"]
+[node name="Label" type="Label" parent="Info/Character_1/Stats/HealthBar"]
 margin_right = 82.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
@@ -686,7 +687,7 @@ text = "50/100"
 align = 1
 valign = 1
 
-[node name="Progress" type="ProgressBar" parent="Info/Companion_1/Stats/HealthBar"]
+[node name="Progress" type="ProgressBar" parent="Info/Character_1/Stats/HealthBar"]
 margin_left = 86.0
 margin_top = 6.0
 margin_right = 330.0
@@ -699,7 +700,7 @@ custom_styles/fg = SubResource( 4 )
 value = 50.0
 percent_visible = false
 
-[node name="OxygenBar" type="HBoxContainer" parent="Info/Companion_1/Stats"]
+[node name="OxygenBar" type="HBoxContainer" parent="Info/Character_1/Stats"]
 visible = false
 margin_top = 36.0
 margin_right = 384.0
@@ -707,7 +708,7 @@ margin_bottom = 68.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="Info/Companion_1/Stats/OxygenBar"]
+[node name="Label" type="Label" parent="Info/Character_1/Stats/OxygenBar"]
 margin_right = 82.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
@@ -715,7 +716,7 @@ text = "50/100"
 align = 1
 valign = 1
 
-[node name="Progress" type="ProgressBar" parent="Info/Companion_1/Stats/OxygenBar"]
+[node name="Progress" type="ProgressBar" parent="Info/Character_1/Stats/OxygenBar"]
 margin_left = 86.0
 margin_top = 6.0
 margin_right = 384.0
@@ -728,7 +729,7 @@ custom_styles/fg = SubResource( 5 )
 value = 50.0
 percent_visible = false
 
-[node name="ActionPointsBar" type="HBoxContainer" parent="Info/Companion_1/Stats"]
+[node name="ActionPointsBar" type="HBoxContainer" parent="Info/Character_1/Stats"]
 visible = false
 margin_top = 36.0
 margin_right = 384.0
@@ -736,7 +737,7 @@ margin_bottom = 68.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="Info/Companion_1/Stats/ActionPointsBar"]
+[node name="Label" type="Label" parent="Info/Character_1/Stats/ActionPointsBar"]
 margin_right = 82.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
@@ -744,7 +745,7 @@ text = "50/100"
 align = 1
 valign = 1
 
-[node name="Progress" type="ProgressBar" parent="Info/Companion_1/Stats/ActionPointsBar"]
+[node name="Progress" type="ProgressBar" parent="Info/Character_1/Stats/ActionPointsBar"]
 margin_left = 86.0
 margin_top = 6.0
 margin_right = 384.0
@@ -757,35 +758,35 @@ custom_styles/fg = SubResource( 8 )
 value = 50.0
 percent_visible = false
 
-[node name="Companion_2" type="HBoxContainer" parent="Info"]
-visible = false
-margin_left = 783.0
-margin_right = 1113.0
+[node name="Character_2" type="HBoxContainer" parent="Info"]
+margin_left = 390.0
+margin_right = 390.0
 margin_bottom = 68.0
 size_flags_horizontal = 4
 size_flags_vertical = 3
 
-[node name="Stats" type="VBoxContainer" parent="Info/Companion_2"]
+[node name="Stats" type="VBoxContainer" parent="Info/Character_2"]
+visible = false
 margin_right = 330.0
 margin_bottom = 68.0
 rect_min_size = Vector2( 330, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 0
 
-[node name="LabelName" type="Label" parent="Info/Companion_2/Stats"]
+[node name="LabelName" type="Label" parent="Info/Character_2/Stats"]
 margin_right = 330.0
 margin_bottom = 32.0
 text = "companion_2"
 align = 1
 
-[node name="HealthBar" type="HBoxContainer" parent="Info/Companion_2/Stats"]
+[node name="HealthBar" type="HBoxContainer" parent="Info/Character_2/Stats"]
 margin_top = 36.0
 margin_right = 330.0
 margin_bottom = 68.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="Info/Companion_2/Stats/HealthBar"]
+[node name="Label" type="Label" parent="Info/Character_2/Stats/HealthBar"]
 margin_right = 82.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
@@ -793,7 +794,7 @@ text = "50/100"
 align = 1
 valign = 1
 
-[node name="Progress" type="ProgressBar" parent="Info/Companion_2/Stats/HealthBar"]
+[node name="Progress" type="ProgressBar" parent="Info/Character_2/Stats/HealthBar"]
 margin_left = 86.0
 margin_top = 6.0
 margin_right = 330.0
@@ -806,7 +807,7 @@ custom_styles/fg = SubResource( 4 )
 value = 50.0
 percent_visible = false
 
-[node name="OxygenBar" type="HBoxContainer" parent="Info/Companion_2/Stats"]
+[node name="OxygenBar" type="HBoxContainer" parent="Info/Character_2/Stats"]
 visible = false
 margin_top = 36.0
 margin_right = 384.0
@@ -814,7 +815,7 @@ margin_bottom = 68.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="Info/Companion_2/Stats/OxygenBar"]
+[node name="Label" type="Label" parent="Info/Character_2/Stats/OxygenBar"]
 margin_right = 82.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
@@ -822,7 +823,7 @@ text = "50/100"
 align = 1
 valign = 1
 
-[node name="Progress" type="ProgressBar" parent="Info/Companion_2/Stats/OxygenBar"]
+[node name="Progress" type="ProgressBar" parent="Info/Character_2/Stats/OxygenBar"]
 margin_left = 86.0
 margin_top = 6.0
 margin_right = 384.0
@@ -835,7 +836,7 @@ custom_styles/fg = SubResource( 5 )
 value = 50.0
 percent_visible = false
 
-[node name="ActionPointsBar" type="HBoxContainer" parent="Info/Companion_2/Stats"]
+[node name="ActionPointsBar" type="HBoxContainer" parent="Info/Character_2/Stats"]
 visible = false
 margin_top = 36.0
 margin_right = 384.0
@@ -843,7 +844,7 @@ margin_bottom = 68.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="Info/Companion_2/Stats/ActionPointsBar"]
+[node name="Label" type="Label" parent="Info/Character_2/Stats/ActionPointsBar"]
 margin_right = 82.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
@@ -851,7 +852,7 @@ text = "50/100"
 align = 1
 valign = 1
 
-[node name="Progress" type="ProgressBar" parent="Info/Companion_2/Stats/ActionPointsBar"]
+[node name="Progress" type="ProgressBar" parent="Info/Character_2/Stats/ActionPointsBar"]
 margin_left = 86.0
 margin_top = 6.0
 margin_right = 384.0
@@ -864,35 +865,35 @@ custom_styles/fg = SubResource( 9 )
 value = 50.0
 percent_visible = false
 
-[node name="Companion_3" type="HBoxContainer" parent="Info"]
-visible = false
-margin_left = 963.0
-margin_right = 1293.0
+[node name="Character_3" type="HBoxContainer" parent="Info"]
+margin_left = 420.0
+margin_right = 420.0
 margin_bottom = 68.0
 size_flags_horizontal = 4
 size_flags_vertical = 3
 
-[node name="Stats" type="VBoxContainer" parent="Info/Companion_3"]
+[node name="Stats" type="VBoxContainer" parent="Info/Character_3"]
+visible = false
 margin_right = 330.0
 margin_bottom = 68.0
 rect_min_size = Vector2( 330, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 0
 
-[node name="LabelName" type="Label" parent="Info/Companion_3/Stats"]
+[node name="LabelName" type="Label" parent="Info/Character_3/Stats"]
 margin_right = 330.0
 margin_bottom = 32.0
 text = "companion_3"
 align = 1
 
-[node name="HealthBar" type="HBoxContainer" parent="Info/Companion_3/Stats"]
+[node name="HealthBar" type="HBoxContainer" parent="Info/Character_3/Stats"]
 margin_top = 36.0
 margin_right = 330.0
 margin_bottom = 68.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="Info/Companion_3/Stats/HealthBar"]
+[node name="Label" type="Label" parent="Info/Character_3/Stats/HealthBar"]
 margin_right = 82.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
@@ -900,7 +901,7 @@ text = "50/100"
 align = 1
 valign = 1
 
-[node name="Progress" type="ProgressBar" parent="Info/Companion_3/Stats/HealthBar"]
+[node name="Progress" type="ProgressBar" parent="Info/Character_3/Stats/HealthBar"]
 margin_left = 86.0
 margin_top = 6.0
 margin_right = 330.0
@@ -913,7 +914,7 @@ custom_styles/fg = SubResource( 4 )
 value = 50.0
 percent_visible = false
 
-[node name="OxygenBar" type="HBoxContainer" parent="Info/Companion_3/Stats"]
+[node name="OxygenBar" type="HBoxContainer" parent="Info/Character_3/Stats"]
 visible = false
 margin_top = 36.0
 margin_right = 384.0
@@ -921,7 +922,7 @@ margin_bottom = 68.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="Info/Companion_3/Stats/OxygenBar"]
+[node name="Label" type="Label" parent="Info/Character_3/Stats/OxygenBar"]
 margin_right = 82.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
@@ -929,7 +930,7 @@ text = "50/100"
 align = 1
 valign = 1
 
-[node name="Progress" type="ProgressBar" parent="Info/Companion_3/Stats/OxygenBar"]
+[node name="Progress" type="ProgressBar" parent="Info/Character_3/Stats/OxygenBar"]
 margin_left = 86.0
 margin_top = 6.0
 margin_right = 384.0
@@ -942,7 +943,7 @@ custom_styles/fg = SubResource( 5 )
 value = 50.0
 percent_visible = false
 
-[node name="ActionPointsBar" type="HBoxContainer" parent="Info/Companion_3/Stats"]
+[node name="ActionPointsBar" type="HBoxContainer" parent="Info/Character_3/Stats"]
 visible = false
 margin_top = 36.0
 margin_right = 384.0
@@ -950,7 +951,7 @@ margin_bottom = 68.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Label" type="Label" parent="Info/Companion_3/Stats/ActionPointsBar"]
+[node name="Label" type="Label" parent="Info/Character_3/Stats/ActionPointsBar"]
 margin_right = 82.0
 margin_bottom = 32.0
 size_flags_horizontal = 3
@@ -958,7 +959,7 @@ text = "50/100"
 align = 1
 valign = 1
 
-[node name="Progress" type="ProgressBar" parent="Info/Companion_3/Stats/ActionPointsBar"]
+[node name="Progress" type="ProgressBar" parent="Info/Character_3/Stats/ActionPointsBar"]
 margin_left = 86.0
 margin_top = 6.0
 margin_right = 384.0

@@ -48,10 +48,10 @@ onready var tex_crouch_on = preload("res://addons/palladium/assets/ui/tex_crouch
 
 onready var info_panel = get_node("Info")
 onready var char_stats = [
-	info_panel.get_node("MainPlayer/Stats"),
-	info_panel.get_node("Companion_1/Stats"),
-	info_panel.get_node("Companion_2/Stats"),
-	info_panel.get_node("Companion_3/Stats")
+	info_panel.get_node("Character_0/Stats"),
+	info_panel.get_node("Character_1/Stats"),
+	info_panel.get_node("Character_2/Stats"),
+	info_panel.get_node("Character_3/Stats")
 ]
 
 onready var mouse_cursor = get_node("mouse_cursor")
@@ -182,18 +182,22 @@ func clear_popup_message():
 	return not message_labels[0].visible
 
 func get_char_stat(name_hint : String):
-	if __PLDRT.CHARS.PLAYER_NAME_HINT.casecmp_to(name_hint) == 0:
-		return char_stats[0]
-	var companions = __PLDRT.game_state.get_companions()
-	for i in range(0, companions.size()):
-		if name_hint.casecmp_to(companions[i].get_name_hint()) == 0:
-			return char_stats[i + 1]
+	var characters = __PLDRT.game_state.get_characters()
+	var i = 0
+	for ch in characters:
+		if ch.is_in_party():
+			if name_hint.casecmp_to(ch.get_name_hint()) == 0:
+				return char_stats[i]
+			i += 1
+			if i >= char_stats.size():
+				return null
 	return null
 
 func on_health_changed(name_hint, health_current, health_max):
 	var char_stat = get_char_stat(name_hint)
 	if not char_stat:
 		return
+	char_stat.visible = true
 	char_stat.get_node("LabelName").text = tr(name_hint)
 	var health_bar = char_stat.get_node("HealthBar")
 	var health_label = health_bar.get_node("Label")
@@ -210,6 +214,7 @@ func on_oxygen_changed(name_hint, oxygen_current, oxygen_max):
 	var char_stat = get_char_stat(name_hint)
 	if not char_stat:
 		return
+	char_stat.visible = true
 	char_stat.get_node("LabelName").text = tr(name_hint)
 	var oxygen_bar = char_stat.get_node("OxygenBar")
 	var oxygen_label = oxygen_bar.get_node("Label")
@@ -223,6 +228,7 @@ func on_action_points_changed(name_hint, action_points_current, action_points_ma
 	var char_stat = get_char_stat(name_hint)
 	if not char_stat:
 		return
+	char_stat.visible = true
 	char_stat.get_node("LabelName").text = tr(name_hint)
 	var action_points_bar = char_stat.get_node("ActionPointsBar")
 	var action_points_label = action_points_bar.get_node("Label")
@@ -230,6 +236,11 @@ func on_action_points_changed(name_hint, action_points_current, action_points_ma
 	action_points_label.text = "%3d/%3d" % [action_points_current, action_points_max]
 	action_points_progress.value = action_points_current
 	action_points_progress.max_value = action_points_max
+
+func on_player_changed(player_new, player_prev):
+	if not player_new or not player_prev or player_new.equals(player_prev):
+		return
+	synchronize_items()
 
 func on_crouching_changed(player_node, previous_state, new_state):
 	if player_node and player_node.is_player():
@@ -315,8 +326,8 @@ func insert_ui_inventory_item(pos):
 	var new_item = load("res://addons/palladium/ui/item.tscn").instance()
 	new_item.connect("used", __PLDRT.game_state, "item_used")
 	var i = first_item_idx + pos
-	if i >= 0 and i < __PLDRT.game_state.inventory.size():
-		new_item.set_item_data(__PLDRT.game_state.inventory[i].item_id, __PLDRT.game_state.inventory[i].count)
+	if i >= 0 and i < __PLDRT.game_state.get_inventory().size():
+		new_item.set_item_data(__PLDRT.game_state.get_inventory()[i].item_id, __PLDRT.game_state.get_inventory()[i].count)
 	inventory_panel.add_child(new_item)
 	if pos < inventory_panel.get_child_count() - 1:
 		inventory_panel.move_child(new_item, pos)
@@ -326,8 +337,8 @@ func insert_ui_quick_item(pos):
 	var new_item = load("res://addons/palladium/ui/item.tscn").instance()
 	new_item.connect("used", __PLDRT.game_state, "item_used")
 	new_item.set_appearance(true, false)
-	if pos < __PLDRT.game_state.quick_items.size():
-		var quick_item = __PLDRT.game_state.quick_items[pos]
+	if pos < __PLDRT.game_state.get_quick_items().size():
+		var quick_item = __PLDRT.game_state.get_quick_items()[pos]
 		if quick_item.item_id:
 			new_item.set_item_data(quick_item.item_id, quick_item.count)
 	quick_items_panel.add_child(new_item)
@@ -434,7 +445,7 @@ func remove_ui_inventory_item(item_id, count):
 	if inventory_panel.get_child(0).is_empty():
 		# If very first item is empty, than all following items are empty too
 		# Therefore we should try to shift visible items window to the left
-		first_item_idx = int(max(__PLDRT.game_state.inventory.size() - MAX_VISIBLE_ITEMS, 0))
+		first_item_idx = int(max(__PLDRT.game_state.get_inventory().size() - MAX_VISIBLE_ITEMS, 0))
 		synchronize_items()
 		set_active_item(0)
 
@@ -451,7 +462,7 @@ func remove_ui_quick_item(item_id, count):
 		idx = idx + 1
 
 func shift_items_left():
-	if first_item_idx < __PLDRT.game_state.inventory.size() - MAX_VISIBLE_ITEMS:
+	if first_item_idx < __PLDRT.game_state.get_inventory().size() - MAX_VISIBLE_ITEMS:
 		first_item_idx = first_item_idx + 1
 		var ui_item = inventory_panel.get_child(0)
 		remove_ui_inventory_item(ui_item.item_id, -1)
@@ -463,7 +474,7 @@ func shift_items_right():
 		insert_ui_inventory_item(0)
 
 func is_valid_index(item_idx):
-	return item_idx >= 0 and item_idx < MAX_VISIBLE_ITEMS and first_item_idx + item_idx < __PLDRT.game_state.inventory.size()
+	return item_idx >= 0 and item_idx < MAX_VISIBLE_ITEMS and first_item_idx + item_idx < __PLDRT.game_state.get_inventory().size()
 
 func is_valid_quick_index(item_idx):
 	return item_idx >= 0 and item_idx < MAX_QUICK_ITEMS

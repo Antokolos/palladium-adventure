@@ -150,8 +150,8 @@ func can_execute_custom_action(item, action = "item_preview_action_1", event = n
 #	NONE = 0
 #}
 
-#const INVENTORY_DEFAULT = []
-#const QUICK_ITEMS_DEFAULT = []
+#const INVENTORY_DEFAULT = {}
+#const QUICK_ITEMS_DEFAULT = {}
 
 #const ITEMS = {
 #	TakableIds.NONE : { "item_nam" : "item_none", "item_image" : "none.png", "model_path" : "res://assets/none.escn", "model_use_path" : null, "stackable" : false, "can_give" : false, "custom_actions" : [] },
@@ -269,10 +269,12 @@ enum UseTargetIds {
 	NONE = 0
 }
 
-const INVENTORY_DEFAULT = []
-const QUICK_ITEMS_DEFAULT = [
-	{ "item_id" : TakableIds.RIFLE, "count" : 1 }
-]
+const INVENTORY_DEFAULT = {}
+const QUICK_ITEMS_DEFAULT = {
+	PLDChars.PLAYER_NAME_HINT : [
+		{ "item_id" : TakableIds.RIFLE, "count" : 1 }
+	]
+}
 
 const ITEMS = {
 	TakableIds.RAT : { "item_nam" : "rat", "item_image" : "rat.png", "model_path" : "res://scenes/rat_grey.tscn", "model_use_path" : null, "stackable" : true, "can_give" : false, "custom_actions" : ["item_preview_action_1"] },
@@ -347,7 +349,7 @@ func execute_custom_action(item, action = "item_preview_action_1"):
 #					_pldrt.MEDIA.play_sound(PLDDBMedia.SoundId.MAN_BREATHE_IN_TANK)
 
 func use_healing_item(item):
-	var name_hint = __PLDRT.CHARS.PLAYER_NAME_HINT
+	var name_hint = PLDChars.PLAYER_NAME_HINT
 	var ps = __PLDRT.game_state.party_stats[name_hint]
 	var health_current = ps["health_current"]
 	var health_max = ps["health_max"]

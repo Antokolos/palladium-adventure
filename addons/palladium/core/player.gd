@@ -35,7 +35,6 @@ var is_in_jump = false
 func _ready():
 	if is_player() or (
 			initial_player \
-			and not __PLDRT.game_state.is_tactical_view()
 			and not __PLDRT.game_state.is_loading() \
 			and not __PLDRT.game_state.is_transition()
 		):
@@ -195,7 +194,7 @@ func is_joypad_look(event):
 	return a == JOY_AXIS_2 or a == JOY_AXIS_3
 
 func _input(event):
-	if not is_player() or not is_activated():
+	if __PLDRT.game_state.is_tactical_view() or not is_player() or not is_activated():
 		return
 	var hud = __PLDRT.game_state.get_hud()
 	if __PLDRT.conversation_manager.conversation_is_in_progress():
@@ -301,7 +300,8 @@ func _input(event):
 
 func get_movement_data(is_player):
 	var cam = __PLDRT.game_state.get_cam()
-	if is_player \
+	if not __PLDRT.game_state.is_tactical_view() \
+		and is_player \
 		and is_in_party() \
 		and input_movement_vector.length_squared() > 0 \
 		and not is_movement_disabled() \

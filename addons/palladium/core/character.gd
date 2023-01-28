@@ -238,11 +238,11 @@ func need_to_set_look_transition():
 	return (
 		__PLDRT.conversation_manager.meeting_is_in_progress(
 			name_hint,
-			__PLDRT.CHARS.PLAYER_NAME_HINT
+			PLDChars.PLAYER_NAME_HINT
 		) \
 		or __PLDRT.conversation_manager.meeting_is_finished(
 			name_hint,
-			__PLDRT.CHARS.PLAYER_NAME_HINT
+			PLDChars.PLAYER_NAME_HINT
 		)
 	)
 
@@ -1175,7 +1175,11 @@ func do_process(delta, is_player):
 		has_floor_collision = has_floor_collision() or not should_fall
 		d.is_moving = has_movement(mpd.vel, has_floor_collision)
 		model.rotate_head(movement_data.get_rotation_angle_to_target_deg())
-	var rpd = process_rotation(not d.is_moving and is_player)
+	var rpd = process_rotation(
+		not __PLDRT.game_state.is_tactical_view()
+		and not d.is_moving
+		and is_player
+	)
 	var urd = update_rays_to_characters(characters)
 	if d.cannot_move:
 		if is_transporting:
