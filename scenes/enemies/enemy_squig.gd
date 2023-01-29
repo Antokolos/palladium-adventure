@@ -1,4 +1,4 @@
-extends EnemyGeneric
+extends PLDEnemyGeneric
 
 func _ready():
 	pass

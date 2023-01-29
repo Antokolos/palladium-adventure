@@ -106,8 +106,15 @@ func equals(obj):
 func is_player():
 	return equals(__PLDRT.game_state.get_player())
 
+func is_active_player():
+	return is_in_party() and is_player()
+
 func is_player_controlled():
-	return is_in_party() and is_player() and not __PLDRT.cutscene_manager.is_cutscene() and not __PLDRT.game_state.is_tactical_view()
+	return (
+		is_active_player()
+		and not __PLDRT.cutscene_manager.is_cutscene()
+		and not __PLDRT.game_state.is_tactical_view()
+	)
 
 func is_activated_flag():
 	# If we want to just check the activation flag and not the pause state

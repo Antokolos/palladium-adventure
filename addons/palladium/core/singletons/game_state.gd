@@ -384,6 +384,12 @@ func is_tactical_view():
 func change_tactical_view(tactical_view_val):
 	_pldrt.game_state.story_vars.tactical_view_on = tactical_view_val
 
+func tactical_selection_enabled():
+	return _pldrt.game_state.story_vars.tactical_selection_on
+
+func set_tactical_selection(enabled):
+	_pldrt.game_state.story_vars.tactical_selection_on = enabled
+
 func set_surge(player, enable):
 	emit_signal("player_surge", player, enable)
 

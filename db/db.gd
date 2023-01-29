@@ -93,9 +93,12 @@ func can_execute_custom_action(item, action = "item_preview_action_1", event = n
 #const USE_HEALTH = true
 #const USE_ACTION_POINTS = false
 #const USE_CROSSHAIR = true
+#const USE_INDICATORS = true
 
 #const STORY_VARS_DEFAULT = {
-#	"flashlight_on" : false
+#	"flashlight_on" : false,
+#	"tactical_view_on" : false,
+#	"tactical_selection_on" : false,
 #}
 
 #enum LightIds {
@@ -209,10 +212,12 @@ const CAMERA_VIEW_TYPE_DEFAULT = CAMERA_VIEW_THIRD_PERSON_STRICT
 const USE_HEALTH = true
 const USE_ACTION_POINTS = false
 const USE_CROSSHAIR = true
+const USE_INDICATORS = true
 
 const STORY_VARS_DEFAULT = {
 	"flashlight_on" : false,
-	"tactical_view_on" : true
+	"tactical_view_on" : true,
+	"tactical_selection_on" : true
 }
 
 enum LightIds {

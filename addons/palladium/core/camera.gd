@@ -62,6 +62,7 @@ var tactical_view_action = false
 var tactical_view_double_click = false
 var tactical_player_character = null
 var tactical_camera_distance = (TACTICAL_CAMERA_DISTANCE_MIN + TACTICAL_CAMERA_DISTANCE_MAX) / 2
+var tactical_zoom_speed = 0
 var angle_rad_x = 0
 var angle_x_reset = false
 var angle_rad_y = 0
@@ -400,6 +401,35 @@ func is_tactical_player_character(character : PLDCharacter):
 func process_tactical_player_sprinting():
 	tactical_player_character.set_sprinting(tactical_view_double_click)
 
+func try_to_attack(character):
+	if (
+		tactical_player_character
+		and ((
+				tactical_player_character is PLDPlayer
+				and character is PLDEnemy
+			) or (
+				tactical_player_character is PLDEnemy
+				and character is PLDPlayer
+			)
+		)
+	):
+		var current_target = tactical_player_character.get_target_node()
+		if (
+			not current_target
+			or not character.equals(current_target)
+		):
+			tactical_player_character.set_target_node(character)
+			process_tactical_player_sprinting()
+			return true
+	return false
+
+func select_tactical_player(character):
+	if tactical_player_character:
+		tactical_player_character.enable_selection_mark(false)
+		tactical_player_character.set_sprinting(false)
+	tactical_player_character = character
+	tactical_player_character.enable_selection_mark(true)
+
 func process_tactical_view_action():
 	var point = (
 		projection_ray.get_collision_point()
@@ -418,27 +448,10 @@ func process_tactical_view_action():
 			and collider is PLDCharacter
 			and not collider.equals(tactical_player_character)
 		):
-			if tactical_player_character:
-				if ((
-						tactical_player_character is PLDPlayer
-						and collider is PLDEnemy
-					) or (
-						tactical_player_character is PLDEnemy
-						and collider is PLDPlayer
-					)
-				):
-					var current_target = tactical_player_character.get_target_node()
-					if (
-						not current_target
-						or not collider.equals(current_target)
-					):
-						tactical_player_character.set_target_node(collider)
-						process_tactical_player_sprinting()
-						return
-				tactical_player_character.enable_selection_mark(false)
-				tactical_player_character.set_sprinting(false)
-			tactical_player_character = collider
-			tactical_player_character.enable_selection_mark(true)
+			if try_to_attack(collider):
+				return
+			if __PLDRT.game_state.tactical_selection_enabled():
+				select_tactical_player(collider)
 			return
 		if not tactical_player_character:
 			return
@@ -491,13 +504,16 @@ func _process(delta):
 			backtrace_ray.enabled = true
 		if projection_ray and not projection_ray.enabled:
 			projection_ray.enabled = true
-		var zoom = 0
 		if Input.is_action_just_pressed("tactical_view_zoom_in"):
-			zoom = TACTICAL_ZOOM_SPEED
+			tactical_zoom_speed = TACTICAL_ZOOM_SPEED
+		elif Input.is_action_just_released("tactical_view_zoom_in"):
+			tactical_zoom_speed = 0
 		elif Input.is_action_just_pressed("tactical_view_zoom_out"):
-			zoom = -TACTICAL_ZOOM_SPEED
+			tactical_zoom_speed = -TACTICAL_ZOOM_SPEED
+		elif Input.is_action_just_released("tactical_view_zoom_out"):
+			tactical_zoom_speed = 0
 		var prev_transform = global_transform
-		var m = process_tactical_camera_movement(zoom)
+		var m = process_tactical_camera_movement(tactical_zoom_speed)
 		if not m.get_result():
 			global_transform = prev_transform # revert anything
 			var push_back_vector = m.get_push_back_vector()

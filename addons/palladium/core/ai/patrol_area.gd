@@ -1,26 +1,33 @@
 extends Area
 class_name PLDPatrolArea
 
-export(NodePath) var agent_path = null
+export(String) var agent_name_hint = ""
 export(bool) var revert_on_restart = true
 
-onready var agent : PLDCharacter = get_node(agent_path) if agent_path and has_node(agent_path) else null
-
+var agent = null
 var waypoints = []
 var waypoint_idx = 0
 var first_hit = true
 
 func _ready():
 	first_hit = true
-	if agent:
-		agent.connect("patrolling_changed", self, "_on_patrolling_changed")
-		agent.connect("arrived_to", self, "_on_arrived_to")
-		agent.connect("take_damage", self, "_on_take_damage")
+	__PLDRT.game_state.connect("player_registered", self, "_on_player_registered")
 	connect("body_entered", self, "_on_patrol_area_body_entered")
 	connect("body_exited", self, "_on_patrol_area_body_exited")
 	for ch in get_children():
 		if ch is Position3D:
 			waypoints.append(ch)
+
+func _on_player_registered(player):
+	if not player:
+		push_error("Player not set")
+		return
+	if player.get_name_hint().casecmp_to(agent_name_hint) != 0:
+		return
+	agent = player
+	agent.connect("patrolling_changed", self, "_on_patrolling_changed")
+	agent.connect("arrived_to", self, "_on_arrived_to")
+	agent.connect("take_damage", self, "_on_take_damage")
 
 func _on_patrolling_changed(player_node, previous_state, new_state):
 	if agent.get_morale() < 0:

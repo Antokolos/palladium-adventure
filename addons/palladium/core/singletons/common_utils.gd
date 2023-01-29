@@ -153,13 +153,13 @@ func joy_button_to_string(button_index):
 				_:
 					return "[Start]"
 		JOY_DPAD_UP:
-			return "DPad Up"
+			return "DP Up"
 		JOY_DPAD_DOWN:
-			return "DPad Down"
+			return "DP Dwn"
 		JOY_DPAD_LEFT:
-			return "DPad Left"
+			return "DP Left"
 		JOY_DPAD_RIGHT:
-			return "DPad Right"
+			return "DP Right"
 		_:
 			return "[?]"
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=31 format=2]
+[gd_scene load_steps=33 format=2]
 
 [ext_resource path="res://addons/palladium/default_theme.tres" type="Theme" id=1]
 [ext_resource path="res://addons/palladium/ui/hud.gd" type="Script" id=2]
@@ -20,6 +20,8 @@
 [ext_resource path="res://addons/palladium/ui/quit_dialog.tscn" type="PackedScene" id=18]
 [ext_resource path="res://addons/palladium/ui/mouse_cursor.tscn" type="PackedScene" id=19]
 [ext_resource path="res://addons/palladium/shaders/image_adjust.tres" type="Material" id=20]
+[ext_resource path="res://addons/palladium/styles/party_sel.tres" type="StyleBox" id=21]
+[ext_resource path="res://addons/palladium/styles/party_nonsel.tres" type="StyleBox" id=22]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
@@ -541,20 +543,24 @@ texture = ExtResource( 13 )
 expand = true
 
 [node name="Info" type="HBoxContainer" parent="."]
-anchor_right = 0.9
+anchor_right = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-custom_constants/separation = 30
+alignment = 1
 
-[node name="Character_0" type="HBoxContainer" parent="Info"]
-margin_right = 330.0
-margin_bottom = 68.0
+[node name="Character_0" type="PanelContainer" parent="Info"]
+margin_left = 725.0
+margin_right = 1087.0
+margin_bottom = 100.0
 size_flags_horizontal = 4
 size_flags_vertical = 3
+custom_styles/panel = ExtResource( 21 )
 
 [node name="Stats" type="VBoxContainer" parent="Info/Character_0"]
-margin_right = 330.0
-margin_bottom = 68.0
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 346.0
+margin_bottom = 84.0
 rect_min_size = Vector2( 330, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 0
@@ -651,17 +657,20 @@ custom_styles/fg = SubResource( 7 )
 value = 50.0
 percent_visible = false
 
-[node name="Character_1" type="HBoxContainer" parent="Info"]
-margin_left = 360.0
-margin_right = 360.0
-margin_bottom = 68.0
+[node name="Character_1" type="PanelContainer" parent="Info"]
+margin_left = 1091.0
+margin_right = 1123.0
+margin_bottom = 100.0
 size_flags_horizontal = 4
 size_flags_vertical = 3
+custom_styles/panel = ExtResource( 22 )
 
 [node name="Stats" type="VBoxContainer" parent="Info/Character_1"]
 visible = false
-margin_right = 330.0
-margin_bottom = 68.0
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 346.0
+margin_bottom = 84.0
 rect_min_size = Vector2( 330, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 0
@@ -758,17 +767,20 @@ custom_styles/fg = SubResource( 8 )
 value = 50.0
 percent_visible = false
 
-[node name="Character_2" type="HBoxContainer" parent="Info"]
-margin_left = 390.0
-margin_right = 390.0
-margin_bottom = 68.0
+[node name="Character_2" type="PanelContainer" parent="Info"]
+margin_left = 1127.0
+margin_right = 1159.0
+margin_bottom = 100.0
 size_flags_horizontal = 4
 size_flags_vertical = 3
+custom_styles/panel = ExtResource( 22 )
 
 [node name="Stats" type="VBoxContainer" parent="Info/Character_2"]
 visible = false
-margin_right = 330.0
-margin_bottom = 68.0
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 346.0
+margin_bottom = 84.0
 rect_min_size = Vector2( 330, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 0
@@ -865,17 +877,20 @@ custom_styles/fg = SubResource( 9 )
 value = 50.0
 percent_visible = false
 
-[node name="Character_3" type="HBoxContainer" parent="Info"]
-margin_left = 420.0
-margin_right = 420.0
-margin_bottom = 68.0
+[node name="Character_3" type="PanelContainer" parent="Info"]
+margin_left = 1163.0
+margin_right = 1195.0
+margin_bottom = 100.0
 size_flags_horizontal = 4
 size_flags_vertical = 3
+custom_styles/panel = ExtResource( 22 )
 
 [node name="Stats" type="VBoxContainer" parent="Info/Character_3"]
 visible = false
-margin_right = 330.0
-margin_bottom = 68.0
+margin_left = 16.0
+margin_top = 16.0
+margin_right = 346.0
+margin_bottom = 84.0
 rect_min_size = Vector2( 330, 0 )
 size_flags_horizontal = 3
 size_flags_vertical = 0

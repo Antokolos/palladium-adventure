@@ -53,6 +53,8 @@ onready var char_stats = [
 	info_panel.get_node("Character_2/Stats"),
 	info_panel.get_node("Character_3/Stats")
 ]
+onready var style_party_sel = preload("res://addons/palladium/styles/party_sel.tres")
+onready var style_party_nonsel = preload("res://addons/palladium/styles/party_nonsel.tres")
 
 onready var mouse_cursor = get_node("mouse_cursor")
 
@@ -65,6 +67,7 @@ func _ready():
 	for stat in char_stats:
 		stat.get_node("HealthBar").visible = PLDDB.USE_HEALTH
 		stat.get_node("ActionPointsBar").visible = PLDDB.USE_ACTION_POINTS
+	indicators_panel.visible = PLDDB.USE_INDICATORS
 	crosshair.visible = PLDDB.USE_CROSSHAIR
 	__PLDRT.game_state.connect("game_saved", self, "_on_game_saved")
 	__PLDRT.game_state.connect("shader_cache_processed", self, "_on_shader_cache_processed")
@@ -88,14 +91,18 @@ func _ready():
 	show_game_ui(not cutscene_mode)
 
 func has_game_ui():
-	return info_panel.visible and indicators_panel.visible and (crosshair.visible or not PLDDB.USE_CROSSHAIR)
+	return (
+		info_panel.visible
+		and (indicators_panel.visible or not PLDDB.USE_INDICATORS)
+		and (crosshair.visible or not PLDDB.USE_CROSSHAIR)
+	)
 
 func show_game_ui(enable):
 	var v = enable and not cutscene_mode
 	info_panel.visible = v
-	indicators_panel.visible = v
 	quick_items_panel.visible = v
 	info_label.visible = v
+	indicators_panel.visible = v and PLDDB.USE_INDICATORS
 	crosshair.visible = v and PLDDB.USE_CROSSHAIR
 	if not v:
 		inventory.visible = false
@@ -240,6 +247,10 @@ func on_action_points_changed(name_hint, action_points_current, action_points_ma
 func on_player_changed(player_new, player_prev):
 	if not player_new or not player_prev or player_new.equals(player_prev):
 		return
+	var char_stat_prev = get_char_stat(player_prev.get_name_hint())
+	char_stat_prev.get_parent().set("custom_styles/panel", style_party_nonsel)
+	var char_stat_new = get_char_stat(player_new.get_name_hint())
+	char_stat_new.get_parent().set("custom_styles/panel", style_party_sel)
 	synchronize_items()
 
 func on_crouching_changed(player_node, previous_state, new_state):
@@ -288,6 +299,18 @@ func set_quick_items_dimmed(dimmed):
 func _process(delta):
 	if not __PLDRT.game_state.is_level_ready():
 		return
+	if Input.is_action_just_released("active_item_back"):
+			if __PLDRT.game_state.is_tactical_view():
+				var ev = InputEventAction.new()
+				ev.set_action("tactical_view_zoom_out")
+				ev.set_pressed(false)
+				Input.parse_input_event(ev)
+	elif Input.is_action_just_released("active_item_next"):
+		if __PLDRT.game_state.is_tactical_view():
+			var ev = InputEventAction.new()
+			ev.set_action("tactical_view_zoom_in")
+			ev.set_pressed(false)
+			Input.parse_input_event(ev)
 	process_popup_messages(delta)
 
 func show_tablet(is_show, activation_mode = PLDTablet.ActivationMode.DESKTOP):

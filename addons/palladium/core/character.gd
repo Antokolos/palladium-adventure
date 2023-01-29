@@ -1035,7 +1035,7 @@ func update_rays_to_characters(characters):
 	if is_player_controlled():
 		return { "poi" : poi, "player_is_crouching" : is_crouching() }
 	for character in characters:
-		if character.is_player_controlled():
+		if character.is_active_player():
 			player_is_crouching = character.is_crouching()
 		if equals(character):
 			continue

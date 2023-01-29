@@ -25,6 +25,7 @@ func _input(event):
 		_on_NoButton_pressed()
 
 func _on_YesButton_pressed():
+	get_tree().call_group("network_nodes", "cleanup")
 	get_tree().quit()
 
 func _on_NoButton_pressed():

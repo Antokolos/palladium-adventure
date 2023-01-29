@@ -1,8 +1,10 @@
 extends PLDEnemy
-class_name EnemyGeneric
+class_name PLDEnemyGeneric
 
 const MAX_DIST = 37
 const MAX_VERT_DIST = 9
+
+export(bool) var use_distance_limits = true
 
 func _ready():
 	enemy_init()
@@ -29,6 +31,8 @@ func _process(delta):
 				activate()
 
 func do_process(delta, is_player):
+	if not use_distance_limits:
+		return .do_process(delta, is_player)
 	var origin = get_global_transform().origin
 	var player = __PLDRT.game_state.get_player()
 	if player:
