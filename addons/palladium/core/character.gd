@@ -777,7 +777,7 @@ func process_rotation(need_to_update_collisions):
 func invoke_physics_pass():
 	set_has_floor_collision(false)
 	var v = Vector3()
-	v.y = vel.y
+	v.y = -get_gravity()
 	move_and_slide(
 		v,
 		Vector3.UP,

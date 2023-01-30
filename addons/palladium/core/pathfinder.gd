@@ -388,7 +388,11 @@ func follow(current_transform, next_position):
 		data.with_rest_state(false)
 	else:
 		if in_party:
-			if not point_of_interest and not __PLDRT.cutscene_manager.is_cutscene():
+			if (
+				not is_active_player()
+				and not point_of_interest
+				and not __PLDRT.cutscene_manager.is_cutscene()
+			):
 				data.clear_rotation_angle()
 			return data.clear_dir().with_rest_state(zero_rotation)
 		elif was_moving and target and zero_rotation and d <= ALIGNMENT_RANGE:
