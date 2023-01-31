@@ -616,6 +616,10 @@ func remove(item_id, count = 1):
 			return quick_item.count
 	return 0
 
+func remove_all(item_id):
+	var cnt = get_item_count(item_id)
+	return remove(item_id, cnt) if cnt > 0 else 0
+
 func item_used(player_node, target, item_id, item_count):
 	emit_signal("item_used", player_node, target, item_id, item_count)
 
