@@ -519,6 +519,36 @@ func get_registered_item_data(item_id):
 func has_item(item_id):
 	return get_item_count(item_id) > 0
 
+func get_player_with_item(item_id):
+	for name_hint in quick_items:
+		var player_quick_items = quick_items[name_hint]
+		for item in player_quick_items:
+			if item_id == item.item_id:
+				return get_character(name_hint)
+	for name_hint in inventory:
+		var player_inventory = inventory[name_hint]
+		for item in player_inventory:
+			if item_id == item.item_id:
+				return get_character(name_hint)
+	return null
+
+func remove_item_from_player(item_owner, item_id):
+	if not item_owner:
+		return
+	var name_hint = item_owner.get_name_hint()
+	if quick_items.has(name_hint):
+		var item_owner_quick_items = quick_items[name_hint]
+		for i in range(0, item_owner_quick_items.size()):
+			if item_id == item_owner_quick_items[i].item_id:
+				item_owner_quick_items.remove(i)
+				return
+	if inventory.has(name_hint):
+		var item_owner_inventory = inventory[name_hint]
+		for i in range(0, item_owner_inventory.size()):
+			if item_id == item_owner_inventory[i].item_id:
+				item_owner_inventory.remove(i)
+				return
+
 func get_inventory():
 	if not inventory.has(player_name_hint):
 		inventory[player_name_hint] = []
