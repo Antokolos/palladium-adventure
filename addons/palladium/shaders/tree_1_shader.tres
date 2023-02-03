@@ -1,9 +1,4 @@
-[gd_resource type="ShaderMaterial" load_steps=6 format=2]
-
-[ext_resource path="res://assets/trees/curly palm leaf_Roughness.png" type="Texture" id=1]
-[ext_resource path="res://assets/trees/curly palm leaf_Transmission.png" type="Texture" id=2]
-[ext_resource path="res://assets/trees/curly palm leaf.png" type="Texture" id=3]
-[ext_resource path="res://assets/trees/curly palm leaf_Normal.png" type="Texture" id=4]
+[gd_resource type="ShaderMaterial" load_steps=2 format=2]
 
 [sub_resource type="Shader" id=1]
 code = "shader_type spatial;
@@ -80,7 +75,3 @@ shader_param/use_coloring = false
 shader_param/sway_speed = 1.0
 shader_param/sway_strength = 0.05
 shader_param/sway_phase_len = 8.0
-shader_param/texture_albedo = ExtResource( 3 )
-shader_param/texture_roughness = ExtResource( 1 )
-shader_param/texture_normal = ExtResource( 4 )
-shader_param/texture_transmission = ExtResource( 2 )
