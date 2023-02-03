@@ -4,6 +4,7 @@ class_name PLDLevel
 export var is_bright = false
 export var is_inside = true
 export var is_loadable = true
+export var is_need_show_path = true
 export var player_path = "player"
 export var player_female_path = "player_female"
 export var player_bandit_path = "player_bandit"
@@ -35,6 +36,9 @@ func is_bright():
 
 func is_inside():
 	return is_inside
+
+func is_need_show_path():
+	return is_need_show_path
 
 func get_cam():
 	return get_node(cam_path) if cam_path and has_node(cam_path) else null

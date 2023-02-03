@@ -214,7 +214,7 @@ func _ready():
 func activate(mode):
 	visible = true
 	var level = __PLDRT.game_state.get_level()
-	show_path_holder.visible = level and level.has_node("path_drawer")
+	show_path_holder.visible = level and level.is_need_show_path()
 	var has_joypads = __PLDRT.common_utils.has_joypads()
 	joypad_type_parent.visible = has_joypads
 	pause_on_joypad_disconnected_parent.visible = has_joypads

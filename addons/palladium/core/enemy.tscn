@@ -1,7 +1,8 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=10 format=2]
 
 [ext_resource path="res://addons/palladium/core/enemy.gd" type="Script" id=1]
 [ext_resource path="res://addons/palladium/core/character_nodes.tscn" type="PackedScene" id=2]
+[ext_resource path="res://addons/palladium/utils/line_drawer_3d.gd" type="Script" id=3]
 
 [sub_resource type="CapsuleShape" id=1]
 resource_local_to_scene = true
@@ -75,11 +76,17 @@ tracks/3/keys = {
 "values": [ Vector3( 0, 1.5, 0 ), Vector3( 0, 0.75, 0 ) ]
 }
 
+[sub_resource type="SpatialMaterial" id=7]
+flags_transparent = true
+flags_unshaded = true
+albedo_color = Color( 0.0941176, 0.772549, 0.0705882, 1 )
+
 [node name="enemy" type="KinematicBody" groups=["enemies", "moving"]]
 collision_layer = 4096
 collision_mask = 14631
 script = ExtResource( 1 )
 name_hint = "skeleton"
+show_path = false
 
 [node name="character_nodes" parent="." instance=ExtResource( 2 )]
 
@@ -127,6 +134,14 @@ visible = false
 inner_radius = 1.0
 outer_radius = 1.1
 sides = 32
+
+[node name="path_drawer" type="ImmediateGeometry" parent="."]
+portal_mode = 3
+include_in_bound = false
+allow_merging = false
+material_override = SubResource( 7 )
+generate_lightmap = false
+script = ExtResource( 3 )
 
 [connection signal="path_changed" from="NavigationAgent" to="." method="_on_NavigationAgent_path_changed"]
 [connection signal="velocity_computed" from="NavigationAgent" to="." method="_on_NavigationAgent_velocity_computed"]

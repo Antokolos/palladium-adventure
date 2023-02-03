@@ -27,11 +27,10 @@ const USE_DISTANCE_COMMON = 2.2
 export(float) var max_lower_limit_y : float = -999.1
 export(float) var use_distance : float = USE_DISTANCE_COMMON
 export(String) var name_hint : String = PLDChars.PLAYER_NAME_HINT
-export(NodePath) var navigation_path = NodePath("..")
+export(bool) var show_path = true
 
-onready var navigation_node = get_node(navigation_path) if navigation_path and has_node(navigation_path) else null
 onready var navigation_agent = get_node("NavigationAgent") if has_node("NavigationAgent") else null
-onready var path_drawer = navigation_node.get_node("path_drawer") if navigation_node.has_node("path_drawer") else null
+onready var path_drawer = get_node("path_drawer") if has_node("path_drawer") else null
 
 var cached_model_holder = null
 var cached_model = null
@@ -224,7 +223,7 @@ func update_navpath_to_target():
 		update_navpath(current_position, target_position)
 	else:
 		clear_path()
-	if __PLDRT.settings.show_path and path_drawer:
+	if show_path and __PLDRT.settings.show_path and path_drawer:
 		path_drawer.reset_alpha(name_hint)
 		path_drawer.clear_lines(name_hint)
 
@@ -410,7 +409,8 @@ func has_path():
 
 func draw_path():
 	if (
-		not __PLDRT.settings.show_path
+		not show_path
+		or not __PLDRT.settings.show_path
 		or not path_drawer
 	):
 		return

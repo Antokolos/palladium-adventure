@@ -9,6 +9,7 @@ enum LineType { LINES, STRIP }
 export(LineType) var line_type = LineType.STRIP
 export(float) var width = 0.2
 export(float) var gap = 0.0
+export(bool) var relative = true
 
 class Line:
 	var start : Vector3
@@ -83,6 +84,9 @@ func draw_strip(name_hint : String):
 	if not lines_map.has(name_hint):
 		return
 	clear()
+	var origin = get_global_transform().origin
+	if relative:
+		set_global_rotation(Vector3.ZERO)
 	var different_size = filter_first_prev_lines(name_hint)
 	lm(name_hint).alpha *= ALPHA_COEF
 	material_override.albedo_color.a = lm(name_hint).alpha
@@ -92,24 +96,26 @@ func draw_strip(name_hint : String):
 		if (different_size or lines_rerouted_at_index(name_hint, line, i)):
 			lm(name_hint).alpha = 1.0
 			material_override.albedo_color.a = 1.0
-		var v = line.end - line.start
+		var start = line.start - origin if relative else line.start
+		var end = line.end - origin if relative else line.end
+		var v = end - start
 		var cv = Vector3.UP.cross(v).normalized() * width
 
 		set_normal(Vector3(0, 1, 0))
 		set_uv(Vector2(0, 0))
-		add_vertex(line.start + gap * v + cv)
+		add_vertex(start + gap * v + cv)
 
 		set_normal(Vector3(0, 1, 0))
 		set_uv(Vector2(1, 0))
-		add_vertex(line.end - gap * v + cv)
+		add_vertex(end - gap * v + cv)
 
 		set_normal(Vector3(0, 1, 0))
 		set_uv(Vector2(0, 1))
-		add_vertex(line.start + gap * v - cv)
+		add_vertex(start + gap * v - cv)
 
 		set_normal(Vector3(0, 1, 0))
 		set_uv(Vector2(1, 1))
-		add_vertex(line.end - gap * v - cv)
+		add_vertex(end - gap * v - cv)
 		
 	end()
 
