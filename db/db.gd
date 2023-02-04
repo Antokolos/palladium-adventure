@@ -38,6 +38,15 @@ static func lookup_takable_from_int(item_id : int):
 			return TakableIds[takable_id]
 	return TakableIds.NONE
 
+static func lookup_takable_from_name(item_nam : String):
+	if not item_nam or item_nam.length() == 0:
+		return TakableIds.NONE
+	for takable_id in ITEMS:
+		var item_data = ITEMS[takable_id]
+		if item_nam.casecmp_to(item_data.item_nam) == 0:
+			return takable_id
+	return TakableIds.NONE
+
 static func get_item_data(takable_id):
 	if not takable_id or takable_id == TakableIds.NONE or not ITEMS.has(takable_id):
 		return null
