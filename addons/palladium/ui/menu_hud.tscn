@@ -19,9 +19,7 @@ size = 30
 extra_spacing_char = 8
 font_data = ExtResource( 3 )
 
-[node name="menu_hud" type="Control" groups=[
-"hud",
-]]
+[node name="menu_hud" type="Control" groups=["hud"]]
 anchor_right = 1.0
 anchor_bottom = 1.0
 mouse_filter = 2
@@ -36,17 +34,17 @@ margin_right = 450.0
 margin_bottom = 120.0
 
 [node name="LabelGameName" type="Label" parent="VBoxContainer"]
-margin_right = 440.0
+margin_right = 497.0
 margin_bottom = 82.0
 custom_fonts/font = SubResource( 1 )
-text = "PALLADIUM"
+text = "GAME_NAME"
 
 [node name="LabelGameSubname" type="Label" parent="VBoxContainer"]
 margin_top = 86.0
-margin_right = 440.0
+margin_right = 497.0
 margin_bottom = 120.0
 custom_fonts/font = SubResource( 2 )
-text = "ADVENTURE IN GREECE"
+text = "GAME_SUBNAME"
 
 [node name="LabelJoyHint" type="Label" parent="."]
 anchor_left = 0.1
@@ -64,7 +62,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 0
 grow_vertical = 0
-text = "v. 1.1.0"
+text = "GAME_VERSION"
 align = 2
 valign = 2
 

@@ -472,13 +472,13 @@ func _on_Resolution_item_selected(ID):
 func _on_AA_item_selected(ID):
 	var viewport = __PLDRT.game_state.get_viewport()
 	if (ID == PLDSettings.AA_8X):
-		viewport.msaa = Viewport.MSAA_8X
+		viewport.set_msaa(Viewport.MSAA_8X)
 	elif (ID == PLDSettings.AA_4X):
-		viewport.msaa = Viewport.MSAA_4X
+		viewport.set_msaa(Viewport.MSAA_4X)
 	elif (ID == PLDSettings.AA_2X):
-		viewport.msaa = Viewport.MSAA_2X
+		viewport.set_msaa(Viewport.MSAA_2X)
 	else:
-		viewport.msaa = Viewport.MSAA_DISABLED
+		viewport.set_msaa(Viewport.MSAA_DISABLED)
 	__PLDRT.settings.aa_quality = ID
 
 func _on_Language_item_selected(ID):
