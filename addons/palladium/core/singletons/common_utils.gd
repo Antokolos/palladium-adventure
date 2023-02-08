@@ -2,7 +2,6 @@ extends Node
 
 signal mouse_mode_changed(mouse_mode, visible_anyway)
 
-const APP_STEAM_ID = 1137270
 onready var _steam = Engine.get_singleton("Steam") if Engine.has_singleton("Steam") else null
 
 var mouse_mode = Input.MOUSE_MODE_VISIBLE
@@ -17,7 +16,12 @@ func _ready():
 	Input.connect("joy_connection_changed", self, "_on_joy_connection_changed")
 	if not _steam:
 		return
-	if _steam.restartAppIfNecessary(APP_STEAM_ID):
+	var steam_appid : File = File.new()
+	if steam_appid.open("res://steam_appid.txt", File.READ) != OK:
+		return
+	var app_ID = int(steam_appid.get_as_text())
+	steam_appid.close()
+	if _steam.restartAppIfNecessary(app_ID):
 		return
 	_steam.steamInit()
 
