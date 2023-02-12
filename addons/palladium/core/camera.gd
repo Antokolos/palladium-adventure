@@ -7,6 +7,7 @@ const TACTICAL_CAMERA_ROT_MAX_RAD = deg2rad(75)
 const TACTICAL_CAMERA_DISTANCE_EPS = 0.15
 const TACTICAL_CAMERA_DISTANCE_MIN = 3
 const TACTICAL_CAMERA_DISTANCE_MAX = 180
+const TACTICAL_CAMERA_DISTANCE_PLAYER_SW = 4.4
 const TACTICAL_CAMERA_PROJECTION_LENGTH = 9999
 const TACTICAL_MOVEMENT_THRESHOLD = 10
 const TACTICAL_MOVEMENT_SPEED = 0.3
@@ -476,9 +477,42 @@ func process_tactical_player_attack():
 		else:
 			tactical_player_character.attack_start(possible_attack_target)
 
+func switch_to_party_member(idx : int) -> void:
+	var i = 0
+	for ch in __PLDRT.game_state.get_characters():
+		if not ch.is_in_party():
+			continue
+		if i == idx:
+			var cht = ch.get_cam_holder().get_global_transform()
+			var v = cht.origin - ch.get_global_transform().origin
+			var vn = v.normalized()
+			set_global_transform(Transform(
+				cht.basis,
+				cht.origin + (TACTICAL_CAMERA_DISTANCE_PLAYER_SW - v.length()) * vn
+			))
+			tactical_camera_distance = TACTICAL_CAMERA_DISTANCE_PLAYER_SW
+			return
+		i += 1
+
+func perform_player_switching():
+	if Input.is_action_just_pressed("switch_to_player_1"):
+		switch_to_party_member(0)
+		return true
+	elif Input.is_action_just_pressed("switch_to_player_2"):
+		switch_to_party_member(1)
+		return true
+	elif Input.is_action_just_pressed("switch_to_player_3"):
+		switch_to_party_member(2)
+		return true
+	elif Input.is_action_just_pressed("switch_to_player_4"):
+		switch_to_party_member(3)
+		return true
+	return false
+
 func _process(delta):
 	if not __PLDRT.game_state.is_level_ready():
 		return
+	
 	# ----------------------------------
 	# Turning the flashlight on/off
 	if flashlight \
@@ -500,6 +534,8 @@ func _process(delta):
 	change_culling()
 	
 	if __PLDRT.game_state.is_tactical_view():
+		if perform_player_switching():
+			return
 		if backtrace_ray and not backtrace_ray.enabled:
 			backtrace_ray.enabled = true
 		if projection_ray and not projection_ray.enabled:

@@ -69,6 +69,8 @@ enum ActivationMode {DESKTOP, CHAT, CREDITS, MAP, DOCUMENTS, SETTINGS, SAVE, LOA
 onready var hud = get_parent()
 
 func _ready():
+	__PLDRT.settings.connect("language_changed", self, "_on_language_changed")
+	
 	tablet_orientation.add_item("Vertical", PLDSettings.TABLET_VERTICAL)
 	tablet_orientation.add_item("Horizontal", PLDSettings.TABLET_HORIZONTAL)
 	match (__PLDRT.settings.tablet_orientation):
@@ -480,6 +482,15 @@ func _on_AA_item_selected(ID):
 	else:
 		viewport.set_msaa(Viewport.MSAA_DISABLED)
 	__PLDRT.settings.aa_quality = ID
+
+func _on_language_changed(ID):
+	match ID:
+		PLDSettings.LANGUAGE_EN:
+			language.select(0)
+		PLDSettings.LANGUAGE_RU:
+			language.select(1)
+		_:
+			language.select(0)
 
 func _on_Language_item_selected(ID):
 	__PLDRT.settings.set_language(ID)

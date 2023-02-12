@@ -1127,14 +1127,20 @@ func move_backtrace(target: Vector3):
 	third_person_collision_pos.set_global_transform(tpct)
 
 func do_process(delta, is_player):
+	var cv = __PLDRT.settings.get_camera_view()
+	var tv = __PLDRT.game_state.is_tactical_view()
 	if (
-		__PLDRT.settings.get_camera_view() != PLDDB.CAMERA_VIEW_FIRST_PERSON
+		cv != PLDDB.CAMERA_VIEW_FIRST_PERSON
 		and third_person_camera
-		and character_nodes
+		and (character_nodes or tv)
 	):
 		if backtrace_ray and not backtrace_ray.enabled:
 			backtrace_ray.enabled = true
-		var dp = character_nodes.get_damage_point()
+		var dp = (
+			get_global_transform().origin
+				if tv
+				else character_nodes.get_damage_point()
+		)
 		third_person_camera.look_at(dp, Vector3.UP)
 		move_backtrace(dp)
 	elif backtrace_ray and backtrace_ray.enabled:
