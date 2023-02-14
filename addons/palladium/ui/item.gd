@@ -1,4 +1,5 @@
 extends PanelContainer
+class_name PLDItemUI
 
 signal used(player_node, target, item_id, item_count)
 

@@ -20,6 +20,7 @@ const ALWAYS_VISIBLE_MESSAGE_TEMPLATES = [
 export var cutscene_mode = false
 
 onready var main_hud = get_node("VBoxContainer/MainHUD")
+onready var abilities_panel = main_hud.get_node("HBoxAbilities")
 onready var quick_items_dimmer = main_hud.get_node("QuickItemsDimmer")
 onready var quick_items_panel = main_hud.get_node("QuickItemsDimmer/HBoxQuickItems")
 onready var info_label = main_hud.get_node("HBoxInfo/InfoLabel")
@@ -48,10 +49,10 @@ onready var tex_crouch_on = preload("res://addons/palladium/assets/ui/tex_crouch
 
 onready var info_panel = get_node("Info")
 onready var char_stats = [
-	info_panel.get_node("Character_0/Stats"),
-	info_panel.get_node("Character_1/Stats"),
-	info_panel.get_node("Character_2/Stats"),
-	info_panel.get_node("Character_3/Stats")
+	info_panel.get_node("HInfo/Character_0/Stats"),
+	info_panel.get_node("HInfo/Character_1/Stats"),
+	info_panel.get_node("HInfo/Character_2/Stats"),
+	info_panel.get_node("HInfo/Character_3/Stats")
 ]
 onready var style_party_sel = preload("res://addons/palladium/styles/party_sel.tres")
 onready var style_party_nonsel = preload("res://addons/palladium/styles/party_nonsel.tres")
@@ -100,8 +101,8 @@ func has_game_ui():
 func show_game_ui(enable):
 	var v = enable and not cutscene_mode
 	info_panel.visible = v
+	abilities_panel.visible = v
 	quick_items_panel.visible = v
-	info_label.visible = v
 	indicators_panel.visible = v and PLDDB.USE_INDICATORS
 	crosshair.visible = v and PLDDB.USE_CROSSHAIR
 	if not v:
@@ -204,7 +205,7 @@ func on_health_changed(name_hint, health_current, health_max):
 	var char_stat = get_char_stat(name_hint)
 	if not char_stat:
 		return
-	char_stat.visible = true
+	char_stat.get_parent().visible = true
 	char_stat.get_node("LabelName").text = tr(name_hint)
 	var health_bar = char_stat.get_node("HealthBar")
 	var health_label = health_bar.get_node("Label")
@@ -221,7 +222,7 @@ func on_oxygen_changed(name_hint, oxygen_current, oxygen_max):
 	var char_stat = get_char_stat(name_hint)
 	if not char_stat:
 		return
-	char_stat.visible = true
+	char_stat.get_parent().visible = true
 	char_stat.get_node("LabelName").text = tr(name_hint)
 	var oxygen_bar = char_stat.get_node("OxygenBar")
 	var oxygen_label = oxygen_bar.get_node("Label")
@@ -235,7 +236,7 @@ func on_action_points_changed(name_hint, action_points_current, action_points_ma
 	var char_stat = get_char_stat(name_hint)
 	if not char_stat:
 		return
-	char_stat.visible = true
+	char_stat.get_parent().visible = true
 	char_stat.get_node("LabelName").text = tr(name_hint)
 	var action_points_bar = char_stat.get_node("ActionPointsBar")
 	var action_points_label = action_points_bar.get_node("Label")
@@ -334,6 +335,8 @@ func set_crouch_indicator(crouch):
 func cleanup_panel(panel):
 	var ui_items = panel.get_children()
 	for ui_item in ui_items:
+		if not (ui_item is PLDItemUI):
+			continue
 		panel.remove_child(ui_item)
 		ui_item.queue_free()
 
@@ -542,6 +545,9 @@ func select_active_quick_item():
 	if active_quick_item_idx < items.size():
 		activate_item_use(items[active_quick_item_idx])
 	for item in items:
+		if not item.has_node("ItemBox/LabelKey"):
+			# In order to ignore arbitrary items inside inventory panel, if any
+			continue
 		var label_key = items[idx].get_node("ItemBox/LabelKey")
 		label_key.text = __PLDRT.common_utils.get_input_control("active_item_%d" % (idx + 1), false)
 		var is_active = idx == active_quick_item_idx
@@ -570,6 +576,9 @@ func get_active_item():
 	if is_valid_quick_index(active_quick_item_idx) and quick_items_panel.get_child(active_quick_item_idx).item_id:
 		return quick_items_panel.get_child(active_quick_item_idx)
 	return null
+
+func get_abilities_panel():
+	return abilities_panel if abilities_panel else get_node("VBoxContainer/MainHUD/HBoxAbilities")
 
 func get_mouse_cursor():
 	return mouse_cursor
