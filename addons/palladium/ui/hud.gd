@@ -20,9 +20,10 @@ const ALWAYS_VISIBLE_MESSAGE_TEMPLATES = [
 export var cutscene_mode = false
 
 onready var main_hud = get_node("VBoxContainer/MainHUD")
-onready var abilities_panel = main_hud.get_node("HBoxAbilities")
-onready var quick_items_dimmer = main_hud.get_node("QuickItemsDimmer")
-onready var quick_items_panel = main_hud.get_node("QuickItemsDimmer/HBoxQuickItems")
+onready var quick_items_dimmer = main_hud.get_node("HBoxContainer/QuickItemsDimmer")
+onready var quick_items_panel = quick_items_dimmer.get_node("HBoxQuickItems")
+onready var abilities_panel_bright = main_hud.get_node("HBoxContainer/VBoxRight/BrightAbilities")
+onready var abilities_panel_dark = main_hud.get_node("HBoxContainer/VBoxLeft/DarkAbilities")
 onready var info_label = main_hud.get_node("HBoxInfo/InfoLabel")
 onready var inventory = get_node("VBoxContainer/Inventory")
 onready var inventory_panel = inventory.get_node("VBoxContainer/InventoryContainer")
@@ -101,7 +102,8 @@ func has_game_ui():
 func show_game_ui(enable):
 	var v = enable and not cutscene_mode
 	info_panel.visible = v
-	abilities_panel.visible = v
+	abilities_panel_bright.visible = v
+	abilities_panel_dark.visible = v
 	quick_items_panel.visible = v
 	indicators_panel.visible = v and PLDDB.USE_INDICATORS
 	crosshair.visible = v and PLDDB.USE_CROSSHAIR
@@ -577,8 +579,19 @@ func get_active_item():
 		return quick_items_panel.get_child(active_quick_item_idx)
 	return null
 
-func get_abilities_panel():
-	return abilities_panel if abilities_panel else get_node("VBoxContainer/MainHUD/HBoxAbilities")
+func get_bright_abilities_panel():
+	return (
+		abilities_panel_bright
+			if abilities_panel_bright
+			else get_node("VBoxContainer/MainHUD/HBoxContainer/VBoxRight/BrightAbilities")
+	)
+
+func get_dark_abilities_panel():
+	return (
+		abilities_panel_dark
+			if abilities_panel_dark
+			else get_node("VBoxContainer/MainHUD/HBoxContainer/VBoxLeft/DarkAbilities")
+	)
 
 func get_mouse_cursor():
 	return mouse_cursor

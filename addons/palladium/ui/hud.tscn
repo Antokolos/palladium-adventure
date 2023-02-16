@@ -142,14 +142,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 2
 
-[node name="HBoxAbilities" type="HBoxContainer" parent="VBoxContainer/MainHUD"]
-margin_top = 464.0
-margin_right = 1920.0
-margin_bottom = 464.0
-size_flags_horizontal = 3
-size_flags_vertical = 8
-alignment = 1
-
 [node name="HBoxHints" type="HBoxContainer" parent="VBoxContainer/MainHUD"]
 margin_top = 468.0
 margin_right = 1920.0
@@ -165,20 +157,50 @@ size_flags_horizontal = 3
 align = 1
 valign = 1
 
-[node name="QuickItemsDimmer" type="PanelContainer" parent="VBoxContainer/MainHUD"]
-margin_left = 960.0
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MainHUD"]
 margin_top = 504.0
-margin_right = 960.0
+margin_right = 1920.0
 margin_bottom = 504.0
+size_flags_horizontal = 3
+size_flags_vertical = 4
+alignment = 1
+
+[node name="VBoxLeft" type="VBoxContainer" parent="VBoxContainer/MainHUD/HBoxContainer"]
+margin_right = 956.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+
+[node name="DarkAbilities" type="HBoxContainer" parent="VBoxContainer/MainHUD/HBoxContainer/VBoxLeft"]
+margin_right = 956.0
+size_flags_horizontal = 3
+size_flags_vertical = 4
+alignment = 2
+
+[node name="QuickItemsDimmer" type="PanelContainer" parent="VBoxContainer/MainHUD/HBoxContainer"]
+margin_left = 960.0
+margin_right = 960.0
 size_flags_horizontal = 4
 size_flags_vertical = 4
 custom_styles/panel = SubResource( 3 )
 
-[node name="HBoxQuickItems" type="HBoxContainer" parent="VBoxContainer/MainHUD/QuickItemsDimmer"]
+[node name="HBoxQuickItems" type="HBoxContainer" parent="VBoxContainer/MainHUD/HBoxContainer/QuickItemsDimmer"]
 show_behind_parent = true
 size_flags_horizontal = 3
 size_flags_vertical = 3
 alignment = 1
+
+[node name="VBoxRight" type="VBoxContainer" parent="VBoxContainer/MainHUD/HBoxContainer"]
+margin_left = 964.0
+margin_right = 1920.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+
+[node name="BrightAbilities" type="HBoxContainer" parent="VBoxContainer/MainHUD/HBoxContainer/VBoxRight"]
+margin_right = 956.0
+size_flags_horizontal = 3
+size_flags_vertical = 4
 
 [node name="HBoxInfo" type="HBoxContainer" parent="VBoxContainer/MainHUD"]
 margin_top = 508.0
