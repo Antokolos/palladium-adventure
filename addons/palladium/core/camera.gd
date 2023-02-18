@@ -645,6 +645,9 @@ func _input(event):
 	var player = __PLDRT.game_state.get_player()
 	if player and player.is_hidden():
 		return
+	for dlg in get_tree().get_nodes_in_group("game_dialogs"):
+		if dlg.is_visible():
+			return
 	if __PLDRT.game_state.is_tactical_view():
 		if event is InputEventMouse:
 			var pln = project_local_ray_normal(convert_mouse_event(event).position)
