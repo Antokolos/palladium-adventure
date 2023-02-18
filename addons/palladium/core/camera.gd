@@ -1,6 +1,10 @@
 extends Camera
 class_name PLDCamera
 
+signal tactical_cursor_action(collider)
+signal tactical_cursor_over(collider)
+signal tactical_cursor_out(collider)
+
 const TACTICAL_CAMERA_ROT_EPS = deg2rad(0.5)
 const TACTICAL_CAMERA_ROT_MIN_RAD = deg2rad(20)
 const TACTICAL_CAMERA_ROT_MAX_RAD = deg2rad(75)
@@ -62,6 +66,7 @@ var tactical_view_rotation = false
 var tactical_view_action = false
 var tactical_view_double_click = false
 var tactical_player_character = null
+var tactical_cursor_collider = null
 var tactical_camera_distance = (TACTICAL_CAMERA_DISTANCE_MIN + TACTICAL_CAMERA_DISTANCE_MAX) / 2
 var tactical_zoom_speed = 0
 var angle_rad_x = 0
@@ -431,7 +436,7 @@ func select_tactical_player(character):
 	tactical_player_character = character
 	tactical_player_character.enable_selection_mark(true)
 
-func process_tactical_view_action():
+func process_tactical_view_cursor(needs_action):
 	var point = (
 		projection_ray.get_collision_point()
 			if projection_ray.is_colliding()
@@ -444,17 +449,29 @@ func process_tactical_view_action():
 	)
 	projection_ray.cast_to = Vector3.ZERO
 	if point:
-		if (
-			collider
-			and collider is PLDCharacter
-			and not collider.equals(tactical_player_character)
-		):
-			if try_to_attack(collider):
+		if collider:
+			if (
+				needs_action
+				and collider is PLDCharacter
+				and not collider.equals(tactical_player_character)
+			):
+				if try_to_attack(collider):
+					return
+				if __PLDRT.game_state.tactical_selection_enabled():
+					select_tactical_player(collider)
 				return
-			if __PLDRT.game_state.tactical_selection_enabled():
-				select_tactical_player(collider)
-			return
-		if not tactical_player_character:
+			elif (
+				needs_action
+				or not tactical_cursor_collider
+				or tactical_cursor_collider.get_instance_id() != collider.get_instance_id()
+			):
+				if needs_action:
+					emit_signal("tactical_cursor_action", collider)
+				else:
+					emit_signal("tactical_cursor_over", collider)
+					emit_signal("tactical_cursor_out", tactical_cursor_collider)
+				tactical_cursor_collider = collider
+		if not needs_action or not tactical_player_character:
 			return
 		if not tactical_player_character.is_activated():
 			tactical_player_character.activate()
@@ -558,8 +575,8 @@ func _process(delta):
 		if m.get_point():
 			var v = global_transform.origin - m.get_point()
 			tactical_camera_distance = v.length()
+		process_tactical_view_cursor(tactical_view_action)
 		if tactical_view_action:
-			process_tactical_view_action()
 			tactical_view_action = false
 		elif tactical_player_character:
 			process_tactical_player_attack()
@@ -629,13 +646,14 @@ func _input(event):
 	if player and player.is_hidden():
 		return
 	if __PLDRT.game_state.is_tactical_view():
+		if event is InputEventMouse:
+			var pln = project_local_ray_normal(convert_mouse_event(event).position)
+			projection_ray.cast_to = TACTICAL_CAMERA_PROJECTION_LENGTH * pln
 		if (
 			event is InputEventMouseButton
 			and event.pressed
 			and event.button_index == BUTTON_LEFT
 		):
-			var pln = project_local_ray_normal(convert_mouse_event(event).position)
-			projection_ray.cast_to = TACTICAL_CAMERA_PROJECTION_LENGTH * pln
 			tactical_view_double_click = event.doubleclick
 			if use_point:
 				tactical_view_action = true
