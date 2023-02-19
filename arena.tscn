@@ -59,12 +59,14 @@ subdivide_width = 22
 [node name="HUD" type="Control"]
 anchor_right = 1.0
 anchor_bottom = 1.0
+mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="ViewportContainer" type="ViewportContainer" parent="."]
 anchor_right = 1.0
 anchor_bottom = 1.0
+mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch = true
@@ -101,7 +103,6 @@ navigation_path = NodePath("../..")
 [node name="enemy_x" parent="ViewportContainer/Viewport/Pyramid/enemies" instance=ExtResource( 24 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -25.8768 )
 name_hint = "enemy_x"
-navigation_path = NodePath("../..")
 has_melee_attack = true
 can_hide = false
 max_hits = 1
@@ -113,7 +114,6 @@ max_hits = 1
 [node name="enemy_y" parent="ViewportContainer/Viewport/Pyramid/enemies" instance=ExtResource( 24 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -13.8864 )
 name_hint = "enemy_y"
-navigation_path = NodePath("../..")
 has_melee_attack = true
 can_hide = false
 max_hits = 1

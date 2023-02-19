@@ -650,16 +650,13 @@ func convert_mouse_event(event : InputEventMouse):
 	mouseEvent.position.y = (viewport_size.y / root_viewport_size.y) * event.global_position.y
 	return mouseEvent
 
-func _input(event):
+func _unhandled_input(event):
 	if get_tree().paused \
 		or __PLDRT.conversation_manager.conversation_is_in_progress():
 		return
 	var player = __PLDRT.game_state.get_player()
 	if player and player.is_hidden():
 		return
-	for dlg in get_tree().get_nodes_in_group("game_dialogs"):
-		if dlg.is_visible():
-			return
 	if __PLDRT.game_state.is_tactical_view():
 		if event is InputEventMouse:
 			var pln = project_local_ray_normal(convert_mouse_event(event).position)
