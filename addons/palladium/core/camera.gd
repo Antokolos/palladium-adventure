@@ -11,7 +11,7 @@ const TACTICAL_CAMERA_ROT_MAX_RAD = deg2rad(75)
 const TACTICAL_CAMERA_DISTANCE_EPS = 0.15
 const TACTICAL_CAMERA_DISTANCE_MIN = 3
 const TACTICAL_CAMERA_DISTANCE_MAX = 180
-const TACTICAL_CAMERA_DISTANCE_PLAYER_SW = 4.4
+const TACTICAL_CAMERA_DISTANCE_PLAYER_SW = 19.9
 const TACTICAL_CAMERA_PROJECTION_LENGTH = 9999
 const TACTICAL_MOVEMENT_THRESHOLD = 10
 const TACTICAL_MOVEMENT_SPEED = 0.3
@@ -73,6 +73,11 @@ var angle_rad_x = 0
 var angle_x_reset = false
 var angle_rad_y = 0
 var angle_y_reset = false
+var character_to_switch_to = null setget set_character_to_switch_to, get_character_to_switch_to
+func set_character_to_switch_to(character):
+	character_to_switch_to = character
+func get_character_to_switch_to():
+	return character_to_switch_to
 
 func _ready():
 	change_quality(__PLDRT.settings.quality)
@@ -494,24 +499,31 @@ func process_tactical_player_attack():
 		else:
 			tactical_player_character.attack_start(possible_attack_target)
 
+func switch_to_character(character):
+	var cht = character.get_cam_holder().get_global_transform()
+	var v = cht.origin - character.get_global_transform().origin
+	var vn = v.normalized()
+	set_global_transform(Transform(
+		cht.basis,
+		cht.origin + (TACTICAL_CAMERA_DISTANCE_PLAYER_SW - v.length()) * vn
+	))
+	tactical_camera_distance = TACTICAL_CAMERA_DISTANCE_PLAYER_SW
+
 func switch_to_party_member(idx : int) -> void:
 	var i = 0
 	for ch in __PLDRT.game_state.get_characters():
 		if not ch.is_in_party():
 			continue
 		if i == idx:
-			var cht = ch.get_cam_holder().get_global_transform()
-			var v = cht.origin - ch.get_global_transform().origin
-			var vn = v.normalized()
-			set_global_transform(Transform(
-				cht.basis,
-				cht.origin + (TACTICAL_CAMERA_DISTANCE_PLAYER_SW - v.length()) * vn
-			))
-			tactical_camera_distance = TACTICAL_CAMERA_DISTANCE_PLAYER_SW
+			switch_to_character(ch)
 			return
 		i += 1
 
 func perform_player_switching():
+	if character_to_switch_to:
+		switch_to_character(character_to_switch_to)
+		character_to_switch_to = null
+		return true
 	if Input.is_action_just_pressed("switch_to_player_1"):
 		switch_to_party_member(0)
 		return true
