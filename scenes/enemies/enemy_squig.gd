@@ -1,4 +1,5 @@
 extends PLDEnemyGeneric
 
-func _ready():
-	pass
+func enemy_init():
+	set_relationship(-1)
+	activate()

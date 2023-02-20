@@ -225,7 +225,7 @@ const USE_INDICATORS = true
 
 const STORY_VARS_DEFAULT = {
 	"flashlight_on" : false,
-	"tactical_view_on" : true,
+	"tactical_view_on" : false,
 	"tactical_selection_on" : true
 }
 

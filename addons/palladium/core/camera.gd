@@ -587,6 +587,7 @@ func _process(delta):
 		if m.get_point():
 			var v = global_transform.origin - m.get_point()
 			tactical_camera_distance = v.length()
+		m.free()
 		process_tactical_view_cursor(tactical_view_action)
 		if tactical_view_action:
 			tactical_view_action = false

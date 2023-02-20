@@ -1181,6 +1181,7 @@ func do_process(delta, is_player):
 		has_floor_collision = has_floor_collision() or not should_fall
 		d.is_moving = has_movement(mpd.vel, has_floor_collision)
 		model.rotate_head(movement_data.get_rotation_angle_to_target_deg())
+		movement_data.free()
 	var rpd = process_rotation(
 		not __PLDRT.game_state.is_tactical_view()
 		and not d.is_moving

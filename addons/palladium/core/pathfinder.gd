@@ -465,10 +465,11 @@ func get_movement_data(is_player):
 		if target_position.distance_to(tp) > ALIGNMENT_RANGE:
 			update_navpath(current_transform.origin, target_position)
 		if navigation_agent.is_target_reachable():
-			return follow(current_transform, navigation_agent.get_next_location())
+			data.free()
+			data = follow(current_transform, navigation_agent.get_next_location())
 		else:
 			clear_path()
-			return data.clear_dir().with_rest_state(true)
+			data.clear_dir().with_rest_state(true)
 	
 	return data
 
