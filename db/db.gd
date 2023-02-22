@@ -2,6 +2,8 @@ tool
 extends Node
 class_name PLDDB
 
+signal custom_action_executed(takable_id, custom_action)
+
 ### COMMON PART ###
 const HEALING_RATE = 1
 const INTOXICATION_RATE_DEFAULT = 1
@@ -214,6 +216,8 @@ func can_execute_custom_action(item, action = "item_preview_action_1", event = n
 #			pass
 #		"item_preview_action_4":
 #			pass
+#	
+#	emit_signal("custom_action_executed", item.item_id, action)
 
 ### GAME-SPECIFIC PART ###
 
@@ -361,6 +365,8 @@ func execute_custom_action(item, action = "item_preview_action_1"):
 #				TakableIds.AIR_TANK:
 #					_pldrt.game_state.set_oxygen(_pldrt.game_state.get_player(), _pldrt.game_state.player_oxygen_max, _pldrt.game_state.player_oxygen_max)
 #					_pldrt.MEDIA.play_sound(PLDDBMedia.SoundId.MAN_BREATHE_IN_TANK)
+	
+	emit_signal("custom_action_executed", item.item_id, action)
 
 func use_healing_item(item):
 	var name_hint = PLDChars.PLAYER_NAME_HINT
