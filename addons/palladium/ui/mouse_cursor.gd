@@ -8,7 +8,18 @@ onready var viewport = __PLDRT.game_state.get_viewport()
 onready var rel_pos = Vector2(0, 0) setget set_rel_pos, get_rel_pos
 
 var in_focus = true
-var warping_mutex : Mutex = Mutex.new()
+var warping_mutex : FakeMutex = FakeMutex.new()
+
+# Godot's Mutex causes crash in MacOS right now, so I've created this dummy implementation
+# Not an actual mutex, not thread safe!
+class FakeMutex:
+	var state = OK
+	func try_lock():
+		return state
+	func lock():
+		state = ERR_BUSY
+	func unlock():
+		state = OK
 
 func _ready():
 	Input.connect("joy_connection_changed", self, "_on_joy_connection_changed")
