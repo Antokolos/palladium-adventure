@@ -718,7 +718,7 @@ func _unhandled_input(event):
 				input_movement_vector.x = 0
 				input_movement_vector.y = 0
 				var viewport = __PLDRT.game_state.get_viewport()
-				var pos = viewport.get_mouse_position()
+				var pos = convert_mouse_event(event).position
 				if pos.x < TACTICAL_MOVEMENT_THRESHOLD:
 					input_movement_vector.x = -1
 				if pos.y < TACTICAL_MOVEMENT_THRESHOLD:

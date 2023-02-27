@@ -720,20 +720,22 @@ func _on_UnderwaterEffect_visibility_changed():
 	else:
 		image_adjust.visible = __PLDRT.settings.use_image_adjust
 
-func switch_to_player_if_clicked(event, player_idx):
+func process_event(event, player_idx):
 	if (
 		(event is InputEventMouseButton and event.button_index == BUTTON_LEFT)
 	):
 		__PLDRT.game_state.get_cam().switch_to_party_member(player_idx)
+	elif event is InputEventMouseMotion:
+		__PLDRT.game_state.get_viewport().unhandled_input(event)
 
 func _on_Character_0_gui_input(event):
-	switch_to_player_if_clicked(event, 0)
+	process_event(event, 0)
 
 func _on_Character_1_gui_input(event):
-	switch_to_player_if_clicked(event, 1)
+	process_event(event, 1)
 
 func _on_Character_2_gui_input(event):
-	switch_to_player_if_clicked(event, 2)
+	process_event(event, 2)
 
 func _on_Character_3_gui_input(event):
-	switch_to_player_if_clicked(event, 3)
+	process_event(event, 3)
