@@ -263,11 +263,15 @@ func get_target_position():
 	var t = get_preferred_target()
 	return t.get_global_transform().origin if t else null
 
+func teleport_to_global_transform(global_transform : Transform):
+	set_global_transform(global_transform)
+	clear_path()
+	reset_movement_and_rotation()
+
 func teleport(node_to):
-	if node_to:
-		clear_path()
-		set_global_transform(node_to.get_global_transform())
-		reset_movement_and_rotation()
+	if not node_to:
+		return
+	teleport_to_global_transform(node_to.get_global_transform())
 
 func is_pathfinding_enabled():
 	return pathfinding_enabled
@@ -454,6 +458,7 @@ func get_movement_data(is_player):
 		return data
 	var target_position = get_target_position()
 	if not target_position:
+		data.with_rest_state(true)
 		return data
 	if (
 		__PLDRT.game_state.is_tactical_view()
