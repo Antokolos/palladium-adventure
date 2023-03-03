@@ -48,7 +48,7 @@ func can_create_waypoint(character, origin):
 		return false
 	return true
 
-func create_waypoint(character, origin):
+func create_waypoint(character, origin, basis = Basis()):
 	if not can_create_waypoint(character, origin):
 		return null
 	var pos3d = Position3D.new()
@@ -56,5 +56,5 @@ func create_waypoint(character, origin):
 		get_node("patrol_area").add_child(pos3d)
 	else:
 		add_child(pos3d)
-	pos3d.global_transform.origin = origin
+	pos3d.global_transform = Transform(basis, origin)
 	return pos3d

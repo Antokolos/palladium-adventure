@@ -204,6 +204,11 @@ func has_target_node():
 func get_target_node():
 	return target_node
 
+func set_target_node_from_transform(target_transform, update_navpath = true):
+	var level = __PLDRT.game_state.get_level()
+	var pos3d = level.create_waypoint(self, target_transform.origin, target_transform.basis)
+	return set_target_node(pos3d, update_navpath)
+
 func set_target_node(node, update_navpath = true):
 	if node:
 		if (
@@ -218,9 +223,8 @@ func set_target_node(node, update_navpath = true):
 
 func update_navpath_to_target():
 	if target_node:
-		var current_position = get_global_transform().origin
 		var target_position = target_node.get_global_transform().origin
-		update_navpath(current_position, target_position)
+		update_navpath(target_position)
 	else:
 		clear_path()
 	if show_path and __PLDRT.settings.show_path and path_drawer:
@@ -405,8 +409,8 @@ func follow(current_transform, next_position):
 				.with_signal("arrived_to", [target])
 	return data
 
-func update_navpath(pstart, pend):
-	navigation_agent.set_target_location(pend)
+func update_navpath(target_position):
+	navigation_agent.set_target_location(target_position)
 
 func has_path():
 	return not navigation_agent.is_navigation_finished()
@@ -468,7 +472,7 @@ func get_movement_data(is_player):
 	):
 		var tp = navigation_agent.get_target_location()
 		if target_position.distance_to(tp) > ALIGNMENT_RANGE:
-			update_navpath(current_transform.origin, target_position)
+			update_navpath(target_position)
 		if navigation_agent.is_target_reachable():
 			data.free()
 			data = follow(current_transform, navigation_agent.get_next_location())
