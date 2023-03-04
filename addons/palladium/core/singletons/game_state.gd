@@ -5,6 +5,7 @@ signal game_saved()
 signal game_loaded()
 signal shader_cache_processed()
 signal player_registered(player)
+signal rest_state_changed(player, previous_state, new_state)
 signal player_surge(player, enabled)
 signal player_underwater(player, enabled)
 signal player_poisoned(player, enabled, intoxication_rate)
@@ -472,6 +473,9 @@ func on_party_joined(character):
 func on_party_left(character):
 	emit_stats_signals_for_everyone()
 
+func on_rest_state_changed(character, previous_state, new_state):
+	emit_signal("rest_state_changed", character, previous_state, new_state)
+
 func _on_ModulationTween_tween_completed(object, key):
 	var gwp = get_game_window_parent()
 	if not gwp:
@@ -741,6 +745,9 @@ func set_oxygen(character, oxygen_current, oxygen_max):
 
 func set_action_points(character, action_points_current, action_points_max):
 	var name_hint = character.get_name_hint()
+	set_action_points_for_name(name_hint, action_points_current, action_points_max)
+
+func set_action_points_for_name(name_hint, action_points_current, action_points_max):
 	var apc = action_points_current if action_points_current < action_points_max else action_points_max
 	party_stats[name_hint]["action_points_current"] = apc
 	party_stats[name_hint]["action_points_max"] = action_points_max
@@ -922,6 +929,7 @@ func register_player(player):
 	player.connect("player_changed", hud, "on_player_changed")
 	player.connect("party_joined", self, "on_party_joined")
 	player.connect("party_left", self, "on_party_left")
+	player.connect("rest_state_changed", self, "on_rest_state_changed")
 	player.set_look_transition_if_needed()
 	if characters_transition_data.has(name_hint):
 		set_character_data(characters_transition_data[name_hint], player)
