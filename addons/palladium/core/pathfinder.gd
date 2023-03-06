@@ -3,6 +3,7 @@ class_name PLDPathfinder
 
 signal activated_changed(player_node, previous_state, new_state)
 signal rest_state_changed(player_node, previous_state, new_state)
+signal teleported_to(player_node, origin, basis)
 signal arrived_to(player_node, target_node)
 signal arrived_to_boundary(player_node, target_node)
 signal out_of_bounds(player_node)
@@ -271,6 +272,7 @@ func teleport_to_global_transform(global_transform : Transform):
 	set_global_transform(global_transform)
 	clear_path()
 	reset_movement_and_rotation()
+	emit_signal("teleported_to", self, global_transform.origin, global_transform.basis)
 
 func teleport(node_to):
 	if not node_to:

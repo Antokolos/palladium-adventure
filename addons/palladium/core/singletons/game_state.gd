@@ -6,6 +6,7 @@ signal game_loaded()
 signal shader_cache_processed()
 signal player_registered(player)
 signal rest_state_changed(player, previous_state, new_state)
+signal teleported_to(player, origin, basis)
 signal player_surge(player, enabled)
 signal player_underwater(player, enabled)
 signal player_poisoned(player, enabled, intoxication_rate)
@@ -476,6 +477,9 @@ func on_party_left(character):
 func on_rest_state_changed(character, previous_state, new_state):
 	emit_signal("rest_state_changed", character, previous_state, new_state)
 
+func on_teleported_to(character, origin, basis):
+	emit_signal("teleported_to", character, origin, basis)
+	
 func _on_ModulationTween_tween_completed(object, key):
 	var gwp = get_game_window_parent()
 	if not gwp:
@@ -930,6 +934,7 @@ func register_player(player):
 	player.connect("party_joined", self, "on_party_joined")
 	player.connect("party_left", self, "on_party_left")
 	player.connect("rest_state_changed", self, "on_rest_state_changed")
+	player.connect("teleported_to", self, "on_teleported_to")
 	player.set_look_transition_if_needed()
 	if characters_transition_data.has(name_hint):
 		set_character_data(characters_transition_data[name_hint], player)
