@@ -207,7 +207,7 @@ func get_target_node():
 
 func set_target_node_from_transform(target_transform, update_navpath = true):
 	var level = __PLDRT.game_state.get_level()
-	var pos3d = level.create_waypoint(self, target_transform.origin, target_transform.basis)
+	var pos3d = level.create_waypoint(self, target_transform.origin, target_transform.basis, true)
 	return set_target_node(pos3d, update_navpath)
 
 func set_target_node(node, update_navpath = true):

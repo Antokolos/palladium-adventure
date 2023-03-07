@@ -48,8 +48,8 @@ func can_create_waypoint(character, origin):
 		return false
 	return true
 
-func create_waypoint(character, origin, basis = Basis()):
-	if not can_create_waypoint(character, origin):
+func create_waypoint(character, origin, basis = Basis(), force : bool = false):
+	if not force and not can_create_waypoint(character, origin):
 		return null
 	var pos3d = Position3D.new()
 	if has_node("patrol_area"):
