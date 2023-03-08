@@ -12,6 +12,7 @@ signal player_underwater(player, enabled)
 signal player_poisoned(player, enabled, intoxication_rate)
 signal item_taken(item_id, count_total, count_taken, item_path)
 signal item_removed(item_id, count_total, count_removed)
+signal item_removed_from_player(name_hint, item_id, count_removed)
 signal item_used(player_node, target, item_id, item_count)
 signal health_changed(name_hint, health_current, health_max)
 signal oxygen_changed(name_hint, oxygen_current, oxygen_max)
@@ -547,21 +548,33 @@ func get_player_with_item(item_id):
 				return get_character(name_hint)
 	return null
 
-func remove_item_from_player(item_owner, item_id):
+func remove_item_from_player(item_owner, item_id, count = 1):
 	if not item_owner:
 		return
 	var name_hint = item_owner.get_name_hint()
+	remove_item_from_player_by_name(name_hint, item_id, count)
+
+func remove_item_from_player_by_name(name_hint, item_id, count = 1):
 	if quick_items.has(name_hint):
 		var item_owner_quick_items = quick_items[name_hint]
 		for i in range(0, item_owner_quick_items.size()):
 			if item_id == item_owner_quick_items[i].item_id:
-				item_owner_quick_items.remove(i)
+				item_owner_quick_items[i].count -= count
+				if item_owner_quick_items[i].count <= 0:
+					item_owner_quick_items[i].count = 0
+					item_owner_quick_items[i].item_id = null
+					item_owner_quick_items.remove(i)
+				emit_signal("item_removed_from_player", name_hint, item_id, count)
 				return
 	if inventory.has(name_hint):
 		var item_owner_inventory = inventory[name_hint]
 		for i in range(0, item_owner_inventory.size()):
 			if item_id == item_owner_inventory[i].item_id:
-				item_owner_inventory.remove(i)
+				item_owner_inventory[i].count -= count
+				if item_owner_inventory[i].count <= 0:
+					item_owner_inventory[i].count = 0
+					item_owner_inventory.remove(i)
+				emit_signal("item_removed_from_player", name_hint, item_id, count)
 				return
 
 func get_inventory():
