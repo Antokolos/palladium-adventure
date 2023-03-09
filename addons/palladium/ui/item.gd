@@ -2,6 +2,7 @@ extends PanelContainer
 class_name PLDItemUI
 
 signal used(player_node, target, item_id, item_count)
+signal clicked(item, button_index, doubleclick)
 
 const BORDER_COLOR = Color(0, 1, 1, 1)
 const DEFAULT_COLOR = Color("#7e7e7e")
@@ -136,3 +137,7 @@ func remove(all_items = false):
 
 func used(player_node, target):
 	emit_signal("used", player_node, target, item_id, item_count)
+
+func _on_item_gui_input(event):
+	if event is InputEventMouseButton and event.pressed:
+		emit_signal("clicked", self, event.button_index, event.doubleclick)

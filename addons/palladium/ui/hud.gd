@@ -353,6 +353,7 @@ func synchronize_items():
 func insert_ui_inventory_item(pos):
 	var new_item = load("res://addons/palladium/ui/item.tscn").instance()
 	new_item.connect("used", __PLDRT.game_state, "item_used")
+	new_item.connect("clicked", self, "_on_item_clicked")
 	var i = first_item_idx + pos
 	if i >= 0 and i < __PLDRT.game_state.get_inventory().size():
 		new_item.set_item_data(__PLDRT.game_state.get_inventory()[i].item_id, __PLDRT.game_state.get_inventory()[i].count)
@@ -364,6 +365,7 @@ func insert_ui_inventory_item(pos):
 func insert_ui_quick_item(pos):
 	var new_item = load("res://addons/palladium/ui/item.tscn").instance()
 	new_item.connect("used", __PLDRT.game_state, "item_used")
+	new_item.connect("clicked", self, "_on_item_clicked")
 	new_item.set_appearance(true, false)
 	if pos < __PLDRT.game_state.get_quick_items().size():
 		var quick_item = __PLDRT.game_state.get_quick_items()[pos]
@@ -465,6 +467,7 @@ func remove_ui_inventory_item(item_id, count):
 		if item_id == ui_item.item_id and count <= 0:
 			inventory_panel.remove_child(ui_item)
 			ui_item.disconnect("used", __PLDRT.game_state, "item_used")
+			ui_item.disconnect("clicked", self, "_on_item_clicked")
 			ui_item.queue_free()
 			insert_ui_inventory_item(MAX_VISIBLE_ITEMS - 1)
 			if idx == active_item_idx and active_item_idx > 0:
@@ -484,6 +487,7 @@ func remove_ui_quick_item(item_id, count):
 		if item_id == ui_item.item_id and count <= 0:
 			quick_items_panel.remove_child(ui_item)
 			ui_item.disconnect("used", __PLDRT.game_state, "item_used")
+			ui_item.disconnect("clicked", self, "_on_item_clicked")
 			ui_item.queue_free()
 			insert_ui_quick_item(idx)
 			return
@@ -722,7 +726,9 @@ func _on_UnderwaterEffect_visibility_changed():
 
 func process_event(event, player_idx):
 	if (
-		(event is InputEventMouseButton and event.button_index == BUTTON_LEFT)
+		event is InputEventMouseButton
+		and event.pressed
+		and event.button_index == BUTTON_LEFT
 	):
 		__PLDRT.game_state.get_cam().switch_to_party_member(player_idx)
 	elif event is InputEventMouseMotion:
@@ -739,3 +745,31 @@ func _on_Character_2_gui_input(event):
 
 func _on_Character_3_gui_input(event):
 	process_event(event, 3)
+
+func _on_item_clicked(item, button_index, doubleclick):
+	if button_index == BUTTON_LEFT:
+		var i = 0
+		if item.is_quick_item:
+			for ch in quick_items_panel.get_children():
+				if ch.get_instance_id() == item.get_instance_id():
+					set_active_quick_item(i)
+					if doubleclick:
+						var ev = InputEventAction.new()
+						ev.set_action("action")
+						ev.set_pressed(true)
+						Input.parse_input_event(ev)
+					return
+				else:
+					i += 1
+		else:
+			for ch in inventory_panel.get_children():
+				if ch.get_instance_id() == item.get_instance_id():
+					set_active_item(i)
+					if doubleclick:
+						var ev = InputEventAction.new()
+						ev.set_action("action")
+						ev.set_pressed(true)
+						Input.parse_input_event(ev)
+					return
+				else:
+					i += 1
