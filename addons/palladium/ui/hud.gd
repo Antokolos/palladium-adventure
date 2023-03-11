@@ -24,6 +24,7 @@ onready var quick_items_dimmer = main_hud.get_node("HBoxContainer/QuickItemsDimm
 onready var quick_items_panel = quick_items_dimmer.get_node("HBoxQuickItems")
 onready var abilities_panel_bright = main_hud.get_node("HBoxContainer/VBoxRight/BrightAbilities")
 onready var abilities_panel_dark = main_hud.get_node("HBoxContainer/VBoxLeft/DarkAbilities")
+onready var abilities_panel_quick = main_hud.get_node("HBoxQuickAbilities")
 onready var info_label = main_hud.get_node("HBoxInfo/InfoLabel")
 onready var inventory = get_node("VBoxContainer/Inventory")
 onready var inventory_panel = inventory.get_node("VBoxContainer/InventoryContainer")
@@ -104,6 +105,7 @@ func show_game_ui(enable):
 	info_panel.visible = v
 	abilities_panel_bright.visible = v
 	abilities_panel_dark.visible = v
+	abilities_panel_quick.visible = v
 	quick_items_panel.visible = v
 	indicators_panel.visible = v and PLDDB.USE_INDICATORS
 	crosshair.visible = v and PLDDB.USE_CROSSHAIR
@@ -595,6 +597,13 @@ func get_dark_abilities_panel():
 		abilities_panel_dark
 			if abilities_panel_dark
 			else get_node("VBoxContainer/MainHUD/HBoxContainer/VBoxLeft/DarkAbilities")
+	)
+
+func get_quick_abilities_panel():
+	return (
+		abilities_panel_quick
+			if abilities_panel_quick
+			else get_node("VBoxContainer/MainHUD/HBoxQuickAbilities")
 	)
 
 func get_mouse_cursor():

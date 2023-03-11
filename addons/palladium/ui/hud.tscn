@@ -146,9 +146,9 @@ size_flags_vertical = 3
 alignment = 2
 
 [node name="HBoxHints" type="HBoxContainer" parent="VBoxContainer/MainHUD"]
-margin_top = 468.0
+margin_top = 464.0
 margin_right = 1920.0
-margin_bottom = 500.0
+margin_bottom = 496.0
 mouse_filter = 2
 size_flags_horizontal = 3
 size_flags_vertical = 8
@@ -160,6 +160,15 @@ margin_bottom = 32.0
 size_flags_horizontal = 3
 align = 1
 valign = 1
+
+[node name="HBoxQuickAbilities" type="HBoxContainer" parent="VBoxContainer/MainHUD"]
+margin_top = 500.0
+margin_right = 1920.0
+margin_bottom = 500.0
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+alignment = 1
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/MainHUD"]
 margin_top = 504.0
