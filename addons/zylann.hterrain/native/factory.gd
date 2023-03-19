@@ -8,7 +8,7 @@ const HT_QuadTreeLodGeneric = preload("./quad_tree_lod_generic.gd")
 const _supported_os = {
 	"Windows": true,
 	"X11": true,
-	#"OSX": true
+	"OSX": true
 }
 # See https://docs.godotengine.org/en/stable/tutorials/export/feature_tags.html
 const _supported_archs = ["x86_64"]
@@ -18,6 +18,7 @@ static func _supports_current_arch() -> bool:
 	for arch in _supported_archs:
 		# This is misleading, we are querying features of the ENGINE, not the OS
 		if OS.has_feature(arch):
+			print("OS supports arch %s" % arch)
 			return true
 	return false
 
@@ -26,6 +27,7 @@ static func is_native_available() -> bool:
 	if not _supports_current_arch():
 		return false
 	var os = OS.get_name()
+	print("OS name is %s" % os)
 	if not _supported_os.has(os):
 		return false
 	# API changes can cause binary incompatibility
@@ -39,7 +41,9 @@ static func get_image_utils():
 		# TODO Godot doesn't always return `null` when it fails so that `if` doesn't always help...
 		# See https://github.com/Zylann/godot_heightmap_plugin/issues/331
 		if HT_ImageUtilsNative != null:
+			print("Native HTerrain image_utils is available!")
 			return HT_ImageUtilsNative.new()
+	print("Native HTerrain image_utils is NOT available!")
 	return HT_ImageUtilsGeneric.new()
 
 
@@ -47,5 +51,7 @@ static func get_quad_tree_lod():
 	if is_native_available():
 		var HT_QuadTreeLod = load(NATIVE_PATH + "quad_tree_lod.gdns")
 		if HT_QuadTreeLod != null:
+			print("Native HTerrain quad_tree_lod is available!")
 			return HT_QuadTreeLod.new()
+	print("Native HTerrain quad_tree_lod is NOT available!")
 	return HT_QuadTreeLodGeneric.new()
