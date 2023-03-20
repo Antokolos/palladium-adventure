@@ -179,25 +179,30 @@ func _ready():
 	match (__PLDRT.settings.language):
 		PLDSettings.LANGUAGE_EN:
 			language.select(0)
+			_on_Language_item_selected(0)
 		PLDSettings.LANGUAGE_RU:
 			language.select(1)
+			_on_Language_item_selected(1)
 		_:
 			language.select(0)
-	_on_Language_item_selected(__PLDRT.settings.language)
+			_on_Language_item_selected(0)
 	
 	vlanguage.add_item("None", PLDSettings.VLANGUAGE_NONE)
-	vlanguage.add_item("Russian", PLDSettings.VLANGUAGE_RU)
 	vlanguage.add_item("English", PLDSettings.VLANGUAGE_EN)
+	vlanguage.add_item("Russian", PLDSettings.VLANGUAGE_RU)
 	match (__PLDRT.settings.vlanguage):
 		PLDSettings.VLANGUAGE_NONE:
 			vlanguage.select(0)
-		PLDSettings.VLANGUAGE_RU:
-			vlanguage.select(1)
+			_on_VLanguage_item_selected(0)
 		PLDSettings.VLANGUAGE_EN:
+			vlanguage.select(1)
+			_on_VLanguage_item_selected(1)
+		PLDSettings.VLANGUAGE_RU:
 			vlanguage.select(2)
+			_on_VLanguage_item_selected(2)
 		_:
 			language.select(0)
-	_on_VLanguage_item_selected(__PLDRT.settings.vlanguage)
+			_on_VLanguage_item_selected(0)
 	
 	subtitles.pressed = __PLDRT.settings.subtitles
 	_on_Subtitles_pressed()
@@ -493,10 +498,20 @@ func _on_language_changed(ID):
 			language.select(0)
 
 func _on_Language_item_selected(ID):
-	__PLDRT.settings.set_language(ID)
+	match ID:
+		0:
+			__PLDRT.settings.set_language(PLDSettings.LANGUAGE_EN)
+		1:
+			__PLDRT.settings.set_language(PLDSettings.LANGUAGE_RU)
 
 func _on_VLanguage_item_selected(ID):
-	__PLDRT.settings.vlanguage = ID
+	match ID:
+		0:
+			__PLDRT.settings.vlanguage = PLDSettings.VLANGUAGE_NONE
+		1:
+			__PLDRT.settings.vlanguage = PLDSettings.VLANGUAGE_EN
+		2:
+			__PLDRT.settings.vlanguage = PLDSettings.VLANGUAGE_RU
 
 func _on_Subtitles_pressed():
 	var s = subtitles.is_pressed() if subtitles else __PLDRT.settings.subtitles

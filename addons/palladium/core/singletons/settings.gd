@@ -17,11 +17,12 @@ const AA_4X = 2
 const AA_2X = 1
 const AA_DISABLED = 0
 
-const LANGUAGE_RU = 1
-const LANGUAGE_EN = 0
+const LANGUAGE_RU = 2 # Corresponds to the value used in res://addons/nlbutils/core/db/data.gd
+const LANGUAGE_EN = 1 # Corresponds to the value used in res://addons/nlbutils/core/db/data.gd
+const LANGUAGE_NONE = 0
 
-const VLANGUAGE_EN = 2
-const VLANGUAGE_RU = 1
+const VLANGUAGE_RU = 2
+const VLANGUAGE_EN = 1
 const VLANGUAGE_NONE = 0
 
 const MASTER_VOLUME_DEFAULT = 100
