@@ -436,6 +436,18 @@ func clear_path():
 		path_drawer.clear_lines(name_hint)
 	navigation_agent.set_target_location(get_global_transform().origin)
 
+func has_unreachable_target():
+	var pt = get_preferred_target()
+	if not pt or get_distance_to(pt.get_global_transform().origin) < ALIGNMENT_RANGE:
+		return false
+	# TODO: rework this workaround? It is needed, for example, when the CPU does not
+	# have ship ticket and the player is in the water with the diamond
+	return (
+		is_rest_state()
+		or not navigation_agent.is_target_reachable()
+		or navigation_agent.is_navigation_finished()
+	)
+
 func get_distance_to(pos):
 	if pos:
 		var current_position = get_global_transform().origin
