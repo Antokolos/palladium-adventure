@@ -45,6 +45,10 @@ func show_tablet(is_show, activation_mode = PLDTablet.ActivationMode.DESKTOP):
 		pause_game(false)
 		__PLDRT.settings.save_settings()
 		__PLDRT.settings.save_input()
+		var ui = get_node("/root/UI") if has_node("/root/UI") else null # 'nlbutils' module is used
+		if ui:
+			ui.fullscreen = __PLDRT.settings.fullscreen
+			ui.save_settings()
 
 func show_difficulty_dialog():
 	get_node("difficulty_dialog").popup_centered_ratio(0.5)

@@ -416,7 +416,8 @@ func set_vsync(vs):
 	vsync = vs
 
 func set_fullscreen(fs):
-	OS.set_window_fullscreen(fs)
+	OS.window_borderless = fs
+	OS.window_fullscreen = fs
 	fullscreen = fs
 
 func set_invert_yaxis(enabled):

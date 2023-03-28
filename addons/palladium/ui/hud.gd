@@ -330,6 +330,10 @@ func show_tablet(is_show, activation_mode = PLDTablet.ActivationMode.DESKTOP):
 		pause_game(false)
 		__PLDRT.settings.save_settings()
 		__PLDRT.settings.save_input()
+		var ui = get_node("/root/UI") if has_node("/root/UI") else null # 'nlbutils' module is used
+		if ui:
+			ui.fullscreen = __PLDRT.settings.fullscreen
+			ui.save_settings()
 
 func set_crouch_indicator(crouch):
 	# TODO: indicator_crouch can be null when loading the game from save, because hud is not initialized yet, maybe this code should be refactored
