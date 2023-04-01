@@ -71,6 +71,7 @@ onready var third_person_collision_pos = third_person_camera.get_node("CameraCol
 onready var backtrace_ray = third_person_camera.get_node("BacktraceRay") if third_person_camera and third_person_camera.has_node("BacktraceRay") else null
 onready var translator_node = get_node(TRANSLATOR_NODE_PATH) if has_node(TRANSLATOR_NODE_PATH) else null
 onready var selection_mark = get_node("selection_mark") if has_node("selection_mark") else null
+onready var teleport_tween = get_node("TeleportTween") if has_node("TeleportTween") else null
 
 var vel = Vector3()
 
@@ -797,6 +798,8 @@ func is_need_to_use_physics(characters):
 		return false
 	if is_on_ladder:
 		return false
+	if is_teleport_tween_active():
+		return false
 	if is_player_controlled() or not character_nodes.has_floor_collision():
 		return true
 	if has_path():
@@ -1068,6 +1071,35 @@ func update_rays_to_characters(characters):
 			set_point_of_interest(character)
 			poi = character
 	return { "poi" : poi, "player_is_crouching" : player_is_crouching }
+
+func is_on_the_way_to_target():
+	if is_teleport_tween_active():
+		return true
+	return .is_on_the_way_to_target()
+
+func is_teleport_tween_active():
+	return teleport_tween and teleport_tween.is_active()
+
+func teleport_via_tween(node_to):
+	if not teleport_tween or not node_to:
+		return
+	teleport_tween.interpolate_property(
+		self,
+		"translation",
+		get_global_transform().origin,
+		node_to.get_global_transform().origin,
+		3,
+		Tween.TRANS_LINEAR,
+		Tween.EASE_IN_OUT
+	)
+	enable_collisions_and_interaction(false, true)
+	__PLDRT.game_state.set_saving_disabled(true)
+	teleport_tween.start()
+
+func _on_TeleportTween_tween_completed(object, key):
+	enable_collisions_and_interaction(true, true)
+	__PLDRT.game_state.set_saving_disabled(false)
+	teleport_to_global_transform(global_transform)
 
 func _on_NavigationAgent_velocity_computed(safe_velocity):
 	var characters = __PLDRT.game_state.get_characters()

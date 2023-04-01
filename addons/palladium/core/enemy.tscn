@@ -143,5 +143,8 @@ material_override = SubResource( 7 )
 generate_lightmap = false
 script = ExtResource( 3 )
 
+[node name="TeleportTween" type="Tween" parent="."]
+
 [connection signal="path_changed" from="NavigationAgent" to="." method="_on_NavigationAgent_path_changed"]
 [connection signal="velocity_computed" from="NavigationAgent" to="." method="_on_NavigationAgent_velocity_computed"]
+[connection signal="tween_completed" from="TeleportTween" to="." method="_on_TeleportTween_tween_completed"]
