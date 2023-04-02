@@ -16,6 +16,7 @@ signal attack_finished(player_node, target, previous_target, attack_anim_idx)
 signal stun_started(player_node, weapon)
 signal stun_finished(player_node, prematurely)
 signal take_damage(player_node, fatal, hit_direction_node, hit_dir_vec)
+signal teleport_tween_started(player_node, origin)
 
 const BITMASK_WATERWAYS : int = 4 # Bit 2, value 4
 const GRAVITY_FALLING = 10.2
@@ -1080,20 +1081,21 @@ func is_on_the_way_to_target():
 func is_teleport_tween_active():
 	return teleport_tween and teleport_tween.is_active()
 
-func teleport_via_tween(node_to):
-	if not teleport_tween or not node_to:
+func teleport_via_tween(origin):
+	if not teleport_tween or not origin:
 		return
 	teleport_tween.interpolate_property(
 		self,
 		"translation",
 		get_global_transform().origin,
-		node_to.get_global_transform().origin,
+		origin,
 		3,
 		Tween.TRANS_LINEAR,
 		Tween.EASE_IN_OUT
 	)
 	enable_collisions_and_interaction(false, true)
 	__PLDRT.game_state.set_saving_disabled(true)
+	emit_signal("teleport_tween_started", self, origin)
 	teleport_tween.start()
 
 func _on_TeleportTween_tween_completed(object, key):
