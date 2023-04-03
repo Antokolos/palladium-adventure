@@ -647,8 +647,8 @@ func convert_mouse_event(event : InputEventMouse):
 	var mouseEvent = event.duplicate()
 	var viewport_size = __PLDRT.game_state.get_viewport().size
 	var root_viewport_size = __PLDRT.game_state.get_root_viewport().size
-	mouseEvent.position.x = (viewport_size.x / root_viewport_size.x) * event.global_position.x
-	mouseEvent.position.y = (viewport_size.y / root_viewport_size.y) * event.global_position.y
+	mouseEvent.position.x = (viewport_size.x / root_viewport_size.x) * event.position.x
+	mouseEvent.position.y = (viewport_size.y / root_viewport_size.y) * event.position.y
 	return mouseEvent
 
 func _unhandled_input(event):

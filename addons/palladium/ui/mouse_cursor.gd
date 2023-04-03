@@ -4,7 +4,7 @@ const AXIS_VALUE_THRESHOLD = 0.15
 const JOY_SENSITIVITY = 30
 
 onready var cursor_normal = $cursor_normal
-onready var viewport = __PLDRT.game_state.get_viewport()
+onready var viewport = __PLDRT.game_state.get_root_viewport()
 onready var rel_pos = Vector2(0, 0) setget set_rel_pos, get_rel_pos
 
 var in_focus = true
