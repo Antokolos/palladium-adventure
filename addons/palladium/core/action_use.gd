@@ -85,7 +85,12 @@ func highlight_custom_action():
 	var custom_actions = __PLDRT.game_state.get_custom_actions(item)
 	if custom_actions.empty() or not __PLDRT.DB.can_execute_custom_action(item, custom_actions[0]):
 		return ""
-	return __PLDRT.common_utils.get_action_input_control() + tr(PLDDB.get_item_name(item.item_id) + "_" + custom_actions[0])
+	return (
+		"["
+		+ __PLDRT.common_utils.get_action_input_control()
+		+ tr(PLDDB.get_item_name(item.item_id) + "_" + custom_actions[0])
+		+ "]"
+	)
 
 func highlight(player_node):
 	if __PLDRT.game_state.get_hud().is_in_conversation():

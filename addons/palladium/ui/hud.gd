@@ -427,7 +427,7 @@ func _on_camera_restored(player_node, cutscene_node, camera, conversation_name, 
 
 func _on_preview_opened(item):
 	messages_container.visible = false
-	main_hud.get_node("HBoxHints/ActionHintLabel").text = ""
+	set_action_hint_label_text("")
 	var label_close_node = actions_panel.get_node("ActionsContainer/HintLabelClose")
 	label_close_node.text = (
 		__PLDRT.common_utils.get_input_control("item_preview_toggle")
@@ -609,6 +609,16 @@ func get_quick_abilities_panel():
 			if abilities_panel_quick
 			else get_node("VBoxContainer/MainHUD/HBoxQuickAbilities")
 	)
+
+func set_action_hint_label_text(text):
+	var separator = main_hud.get_node("HBoxInfo/VSeparator")
+	var label = main_hud.get_node("HBoxInfo/ActionHintLabel")
+	if text and not text.empty():
+		separator.visible = true
+		label.text = text
+	else:
+		separator.visible = false
+		label.text = ""
 
 func get_mouse_cursor():
 	return mouse_cursor

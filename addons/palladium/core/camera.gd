@@ -559,7 +559,7 @@ func _process(delta):
 	
 	if use_point:
 		var player = __PLDRT.game_state.get_player()
-		__PLDRT.game_state.get_hud().main_hud.get_node("HBoxHints/ActionHintLabel").text = use_point.highlight(player)
+		__PLDRT.game_state.get_hud().set_action_hint_label_text(use_point.highlight(player))
 	change_culling()
 	
 	if __PLDRT.game_state.is_tactical_view():
