@@ -472,9 +472,11 @@ func on_party_joined(character):
 	if not party_stats.has(name_hint):
 		party_stats[name_hint] = CHARACTER_STATS_DEFAULT.duplicate(true)
 	emit_stats_signals(name_hint)
+	get_hud().set_name_data(name_hint)
 
 func on_party_left(character):
 	emit_stats_signals_for_everyone()
+	get_hud().set_party_name_datas()
 
 func on_rest_state_changed(character, previous_state, new_state):
 	emit_signal("rest_state_changed", character, previous_state, new_state)

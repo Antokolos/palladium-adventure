@@ -418,6 +418,9 @@ func set_vsync(vs):
 func set_fullscreen(fs):
 	OS.window_borderless = fs
 	OS.window_fullscreen = fs
+	if fs:
+		OS.set_window_position(OS.get_screen_position())
+		OS.set_window_size(OS.get_screen_size())
 	fullscreen = fs
 
 func set_invert_yaxis(enabled):

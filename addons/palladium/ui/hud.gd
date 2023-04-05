@@ -49,27 +49,22 @@ onready var indicator_crouch = indicators_panel.get_node("IndicatorCrouchPanel/I
 onready var tex_crouch_off = preload("res://addons/palladium/assets/ui/tex_crouch_off.tres")
 onready var tex_crouch_on = preload("res://addons/palladium/assets/ui/tex_crouch_on.tres")
 
-onready var info_panel = get_node("Info")
-onready var char_stats = [
-	info_panel.get_node("HInfo/Character_0/Stats"),
-	info_panel.get_node("HInfo/Character_1/Stats"),
-	info_panel.get_node("HInfo/Character_2/Stats"),
-	info_panel.get_node("HInfo/Character_3/Stats")
-]
 onready var style_party_sel = preload("res://addons/palladium/styles/party_sel.tres")
 onready var style_party_nonsel = preload("res://addons/palladium/styles/party_nonsel.tres")
 
 onready var mouse_cursor = get_node("mouse_cursor")
 
+var info_panel = null
+var char_stats = null
 var active_item_idx = 0
 var active_quick_item_idx = 0
 var first_item_idx = 0
 var popup_message_queue = []
 
 func _ready():
-	for stat in char_stats:
-		stat.get_node("HealthBar").visible = PLDDB.USE_HEALTH
-		stat.get_node("ActionPointsBar").visible = PLDDB.USE_ACTION_POINTS
+	for stat in get_char_stats():
+		stat.get_node("Stats/HealthBar").visible = PLDDB.USE_HEALTH
+		stat.get_node("Stats/ActionPointsBar").visible = PLDDB.USE_ACTION_POINTS
 	indicators_panel.visible = PLDDB.USE_INDICATORS
 	crosshair.visible = PLDDB.USE_CROSSHAIR
 	__PLDRT.game_state.connect("game_saved", self, "_on_game_saved")
@@ -93,16 +88,32 @@ func _ready():
 	select_active_quick_item()
 	show_game_ui(not cutscene_mode)
 
+func get_info_panel():
+	if not info_panel:
+		info_panel = get_node("Info")
+	return info_panel
+
+func get_char_stats():
+	if not char_stats:
+		info_panel = get_info_panel()
+		char_stats = [
+			info_panel.get_node("HInfo/Character_0/Stats"),
+			info_panel.get_node("HInfo/Character_1/Stats"),
+			info_panel.get_node("HInfo/Character_2/Stats"),
+			info_panel.get_node("HInfo/Character_3/Stats")
+		]
+	return char_stats
+
 func has_game_ui():
 	return (
-		info_panel.visible
+		get_info_panel().visible
 		and (indicators_panel.visible or not PLDDB.USE_INDICATORS)
 		and (crosshair.visible or not PLDDB.USE_CROSSHAIR)
 	)
 
 func show_game_ui(enable):
 	var v = enable and not cutscene_mode
-	info_panel.visible = v
+	get_info_panel().visible = v
 	abilities_panel_bright.visible = v
 	abilities_panel_dark.visible = v
 	abilities_panel_quick.visible = v
@@ -199,19 +210,53 @@ func get_char_stat(name_hint : String):
 	for ch in characters:
 		if ch.is_in_party():
 			if name_hint.casecmp_to(ch.get_name_hint()) == 0:
-				return char_stats[i]
+				return get_char_stats()[i]
 			i += 1
-			if i >= char_stats.size():
+			if i >= get_char_stats().size():
 				return null
 	return null
+
+func set_party_name_datas():
+	var characters = __PLDRT.game_state.get_characters()
+	var i = 0
+	for ch in characters:
+		if ch.is_in_party():
+			set_name_data_for_stat(
+				ch.get_name_hint(),
+				get_char_stats()[i]
+			)
+			i += 1
+			if i >= get_char_stats().size():
+				break
+
+func set_name_data(name_hint, name_value = "", portrait_texture = null):
+	var char_stat = get_char_stat(name_hint)
+	if not char_stat:
+		return
+	set_name_data_for_stat(name_hint, char_stat, name_value, portrait_texture)
+
+func set_name_data_for_stat(
+	name_hint,
+	char_stat,
+	name_value = "",
+	portrait_texture = null
+):
+	char_stat.get_parent().visible = true
+	char_stat.get_node("Stats/NameBar/LabelName").text = (
+		tr(name_hint)
+			if name_value.empty()
+			else name_value
+	)
+	var portrait = char_stat.get_node("Portrait")
+	portrait.texture = portrait_texture
+	portrait.visible = (portrait_texture != null)
 
 func on_health_changed(name_hint, health_current, health_max):
 	var char_stat = get_char_stat(name_hint)
 	if not char_stat:
 		return
 	char_stat.get_parent().visible = true
-	char_stat.get_node("LabelName").text = tr(name_hint)
-	var health_bar = char_stat.get_node("HealthBar")
+	var health_bar = char_stat.get_node("Stats/HealthBar")
 	var health_label = health_bar.get_node("Label")
 	var health_progress = health_bar.get_node("Progress")
 	health_label.text = "%3d/%3d" % [health_current, health_max]
@@ -227,8 +272,7 @@ func on_oxygen_changed(name_hint, oxygen_current, oxygen_max):
 	if not char_stat:
 		return
 	char_stat.get_parent().visible = true
-	char_stat.get_node("LabelName").text = tr(name_hint)
-	var oxygen_bar = char_stat.get_node("OxygenBar")
+	var oxygen_bar = char_stat.get_node("Stats/OxygenBar")
 	var oxygen_label = oxygen_bar.get_node("Label")
 	var oxygen_progress = oxygen_bar.get_node("Progress")
 	oxygen_bar.visible = oxygen_current < oxygen_max
@@ -241,11 +285,10 @@ func on_action_points_changed(name_hint, action_points_current, action_points_ma
 	if not char_stat:
 		return
 	char_stat.get_parent().visible = true
-	char_stat.get_node("LabelName").text = tr(name_hint)
-	var action_points_bar = char_stat.get_node("ActionPointsBar")
+	var action_points_bar = char_stat.get_node("Stats/ActionPointsBar")
 	var action_points_label = action_points_bar.get_node("Label")
 	var action_points_progress = action_points_bar.get_node("Progress")
-	action_points_label.text = "%3d/%3d" % [action_points_current, action_points_max]
+	action_points_label.text = "%d/%d" % [action_points_current, action_points_max]
 	action_points_progress.value = action_points_current
 	action_points_progress.max_value = action_points_max
 
@@ -265,6 +308,7 @@ func on_crouching_changed(player_node, previous_state, new_state):
 func on_language_changed(ID):
 	select_active_item()
 	select_active_quick_item()
+	set_party_name_datas()
 
 func is_menu_hud():
 	return false
@@ -615,9 +659,11 @@ func set_action_hint_label_text(text):
 	var label = main_hud.get_node("HBoxInfo/ActionHintLabel")
 	if text and not text.empty():
 		separator.visible = true
+		label.visible = true
 		label.text = text
 	else:
 		separator.visible = false
+		label.visible = false
 		label.text = ""
 
 func get_mouse_cursor():
