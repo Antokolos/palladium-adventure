@@ -36,13 +36,24 @@ var visible_to_player = true
 func _ready():
 	__PLDRT.game_state.connect("player_underwater", self, "_on_player_underwater")
 	__PLDRT.game_state.connect("player_poisoned", self, "_on_player_poisoned")
-	character.get_model().connect("cutscene_finished", self, "_on_cutscene_finished")
+	var model = character.get_model()
+	if model:
+		model.connect("cutscene_finished", self, "_on_cutscene_finished")
 	melee_attack_area.monitoring = character.has_melee_attack()
 	melee_damage_area.monitoring = character.has_melee_attack()
 	ranged_damage_raycast.enabled = character.has_ranged_attack()
 	ranged_damage_raycast.add_exception(character)
 	standing_raycast.add_exception(character)
 	under_feet_raycast.add_exception(character)
+
+func replace_model(model):
+	var existing_model = character.get_model()
+	if (
+		existing_model
+		and existing_model.is_connected("cutscene_finished", self, "_on_cutscene_finished")
+	):
+		existing_model.disconnect("cutscene_finished", self, "_on_cutscene_finished")
+	model.connect("cutscene_finished", self, "_on_cutscene_finished")
 
 func _on_player_underwater(player, enable):
 	if player and not player.equals(character):

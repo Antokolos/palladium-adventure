@@ -169,8 +169,29 @@ func get_model_holder():
 func get_model():
 	if cached_model:
 		return cached_model
-	cached_model = get_model_holder().get_child(0)
+	var model_holder = get_model_holder()
+	var child_count = model_holder.get_child_count()
+	if child_count == 0:
+		return null
+	cached_model = model_holder.get_child(child_count - 1)
 	return cached_model
+
+func replace_model(model):
+	var existing_model = get_model()
+	get_model_holder().add_child(model)
+	cached_model = model
+	if existing_model:
+		existing_model.queue_free()
+	# TODO: also should connect model signals with all other players
+	# TODO: there is a Palladium bug here: players are connected with signals
+	# TODO: of only that players which were created AFTER the current player
+	model.connect("character_dead", self, "_on_character_dead")
+	model.connect("character_dying", self, "_on_character_dying")
+	model.set_simple_mode(
+		__PLDRT.settings.get_camera_view() == PLDDB.CAMERA_VIEW_FIRST_PERSON
+	)
+	if activated:
+		model.activate()
 
 func rest():
 	get_model().look()
@@ -191,7 +212,8 @@ func is_dying():
 	return get_model().is_dying()
 
 func is_dead():
-	return get_model().is_dead()
+	var model = get_model()
+	return model.is_dead() if model else false
 
 func is_taking_damage():
 	return get_model().is_taking_damage()

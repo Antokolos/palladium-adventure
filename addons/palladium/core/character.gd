@@ -365,6 +365,10 @@ func get_cam_holder():
 			else third_person_collision_pos
 	)
 
+func replace_model(model):
+	.replace_model(model)
+	character_nodes.replace_model(model)
+
 ### States ###
 
 func become_player():
@@ -373,7 +377,10 @@ func become_player():
 	if not is_in_party():
 		join_party()
 	var model = get_model()
-	model.set_simple_mode(__PLDRT.settings.get_camera_view() == PLDDB.CAMERA_VIEW_FIRST_PERSON)
+	if model:
+		model.set_simple_mode(
+			__PLDRT.settings.get_camera_view() == PLDDB.CAMERA_VIEW_FIRST_PERSON
+		)
 	var player = __PLDRT.game_state.get_player()
 	var cam = __PLDRT.game_state.get_cam()
 	deactivate()
@@ -497,11 +504,11 @@ func _on_player_registered(player):
 	player.connect("aggressive_changed", self, "_on_aggressive_changed")
 	player.connect("morale_changed", self, "_on_morale_changed")
 	var model = player.get_model()
-	if not model:
-		push_error("Model not set")
-		return
-	model.connect("character_dead", self, "_on_character_dead")
-	model.connect("character_dying", self, "_on_character_dying")
+	if model:
+		model.connect("character_dead", self, "_on_character_dead")
+		model.connect("character_dying", self, "_on_character_dying")
+	else:
+		push_warning("Model not set")
 
 func _on_aggressive_changed(player_node, previous_state, new_state):
 	if new_state:
@@ -528,7 +535,9 @@ func _on_character_dying(player):
 func activate():
 	.activate()
 	navigation_agent.avoidance_enabled = USE_AVOIDANCE and is_in_party()
-	get_model().activate()
+	var model = get_model()
+	if model:
+		model.activate()
 	# enable_rays_to_characters(true) -- rays will be enabled in do_process() if needed
 
 func deactivate():
@@ -1199,11 +1208,12 @@ func do_process(delta, is_player):
 		and not character_nodes.has_floor_collision()
 	)
 	
-	model.enable_animations(
-		force_visibility
-		or is_visible_to_player()
-		or model.has_important_animations_now()
-	)
+	if model:
+		model.enable_animations(
+			force_visibility
+			or is_visible_to_player()
+			or model.has_important_animations_now()
+		)
 	
 	if d.cannot_move:
 		reset_movement_and_rotation()
