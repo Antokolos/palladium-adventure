@@ -39,6 +39,8 @@ func _ready():
 	var model = character.get_model()
 	if model:
 		model.connect("cutscene_finished", self, "_on_cutscene_finished")
+	else:
+		push_warning("Model not set")
 	melee_attack_area.monitoring = character.has_melee_attack()
 	melee_damage_area.monitoring = character.has_melee_attack()
 	ranged_damage_raycast.enabled = character.has_ranged_attack()
@@ -459,7 +461,11 @@ func _on_AttackTimer_timeout():
 
 func _on_RestTimer_timeout():
 	stop_walking_sound()
-	character.get_model().look()
+	var model = character.get_model()
+	if model:
+		model.look()
+	else:
+		push_warning("Model not set")
 
 func _on_VisibilityNotifier_screen_entered():
 	visible_to_player = true

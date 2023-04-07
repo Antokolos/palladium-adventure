@@ -194,32 +194,72 @@ func replace_model(model):
 		model.activate()
 
 func rest():
-	get_model().look()
+	var model = get_model()
+	if model:
+		model.look()
+	else:
+		push_warning("Model not set")
 
 func is_cutscene(cutscene_id = -1):
-	return get_model().is_cutscene(cutscene_id)
+	var model = get_model()
+	if model:
+		return model.is_cutscene(cutscene_id)
+	else:
+		push_warning("Model not set")
+	return false
 
 func play_cutscene(cutscene_id):
-	get_model().play_cutscene(cutscene_id)
+	var model = get_model()
+	if model:
+		model.play_cutscene(cutscene_id)
+	else:
+		push_warning("Model not set")
 
 func play_jumpscare(hideout, cutscene_id):
-	get_model().play_jumpscare(hideout, cutscene_id)
+	var model = get_model()
+	if model:
+		model.play_jumpscare(hideout, cutscene_id)
+	else:
+		push_warning("Model not set")
 
 func stop_cutscene():
-	get_model().stop_cutscene()
+	var model = get_model()
+	if model:
+		model.stop_cutscene()
+	else:
+		push_warning("Model not set")
 
 func is_dying():
-	return get_model().is_dying()
+	var model = get_model()
+	if model:
+		return model.is_dying()
+	else:
+		push_warning("Model not set")
+	return false
 
 func is_dead():
 	var model = get_model()
-	return model.is_dead() if model else false
+	if model:
+		return model.is_dead()
+	else:
+		push_warning("Model not set")
+	return false
 
 func is_taking_damage():
-	return get_model().is_taking_damage()
+	var model = get_model()
+	if model:
+		return model.is_taking_damage()
+	else:
+		push_warning("Model not set")
+	return false
 
 func is_movement_disabled():
-	return get_model().is_movement_disabled()
+	var model = get_model()
+	if model:
+		return model.is_movement_disabled()
+	else:
+		push_warning("Model not set")
+	return false
 
 func has_target_node():
 	return true if target_node else false

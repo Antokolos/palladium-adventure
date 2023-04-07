@@ -171,8 +171,12 @@ func attack_start(possible_attack_target, attack_anim_idx = -1, with_anim = true
 	last_attack_target = possible_attack_target
 	set_point_of_interest(possible_attack_target)
 	last_attack_anim_idx = attack_anim_idx
-	if with_anim and not get_model().is_attacking():
-		last_attack_anim_idx = get_model().attack(attack_anim_idx)
+	var model = get_model()
+	if model:
+		if with_anim and not model.is_attacking():
+			last_attack_anim_idx = model.attack(attack_anim_idx)
+	else:
+		push_warning("Model not set")
 	character_nodes.attack_start(immediately)
 	emit_signal("attack_started", self, possible_attack_target, last_attack_anim_idx)
 
@@ -207,7 +211,10 @@ func get_attack_poison_rate():
 	return 0
 
 func is_attacking():
-	return character_nodes.is_attacking() or get_model().is_attacking()
+	var model = get_model()
+	if not model:
+		push_warning("Model not set")
+	return character_nodes.is_attacking() or (model and model.is_attacking())
 
 func hit(injury_rate, poison_rate = 0, hit_direction_node = null, hit_dir_vec = Z_DIR):
 	if not is_activated():
@@ -224,17 +231,29 @@ func take_damage(fatal, hit_direction_node = null, hit_dir_vec = Z_DIR):
 		return
 	emit_signal("take_damage", self, fatal, hit_direction_node, hit_dir_vec)
 	stop_cutscene()
-	get_model().take_damage(fatal)
+	var model = get_model()
+	if model:
+		model.take_damage(fatal)
+	else:
+		push_warning("Model not set")
 	push_back(get_push_vec(hit_direction_node, hit_dir_vec))
 
 func kill_on_load():
-	get_model().kill_on_load()
+	var model = get_model()
+	if model:
+		model.kill_on_load()
+	else:
+		push_warning("Model not set")
 
 func kill():
 	if is_player_controlled():
 		__PLDRT.game_state.game_over()
+		return
+	var model = get_model()
+	if model:
+		model.kill()
 	else:
-		get_model().kill()
+		push_warning("Model not set")
 
 func need_to_set_look_transition():
 	return (
@@ -249,8 +268,17 @@ func need_to_set_look_transition():
 	)
 
 func set_look_transition_if_needed():
-	if need_to_set_look_transition():
-		get_model().set_look_transition(PLDCharacterModel.LOOK_TRANSITION_SQUATTING if is_crouching else PLDCharacterModel.LOOK_TRANSITION_STANDING)
+	if not need_to_set_look_transition():
+		return
+	var model = get_model()
+	if not model:
+		push_warning("Model not set")
+		return
+	model.set_look_transition(
+		PLDCharacterModel.LOOK_TRANSITION_SQUATTING
+			if is_crouching
+			else PLDCharacterModel.LOOK_TRANSITION_STANDING
+	)
 
 func enable_collisions_and_interaction(enable, all_shapes = false):
 #	if has_node("UpperBody_CollisionShape"):
@@ -298,12 +326,16 @@ func use(player_node, camera_node):
 			var player = __PLDRT.game_state.get_player()
 			var cam = __PLDRT.game_state.get_cam()
 			var m = get_model()
+			if not m:
+				push_warning("Model not set")
 			if not was_transporting and is_transporting:
 				if cam:
 					cam.activate_transporting()
-				m.set_meshes_portal_mode(m, CullInstance.PORTAL_MODE_GLOBAL, true)
+				if m:
+					m.set_meshes_portal_mode(m, CullInstance.PORTAL_MODE_GLOBAL, true)
 			elif was_transporting and not is_transporting:
-				m.set_meshes_portal_mode(m, CullInstance.PORTAL_MODE_ROAMING, false)
+				if m:
+					m.set_meshes_portal_mode(m, CullInstance.PORTAL_MODE_ROAMING, false)
 				if cam:
 					cam.deactivate_transporting()
 				set_scale(Vector3(1.0, 1.0, 1.0))
@@ -381,6 +413,8 @@ func become_player():
 		model.set_simple_mode(
 			__PLDRT.settings.get_camera_view() == PLDDB.CAMERA_VIEW_FIRST_PERSON
 		)
+	else:
+		push_warning("Model not set")
 	var player = __PLDRT.game_state.get_player()
 	var cam = __PLDRT.game_state.get_cam()
 	deactivate()
@@ -396,7 +430,10 @@ func become_player():
 		if __PLDRT.cutscene_manager.is_cutscene():
 			__PLDRT.cutscene_manager.stop_cutscene(self)
 		var player_model = player.get_model()
-		player_model.set_simple_mode(false)
+		if player_model:
+			player_model.set_simple_mode(false)
+		else:
+			push_warning("Model not set")
 		player.activate()
 	__PLDRT.game_state.set_player_name_hint(get_name_hint())
 	__PLDRT.game_state.set_poisoned(self, is_poisoned(), get_intoxication())
@@ -538,6 +575,8 @@ func activate():
 	var model = get_model()
 	if model:
 		model.activate()
+	else:
+		push_warning("Model not set")
 	# enable_rays_to_characters(true) -- rays will be enabled in do_process() if needed
 
 func deactivate():
@@ -670,7 +709,11 @@ func sit_down_change_collisions():
 func sit_down():
 	if not sit_down_change_collisions():
 		return
-	get_model().sit_down()
+	var model = get_model()
+	if model:
+		model.sit_down()
+	else:
+		push_warning("Model not set")
 	var is_player = is_player()
 	if is_player:
 		var companions = __PLDRT.game_state.get_companions()
@@ -692,7 +735,11 @@ func stand_up_change_collisions():
 func stand_up():
 	if not stand_up_change_collisions():
 		return
-	get_model().stand_up()
+	var model = get_model()
+	if model:
+		model.stand_up()
+	else:
+		push_warning("Model not set")
 	var is_player = is_player()
 	if is_player:
 		var companions = __PLDRT.game_state.get_companions()

@@ -37,7 +37,11 @@ func is_speaking():
 
 func stop_sound_and_lipsync(and_continue_conversation = true):
 	for character_speaker in _pldrt.game_state.get_characters():
-		character_speaker.get_model().stop_speaking()
+		var model = character_speaker.get_model()
+		if model:
+			model.stop_speaking()
+		else:
+			push_warning("Model not set")
 	current_speaker = null
 	current_phonetic = null
 	var was_speaking = false
@@ -172,6 +176,7 @@ func _on_PreDelayTimer_timeout():
 		return
 	var model = current_speaker.get_model()
 	if not model:
+		push_warning("Model not set")
 		return
 	if current_phonetic:
 		model.speak_text(current_phonetic, audio_stream_player.stream.get_length())

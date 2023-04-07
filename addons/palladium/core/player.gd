@@ -105,10 +105,18 @@ func get_usage_code(player_node):
 ### States ###
 
 func set_simple_mode(enable):
-	get_model().set_simple_mode(enable)
+	var model = get_model()
+	if model:
+		model.set_simple_mode(enable)
+	else:
+		push_warning("Model not set")
 
 func remove_item_from_hand():
-	get_model().remove_item_from_hand()
+	var model = get_model()
+	if model:
+		model.remove_item_from_hand()
+	else:
+		push_warning("Model not set")
 
 func get_camera_rot_min_deg():
 	return CAMERA_ROT_LADDER_MIN_DEG if is_on_ladder() else CAMERA_ROT_MIN_DEG
