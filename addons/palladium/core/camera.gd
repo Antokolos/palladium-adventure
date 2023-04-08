@@ -410,7 +410,12 @@ func is_tactical_player_character(character : PLDCharacter):
 	return tactical_player_character.equals(character)
 
 func process_tactical_player_sprinting():
-	tactical_player_character.set_sprinting(tactical_view_double_click)
+	if not tactical_player_character:
+		return
+	if not tactical_player_character.is_sprinting() and tactical_view_double_click:
+		tactical_player_character.set_sprinting(true)
+	elif tactical_player_character.is_sprinting() and not tactical_view_double_click:
+		tactical_player_character.set_sprinting(false)
 
 func try_to_attack(character):
 	if (
@@ -429,7 +434,6 @@ func try_to_attack(character):
 			not current_target
 			or not character.equals(current_target)
 		):
-			process_tactical_player_sprinting()
 			tactical_player_character.set_target_node(character)
 			return true
 	return false
@@ -454,6 +458,7 @@ func process_tactical_view_cursor(needs_action):
 	)
 	projection_ray.cast_to = Vector3.ZERO
 	if point:
+		process_tactical_player_sprinting()
 		if collider:
 			if (
 				needs_action
@@ -483,7 +488,6 @@ func process_tactical_view_cursor(needs_action):
 		var level = __PLDRT.game_state.get_level()
 		var pos3d = level.create_waypoint(tactical_player_character, point)
 		if pos3d:
-			process_tactical_player_sprinting()
 			tactical_player_character.set_target_node(pos3d)
 
 func process_tactical_player_attack():
