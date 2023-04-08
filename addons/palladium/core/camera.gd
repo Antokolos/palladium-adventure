@@ -429,8 +429,8 @@ func try_to_attack(character):
 			not current_target
 			or not character.equals(current_target)
 		):
-			tactical_player_character.set_target_node(character)
 			process_tactical_player_sprinting()
+			tactical_player_character.set_target_node(character)
 			return true
 	return false
 
@@ -483,8 +483,8 @@ func process_tactical_view_cursor(needs_action):
 		var level = __PLDRT.game_state.get_level()
 		var pos3d = level.create_waypoint(tactical_player_character, point)
 		if pos3d:
-			tactical_player_character.set_target_node(pos3d)
 			process_tactical_player_sprinting()
+			tactical_player_character.set_target_node(pos3d)
 
 func process_tactical_player_attack():
 	var possible_attack_target = (
