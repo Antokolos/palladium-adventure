@@ -9,6 +9,7 @@ signal patrolling_changed(player_node, previous_state, new_state)
 signal aggressive_changed(player_node, previous_state, new_state)
 signal morale_changed(player_node, previous_value, new_value)
 signal crouching_changed(player_node, previous_state, new_state)
+signal sprinting_changed(player_node, previous_state, new_state)
 signal floor_collision_changed(player_node, previous_state, new_state)
 signal attack_started(player_node, target, attack_anim_idx)
 signal attack_stopped(player_node, target, attack_anim_idx)
@@ -719,6 +720,8 @@ func sit_down():
 		var companions = __PLDRT.game_state.get_companions()
 		for companion in companions:
 			companion.sit_down()
+	if is_sprinting:
+		emit_signal("sprinting_changed", self, false, is_sprinting)
 	is_sprinting = false
 	is_crouching = true
 	emit_signal("crouching_changed", self, false, true)
@@ -754,6 +757,12 @@ func is_crouching():
 func toggle_crouch():
 	stand_up() if is_crouching else sit_down()
 
+func set_crouching(enable):
+	if enable and not is_crouching:
+		sit_down()
+	elif not enable and is_crouching:
+		stand_up()
+
 func get_possible_attacker():
 	return null
 
@@ -766,6 +775,8 @@ func is_sprinting():
 func set_sprinting(enable):
 	if enable and not can_run():
 		return
+	if is_sprinting != enable:
+		emit_signal("sprinting_changed", self, enable, is_sprinting)
 	is_sprinting = enable
 	var is_player = is_player()
 	if is_player:

@@ -3,6 +3,7 @@ class_name PLDPathfinder
 
 signal activated_changed(player_node, previous_state, new_state)
 signal rest_state_changed(player_node, previous_state, new_state)
+signal target_node_changed(player_node, previous_target_node, new_target_node)
 signal teleported_to(player_node, origin, basis)
 signal arrived_to(player_node, target_node)
 signal arrived_to_boundary(player_node, target_node)
@@ -279,6 +280,7 @@ func set_target_node(node, update_navpath = true):
 			and target_node.get_instance_id() == node.get_instance_id()
 		):
 			return false
+	emit_signal("target_node_changed", self, target_node, node)
 	target_node = node
 	if update_navpath:
 		update_navpath_to_target()

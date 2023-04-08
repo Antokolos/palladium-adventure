@@ -6,6 +6,9 @@ signal game_loaded()
 signal shader_cache_processed()
 signal player_registered(player)
 signal rest_state_changed(player, previous_state, new_state)
+signal crouching_changed(player, previous_state, new_state)
+signal sprinting_changed(player, previous_state, new_state)
+signal target_node_changed(player, previous_target_node, new_target_node)
 signal teleported_to(player, origin, basis)
 signal teleport_tween_started(player_node, origin)
 signal player_surge(player, enabled)
@@ -481,6 +484,15 @@ func on_party_left(character):
 func on_rest_state_changed(character, previous_state, new_state):
 	emit_signal("rest_state_changed", character, previous_state, new_state)
 
+func on_crouching_changed(character, previous_state, new_state):
+	emit_signal("crouching_changed", character, previous_state, new_state)
+
+func on_sprinting_changed(character, previous_state, new_state):
+	emit_signal("sprinting_changed", character, previous_state, new_state)
+
+func on_target_node_changed(character, previous_target_node, new_target_node):
+	emit_signal("target_node_changed", character, previous_target_node, new_target_node)
+
 func on_teleported_to(character, origin, basis):
 	emit_signal("teleported_to", character, origin, basis)
 
@@ -949,10 +961,13 @@ func register_player(player):
 	var hud = get_hud()
 	player_paths[name_hint] = player.get_path()
 	player.connect("crouching_changed", hud, "on_crouching_changed")
+	player.connect("crouching_changed", self, "on_crouching_changed")
 	player.connect("player_changed", hud, "on_player_changed")
 	player.connect("party_joined", self, "on_party_joined")
 	player.connect("party_left", self, "on_party_left")
 	player.connect("rest_state_changed", self, "on_rest_state_changed")
+	player.connect("sprinting_changed", self, "on_sprinting_changed")
+	player.connect("target_node_changed", self, "on_target_node_changed")
 	player.connect("teleported_to", self, "on_teleported_to")
 	player.connect("teleport_tween_started", self, "on_teleport_tween_started")
 	player.set_look_transition_if_needed()
