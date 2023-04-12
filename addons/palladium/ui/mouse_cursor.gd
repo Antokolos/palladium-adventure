@@ -110,6 +110,9 @@ func _notification(what):
 		MainLoop.NOTIFICATION_WM_FOCUS_OUT:
 		# the game window just lost focus from the operating system
 			in_focus = false
+			if __PLDRT.game_state.is_tactical_view():
+				__PLDRT.common_utils.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
+				warp_mouse(cursor_normal.position)
 
 func is_tactical_rotation():
 	return (
@@ -118,6 +121,8 @@ func is_tactical_rotation():
 	)
 
 func _input(event):
+	if not in_focus:
+		return
 	if __PLDRT.game_state.is_tactical_view():
 		if event.is_action_pressed("tactical_view_rotation"):
 			__PLDRT.common_utils.set_mouse_mode(Input.MOUSE_MODE_CAPTURED, true)
@@ -126,7 +131,7 @@ func _input(event):
 			__PLDRT.common_utils.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 			warp_mouse(cursor_normal.position)
 			return
-	if not in_focus or __PLDRT.common_utils.is_mouse_captured():
+	if __PLDRT.common_utils.is_mouse_captured():
 		return
 	if event is InputEventJoypadMotion:
 		var v = event.get_axis_value()

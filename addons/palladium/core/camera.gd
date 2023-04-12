@@ -88,6 +88,17 @@ func _ready():
 		item_preview.connect("preview_closed", self, "_on_preview_closed")
 	strict_following = __PLDRT.settings.get_camera_view() != PLDDB.CAMERA_VIEW_THIRD_PERSON_FOLLOW
 
+# HACK
+# When the game loses focus, is_action_pressed remains true for any action that was active at the time.
+# To become false, the key must be pressed & released again after the window regains focus.
+# To remedy this, we will tell the engine that the user released certain actions.
+# The engine has no concept of "cancelling" an input, so this might have unintended side effects,
+# such as inadvertently activating in-game abilities or UI controls.
+func _notification(what):
+	if what == NOTIFICATION_WM_FOCUS_OUT:
+		Input.action_release("tactical_view_rotation")
+		tactical_view_rotation = false
+
 func get_use_point():
 	return get_node("Gun_Fire_Points/use_point") if has_node("Gun_Fire_Points/use_point") else null
 
