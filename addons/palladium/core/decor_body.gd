@@ -44,19 +44,18 @@ func get_anim_speed():
 func is_this_body(collider) -> bool:
 	return collider and collider.get_instance_id() == get_instance_id()
 
-func is_animation_needed(collider):
+func is_animation_needed():
 	return (
 		anim_player
 		and not get_anim_name().empty()
-		and is_this_body(collider)
 	)
 
 func _on_tactical_cursor_over(collider) -> void:
 	_on_tactical_cursor_action(collider)
 
 func _on_tactical_cursor_out(collider) -> void:
-	if is_animation_needed(collider):
-		if NEED_ANIM_STOP and anim_player.is_playing():
+	if is_this_body(collider):
+		if NEED_ANIM_STOP and anim_player and anim_player.is_playing():
 			anim_player.stop(true)
 		var audio_player = get_audio_player()
 		if NEED_SOUND_STOP and audio_player and audio_player.playing:
@@ -64,8 +63,9 @@ func _on_tactical_cursor_out(collider) -> void:
 
 func _on_tactical_cursor_action(collider) -> void:
 	current_anim_idx = randi() % anim_names.size()
-	if is_animation_needed(collider):
-		anim_player.play(get_anim_name(), -1, get_anim_speed())
+	if is_this_body(collider):
+		if is_animation_needed():
+			anim_player.play(get_anim_name(), -1, get_anim_speed())
 		var audio_player = get_audio_player()
 		if audio_player:
 			audio_player.play()

@@ -47,6 +47,14 @@ func _ready():
 	ranged_damage_raycast.add_exception(character)
 	standing_raycast.add_exception(character)
 	under_feet_raycast.add_exception(character)
+	if __PLDRT.game_state.is_tactical_view():
+		var m = AudioStreamPlayer3D.ATTENUATION_DISABLED
+		sound_player_walking.set_attenuation_model(m)
+		sound_player_falling_to_floor.set_attenuation_model(m)
+		sound_player_angry.set_attenuation_model(m)
+		sound_player_pain.set_attenuation_model(m)
+		sound_player_attack.set_attenuation_model(m)
+		sound_player_miss.set_attenuation_model(m)
 
 func replace_model(model):
 	var existing_model = character.get_model()
@@ -152,7 +160,7 @@ func disable_rays_to_characters():
 		ray.enabled = false
 
 func play_walking_sound(is_sprinting):
-	if not sound_player_walking.is_playing():
+	if sound_player_walking.stream and not sound_player_walking.is_playing():
 		sound_player_walking.play()
 	var new_pitch_scale = 2 if is_sprinting else 1
 	if new_pitch_scale != sound_player_walking.pitch_scale:
