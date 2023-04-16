@@ -103,6 +103,7 @@ var force_no_physics = false
 var force_visibility = false
 var last_attack_target = null
 var last_attack_anim_idx = -1
+var model_to_restore = null
 
 func _ready():
 	__PLDRT.game_state.connect("player_underwater", self, "_on_player_underwater")
@@ -317,6 +318,23 @@ func enable_waterways_navigation(enable):
 			nl | BITMASK_WATERWAYS if enable else nl & ~BITMASK_WATERWAYS
 		)
 
+func waterway_enter(changed_model = null):
+	character_nodes.set_sound_walk(__PLDRT.CHARS.SoundId.SOUND_WALK_SWIM, false)
+	if changed_model:
+		model_to_restore = replace_model(changed_model)
+		model_to_restore.visible = false
+
+func waterway_exit(and_disable_navigation : bool):
+	if model_to_restore:
+		model_to_restore.visible = true
+		var em = replace_model(model_to_restore)
+		if em:
+			em.queue_free()
+		model_to_restore = null
+	character_nodes.restore_sound_walk_from(__PLDRT.CHARS.SoundId.SOUND_WALK_SWIM)
+	if and_disable_navigation:
+		enable_waterways_navigation(false)
+
 ### Use target ###
 
 func use(player_node, camera_node):
@@ -399,8 +417,8 @@ func get_cam_holder():
 	)
 
 func replace_model(model):
-	.replace_model(model)
 	character_nodes.replace_model(model)
+	return .replace_model(model)
 
 ### States ###
 
@@ -1148,24 +1166,36 @@ func is_on_the_way_to_target():
 func is_teleport_tween_active():
 	return teleport_tween and teleport_tween.is_active()
 
-func teleport_via_tween(origin):
+func teleport_via_tween(origin, changed_model = null):
 	if not teleport_tween or not origin:
 		return
+	var gt = get_global_transform()
 	teleport_tween.interpolate_property(
 		self,
 		"translation",
-		get_global_transform().origin,
+		gt.origin,
 		origin,
 		3,
 		Tween.TRANS_LINEAR,
 		Tween.EASE_IN_OUT
 	)
+	var ra = gt.basis.z.signed_angle_to(origin - gt.origin, gt.basis.y)
+	rotate_y(ra)
 	enable_collisions_and_interaction(false, true)
 	__PLDRT.game_state.set_saving_disabled(true)
 	emit_signal("teleport_tween_started", self, origin)
+	if changed_model:
+		model_to_restore = replace_model(changed_model)
+		model_to_restore.visible = false
 	teleport_tween.start()
 
 func _on_TeleportTween_tween_completed(object, key):
+	if model_to_restore:
+		model_to_restore.visible = true
+		var em = replace_model(model_to_restore)
+		if em:
+			em.queue_free()
+		model_to_restore = null
 	enable_collisions_and_interaction(true, true)
 	__PLDRT.game_state.set_saving_disabled(false)
 	teleport_to_global_transform(global_transform)

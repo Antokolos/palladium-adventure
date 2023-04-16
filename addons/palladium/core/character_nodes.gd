@@ -64,6 +64,7 @@ func replace_model(model):
 	):
 		existing_model.disconnect("cutscene_finished", self, "_on_cutscene_finished")
 	model.connect("cutscene_finished", self, "_on_cutscene_finished")
+	return existing_model
 
 func _on_player_underwater(player, enable):
 	if player and not player.equals(character):

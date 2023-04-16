@@ -55,10 +55,14 @@ func activate():
 
 func ragdoll_start():
 	enable_animations(false)
-	get_node(main_skeleton).physical_bones_start_simulation()
+	var sk = get_node(main_skeleton)
+	if sk and sk is Skeleton:
+		sk.physical_bones_start_simulation()
 
 func ragdoll_stop():
-	get_node(main_skeleton).physical_bones_stop_simulation()
+	var sk = get_node(main_skeleton)
+	if sk and sk is Skeleton:
+		sk.physical_bones_stop_simulation()
 	enable_animations(true)
 
 func set_simple_mode(sm):
