@@ -55,22 +55,28 @@ func show_difficulty_dialog():
 
 func set_game_name_font(
 	name_font_path : String,
-	name_size : int = 70,
-	name_extra_spacing_bottom : int = -10,
-	subname_size : int = 30,
-	subname_extra_spacing_char : int = 22
+	name_size : int = 100,
+	name_extra_spacing_bottom : int = -22,
+	subname_size : int = 50,
+	subname_extra_spacing_char : int = 26,
+	outline_size : int = 5,
+	outline_color : Color = Color.black
 ):
 	var gn = get_node("VBoxContainer/LabelGameName")
 	var fgn = DynamicFont.new()
 	fgn.font_data = load(name_font_path)
 	fgn.size = name_size
 	fgn.extra_spacing_bottom = name_extra_spacing_bottom
+	fgn.outline_size = outline_size
+	fgn.outline_color = outline_color
 	gn.set("custom_fonts/font", fgn)
 	var gsn = get_node("VBoxContainer/LabelGameSubname")
 	var fgsn = DynamicFont.new()
 	fgsn.font_data = load(name_font_path)
 	fgsn.size = subname_size
 	fgsn.extra_spacing_char = subname_extra_spacing_char
+	fgsn.outline_size = outline_size
+	fgsn.outline_color = outline_color
 	gsn.set("custom_fonts/font", fgsn)
 
 func update_hud():
