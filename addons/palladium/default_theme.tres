@@ -1,8 +1,9 @@
-[gd_resource type="Theme" load_steps=7 format=2]
+[gd_resource type="Theme" load_steps=8 format=2]
 
 [ext_resource path="res://addons/palladium/assets/ui/close-button.png" type="Texture" id=1]
 [ext_resource path="res://addons/palladium/assets/ui/close-button-hover.png" type="Texture" id=2]
 [ext_resource path="res://addons/palladium/assets/fonts/roboto.regular.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://addons/palladium/styles/default_font.tres" type="DynamicFont" id=4]
 
 [sub_resource type="DynamicFont" id=3]
 size = 26
@@ -38,6 +39,7 @@ Button/styles/focus = SubResource( 1 )
 Button/styles/hover = null
 Button/styles/normal = null
 Button/styles/pressed = null
+TooltipLabel/fonts/font = ExtResource( 4 )
 WindowDialog/colors/title_color = Color( 0, 0, 0, 1 )
 WindowDialog/constants/close_h_ofs = 40
 WindowDialog/constants/close_v_ofs = 40
