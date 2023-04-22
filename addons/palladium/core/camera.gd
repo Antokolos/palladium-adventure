@@ -524,6 +524,11 @@ func switch_to_character(character):
 	))
 	tactical_camera_distance = TACTICAL_CAMERA_DISTANCE_PLAYER_SW
 
+func switch_to_main_player():
+	var player = __PLDRT.game_state.get_player()
+	if player:
+		character_to_switch_to = player
+
 func switch_to_party_member(idx : int) -> void:
 	var i = 0
 	for ch in __PLDRT.game_state.get_characters():
@@ -538,6 +543,9 @@ func perform_player_switching():
 	if character_to_switch_to:
 		switch_to_character(character_to_switch_to)
 		character_to_switch_to = null
+		return true
+	if Input.is_action_just_pressed("switch_to_main_player"):
+		switch_to_main_player()
 		return true
 	if Input.is_action_just_pressed("switch_to_player_1"):
 		switch_to_party_member(0)

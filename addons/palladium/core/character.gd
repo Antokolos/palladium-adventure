@@ -19,6 +19,8 @@ signal stun_finished(player_node, prematurely)
 signal take_damage(player_node, fatal, hit_direction_node, hit_dir_vec)
 signal teleport_tween_started(player_node, origin)
 
+const TELEPORT_TWEEN_DURATION_S = 5
+const TELEPORT_TWEEN_ELEVATION_MAX = 3
 const BITMASK_WATERWAYS : int = 4 # Bit 2, value 4
 const GRAVITY_FALLING = 10.2
 const GRAVITY_DEFAULT = 3.2
@@ -1166,16 +1168,28 @@ func is_on_the_way_to_target():
 func is_teleport_tween_active():
 	return teleport_tween and teleport_tween.is_active()
 
+func teleport_tween_translation(tween_point : Vector3):
+	translation.x = tween_point.x
+	var t = teleport_tween.tell()
+	var w = 2 * t / TELEPORT_TWEEN_DURATION_S
+	var a = 0
+	if w <= 1.0:
+		a = lerp(0.0, 1.0, w)
+	elif w > 1.0:
+		a = lerp(1.0, 0.0, w - 1.0)
+	translation.y = tween_point.y + sqrt(abs(a)) * TELEPORT_TWEEN_ELEVATION_MAX
+	translation.z = tween_point.z
+
 func teleport_via_tween(origin, changed_model = null):
 	if not teleport_tween or not origin:
 		return
 	var gt = get_global_transform()
-	teleport_tween.interpolate_property(
+	teleport_tween.interpolate_method(
 		self,
-		"translation",
+		"teleport_tween_translation",
 		gt.origin,
 		origin,
-		3,
+		TELEPORT_TWEEN_DURATION_S,
 		Tween.TRANS_LINEAR,
 		Tween.EASE_IN_OUT
 	)
