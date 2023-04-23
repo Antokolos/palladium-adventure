@@ -65,7 +65,7 @@ enum TimeOfDay {
 }
 
 const SPEED_SCALE_INFINITY = 1000.0
-const SKY_ROTATION_DEGREES_DEFAULT = Vector3(0, 160, 0)
+const SKY_ROTATION_DEGREES_DEFAULT = Vector3(0, 0, 0)
 const COLOR_WHITE = Color(1, 1, 1, 1)
 const COLOR_BLACK = Color(0, 0, 0, 0)
 const DOORS_DEFAULT = {}
@@ -190,7 +190,7 @@ func cleanup_paths():
 
 func reset_variables():
 	sky_outside = PanoramaSky.new()
-	sky_outside.panorama = load("res://addons/palladium/assets/cape_hill_4k.hdr")
+	sky_outside.panorama = load("res://addons/palladium/assets/spherical_hdr.hdr")
 	sky_outside.radiance_size = Sky.RADIANCE_SIZE_32
 	sky_inside = PanoramaSky.new()
 	sky_inside.panorama = load("res://addons/palladium/assets/ui/undersky5.png")
