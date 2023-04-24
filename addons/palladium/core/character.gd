@@ -94,7 +94,10 @@ var ladder_rotation_deg = 0 setget set_ladder_rotation_deg, get_ladder_rotation_
 var ladder_ymin = 0 setget set_ladder_ymin, get_ladder_ymin
 var ladder_ymax = 0 setget set_ladder_ymax, get_ladder_ymax
 var is_poisoned = false
-#var char_code : int = 0 setget set_char_code, get_char_code
+# player_type is like a class in RPG: Warrior, Cleric, Thief, Mage etc
+# it can be used to determine player traits based on its class
+# corresponding integer constants can be placed in PLDDB
+var player_type : int = 0 setget set_player_type, get_player_type
 var intoxication : int = 0
 var relationship : int = 0
 var morale : int = 0 setget set_morale
@@ -542,6 +545,12 @@ func is_poisoned():
 
 func set_poisoned(enable):
 	is_poisoned = enable
+
+func get_player_type() -> int:
+	return player_type
+
+func set_player_type(type : int):
+	player_type = type
 
 func get_intoxication() -> int:
 	return intoxication

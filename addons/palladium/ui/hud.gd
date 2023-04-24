@@ -436,7 +436,11 @@ func _on_shader_cache_processed():
 		+ ", " + __PLDRT.common_utils.get_input_control("movement_left", false) \
 		+ ", " + __PLDRT.common_utils.get_input_control("movement_backward", false) \
 		+ ", " + __PLDRT.common_utils.get_input_control("movement_right", false)
-	queue_popup_message("MESSAGE_CONTROLS_MOVE", [wasd, __PLDRT.common_utils.get_input_control("movement_sprint", false)])
+	if not __PLDRT.game_state.is_tactical_view():
+		queue_popup_message(
+			"MESSAGE_CONTROLS_MOVE",
+			[wasd, __PLDRT.common_utils.get_input_control("movement_sprint", false)]
+		)
 	if __PLDRT.game_state.get_quick_items_count() > 0:
 		queue_popup_message("MESSAGE_CONTROLS_EXAMINE", [__PLDRT.common_utils.get_input_control("item_preview_toggle", false)])
 	queue_popup_message("MESSAGE_CHANGE_SETTINGS")

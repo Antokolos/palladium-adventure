@@ -566,6 +566,25 @@ func get_player_with_item(item_id):
 				return get_character(name_hint)
 	return null
 
+func get_item_count_for_character(character, item_id):
+	if not character:
+		push_error("Character is null")
+		return false
+	return get_item_count_for_character_name(character.get_name_hint(), item_id)
+
+func get_item_count_for_character_name(name_hint, item_id):
+	if quick_items.has(name_hint):
+		var player_quick_items = quick_items[name_hint]
+		for item in player_quick_items:
+			if item_id == item.item_id:
+				return item.count
+	if inventory.has(name_hint):
+		var player_inventory = inventory[name_hint]
+		for item in player_inventory:
+			if item_id == item.item_id:
+				return item.count
+	return 0
+
 func remove_item_from_player(item_owner, item_id, count = 1):
 	if not item_owner:
 		return
@@ -1078,6 +1097,9 @@ func set_character_data(dd, character):
 	if ("ladder_ymax" in dd):
 		character.set_ladder_ymax(dd.ladder_ymax)
 	
+	if ("player_type" in dd):
+		character.set_player_type(dd.player_type)
+	
 	if ("is_poisoned" in dd and "intoxication" in dd):
 		character.intoxication = int(dd.intoxication)
 		set_poisoned(character, dd.is_poisoned, character.intoxication)
@@ -1233,6 +1255,7 @@ func get_character_data(character):
 		"ladder_ymin" : character.get_ladder_ymin(),
 		"ladder_ymax" : character.get_ladder_ymax(),
 		"is_poisoned" : character.is_poisoned(),
+		"player_type" : character.get_player_type(),
 		"intoxication" : character.get_intoxication(),
 		"relationship" : character.get_relationship(),
 		"morale" : character.get_morale(),
