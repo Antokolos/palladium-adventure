@@ -19,6 +19,7 @@ shader_param/use_refraction = false
 shader_param/refraction = 0.05
 shader_param/use_proximity_fade = true
 shader_param/proximity_fade_distance = 1.1
+shader_param/use_circular_area = true
 shader_param/uv_offset_texture = ExtResource( 4 )
 shader_param/texturemap = ExtResource( 3 )
 shader_param/normalmap = ExtResource( 2 )

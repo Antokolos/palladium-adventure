@@ -18,6 +18,7 @@ uniform bool use_refraction = true;
 uniform float refraction = 0.05;
 uniform bool use_proximity_fade = true;
 uniform float proximity_fade_distance = 1.1;
+uniform bool use_circular_area = true;
 
 float height(vec2 pos, float time) {
 	return (amplitude.x * sin(pos.x * frequency.x + time * time_factor.x)) + (amplitude.y * sin(pos.y * frequency.y + time * time_factor.y));
@@ -44,6 +45,12 @@ void fragment() {
 		ALPHA = 0.9;
 	} else {
 		ALPHA = 0.5;
+	}
+	if (use_circular_area) {
+		// Making it visible only in circular area, to be used together with simple quad mesh
+		// Normalized circle, with the center in the center of the quad mesh (0.5, 0.5)
+		float circ = 1.0 - ((UV.x - 0.5) * (UV.x - 0.5) + (UV.y - 0.5) * (UV.y - 0.5)) / 0.25;
+		ALPHA = (circ < 0.0) ? 0.0 : 1.0;
 	}
 	METALLIC = 0.0;
 	ROUGHNESS = 0.1;
