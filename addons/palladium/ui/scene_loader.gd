@@ -29,6 +29,7 @@ func _process(delta):
 		var pscn = loader.get_resource()
 		loader = null
 		__PLDRT.game_state.cleanup_paths()
+		__PLDRT.game_state.clear_caches()
 		get_tree().change_scene_to(pscn)
 	else:
 		progress.value = loader.get_stage()
