@@ -151,6 +151,8 @@ func update_ray_to_character(another_character, ray = null):
 	return r
 
 func has_obstacles_between(another_character):
+	if not another_character or another_character.equals(character):
+		return false
 	var r = get_ray_to_character(another_character)
 	if not r or not r.enabled:
 		return true
