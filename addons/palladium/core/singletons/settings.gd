@@ -1,4 +1,4 @@
-extends Node
+extends Reference
 class_name PLDSettings
 
 signal language_changed(ID)

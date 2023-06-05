@@ -1,4 +1,4 @@
-extends Node
+extends Reference
 class_name PLDMovementData
 
 var data = {}

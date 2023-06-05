@@ -1,5 +1,5 @@
 tool
-extends Node
+extends Reference
 class_name PLDDB
 
 signal custom_action_executed(takable_id, custom_action)

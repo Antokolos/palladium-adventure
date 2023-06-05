@@ -364,7 +364,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/palladium/core/character_nodes.gd"
 }, {
-"base": "Node",
+"base": "Reference",
 "class": "PLDChars",
 "language": "GDScript",
 "path": "res://db/chars.gd"
@@ -384,7 +384,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/palladium/core/singletons/cutscene_manager.gd"
 }, {
-"base": "Node",
+"base": "Reference",
 "class": "PLDDB",
 "language": "GDScript",
 "path": "res://db/db.gd"
@@ -509,7 +509,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/palladium/core/environment/menu_item.gd"
 }, {
-"base": "Node",
+"base": "Reference",
 "class": "PLDMovementData",
 "language": "GDScript",
 "path": "res://addons/palladium/core/movement_data.gd"
@@ -554,7 +554,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/palladium/core/player_model.gd"
 }, {
-"base": "Node",
+"base": "Reference",
 "class": "PLDPrefs",
 "language": "GDScript",
 "path": "res://db/prefs.gd"
@@ -579,12 +579,12 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/palladium/core/environment/room_enabler.gd"
 }, {
-"base": "Node",
+"base": "Reference",
 "class": "PLDScenes",
 "language": "GDScript",
 "path": "res://db/scenes.gd"
 }, {
-"base": "Node",
+"base": "Reference",
 "class": "PLDSettings",
 "language": "GDScript",
 "path": "res://addons/palladium/core/singletons/settings.gd"
@@ -599,7 +599,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/palladium/core/static_usable.gd"
 }, {
-"base": "Node",
+"base": "Reference",
 "class": "PLDStory",
 "language": "GDScript",
 "path": "res://addons/palladium/core/palladium_story.gd"
@@ -614,7 +614,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/palladium/ui/tablet.gd"
 }, {
-"base": "Node",
+"base": "Reference",
 "class": "PLDTacticalCameraMovement",
 "language": "GDScript",
 "path": "res://addons/palladium/core/tactical_camera_movement.gd"

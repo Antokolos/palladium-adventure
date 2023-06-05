@@ -1221,7 +1221,6 @@ func load_state(slot):
 	for md in movement_datas:
 		if md.character and md.movement_data:
 			md.character.update_state(md.movement_data)
-			md.movement_data.free()
 	
 	emit_signal("game_loaded")
 

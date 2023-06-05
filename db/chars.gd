@@ -1,5 +1,5 @@
 tool
-extends Node
+extends Reference
 class_name PLDChars
 
 func get_all_name_hints():

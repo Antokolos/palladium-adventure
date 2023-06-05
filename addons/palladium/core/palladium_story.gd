@@ -1,4 +1,4 @@
-extends Node
+extends Reference
 class_name PLDStory
 
 # type of variable: "res://addons/inkgd/runtime/story.gd"
