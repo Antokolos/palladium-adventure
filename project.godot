@@ -2205,6 +2205,7 @@ common/enable_pause_aware_picking=true
 
 [rendering]
 
+threads/thread_model=2
 quality/reflections/texture_array_reflections=false
 quality/reflections/high_quality_ggx=false
 quality/shading/force_lambert_over_burley=true

@@ -251,7 +251,7 @@ func get_root_viewport():
 	return get_node("/root")
 
 func get_player():
-	return get_node(player_paths[player_name_hint]) if has_character(player_name_hint) else null
+	return get_character(player_name_hint)
 
 func get_companion(name_hint = null):
 	if not name_hint:

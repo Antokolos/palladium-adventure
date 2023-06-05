@@ -8,6 +8,7 @@ const REMOVE_FROM_TREE = false
 
 export(PLDDB.RoomIds) var room_id = PLDDB.RoomIds.NONE
 export var room_path = "../room"
+var cached_room = null
 var raycasts_cache = []
 var room_children = []
 var screen_entered = false
@@ -49,7 +50,10 @@ func get_room_id():
 	return room_id
 
 func get_room_node():
-	return get_node(room_path)
+	if cached_room:
+		return cached_room
+	cached_room = get_node(room_path)
+	return cached_room
 
 func is_room_enabled():
 	var room_node = get_room_node()

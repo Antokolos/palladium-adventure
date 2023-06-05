@@ -40,6 +40,7 @@ onready var animation_tree = $AnimationTree
 onready var transition = animation_tree.get("parameters/Transition/current")
 onready var rest_timer = $RestTimer
 
+var cached_player = null
 var look_angle_tgt_deg = 0
 var look_angle_cur_deg = 0
 var cutscene_time = 0
@@ -112,8 +113,7 @@ func stop_cutscene():
 		var was_active = animation_tree.get("parameters/CutsceneShot/active")
 		animation_tree.set("parameters/CutsceneTransition/current", CUTSCENE_EMPTY)
 		animation_tree.set("parameters/CutsceneShot/active", false)
-		var player = get_node("../..")
-		emit_signal("cutscene_finished", player, self, cutscene_id, was_active)
+		emit_signal("cutscene_finished", get_player(), self, cutscene_id, was_active)
 
 func is_movement_disabled():
 	return (
@@ -153,6 +153,12 @@ func is_jumpscare():
 		is_taking_damage()
 		and animation_tree.get("parameters/DamageTransition/current") == DAMAGE_TRANSITION_JUMPSCARE
 	)
+
+func get_player():
+	if cached_player:
+		return cached_player
+	cached_player = get_node("../..")
+	return cached_player
 
 func get_cutscene_id():
 	return animation_tree.get("parameters/CutsceneTransition/current")
@@ -278,8 +284,7 @@ func take_damage(fatal):
 
 func kill_on_load():
 	kill()
-	var player = get_node("../..")
-	emit_signal("character_dead", player)
+	emit_signal("character_dead", get_player())
 
 func kill():
 	var alive = not is_dead()
@@ -349,7 +354,7 @@ func _process(delta):
 		if is_cutscene:
 			cutscene_time += delta
 			if cutscene_time > CUTSCENE_FADEIN_TIME and is_looped_cutscene():
-				var player = get_node("../..")
+				var player = get_player()
 				animation_tree.set(
 					"parameters/LookTransition/current",
 					LOOK_TRANSITION_SQUATTING if player.is_crouching() else LOOK_TRANSITION_STANDING
@@ -358,12 +363,10 @@ func _process(delta):
 			cutscene_time = 0
 			stop_cutscene()
 		if was_dying and is_dead():
-			var player = get_node("../..")
-			emit_signal("character_dead", player)
+			emit_signal("character_dead", get_player())
 			was_dying = false
 		elif not was_dying and not is_jumpscare() and is_dying():
-			var player = get_node("../..")
-			emit_signal("character_dying", player)
+			emit_signal("character_dying", get_player())
 			was_dying = true
 
 func get_shot_idx(shots_max : int):
