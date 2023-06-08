@@ -32,7 +32,6 @@ func _physics_process(delta):
 	"\nDrawcalls: %d" % Performance.get_monitor(Performance.RENDER_DRAW_CALLS_IN_FRAME),
 	"\nTorches active: %d" % active_torches,
 	"\nTorches inactive: %d" % inactive_torches,
-	"\nCutoff enabled: %s" % ("true" if __PLDRT.settings.cutoff_enabled else "false"),
 	"\nCamera Far: %f" % camera.far if camera else "",
 	"\nViewport size: %dx%d" % [viewport_size.x, viewport_size.y]
 	]

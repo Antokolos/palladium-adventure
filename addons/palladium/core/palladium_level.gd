@@ -3,6 +3,7 @@ class_name PLDLevel
 
 export var is_bright = false
 export var is_inside = true
+export var is_reverb = false
 export var is_loadable = true
 export var is_need_show_path = true
 export var player_path = "player"
@@ -15,7 +16,7 @@ onready var player_female = get_node(player_female_path) if has_node(player_fema
 onready var player_bandit = get_node(player_bandit_path) if has_node(player_bandit_path) else null
 
 func _ready():
-	__PLDRT.settings.set_reverb(is_inside)
+	__PLDRT.settings.set_reverb(is_reverb)
 	if not is_loadable:
 		__PLDRT.game_state.restore_states()
 		do_init(false)
@@ -36,6 +37,9 @@ func is_bright():
 
 func is_inside():
 	return is_inside
+
+func is_reverb():
+	return is_reverb
 
 func is_need_show_path():
 	return is_need_show_path

@@ -287,6 +287,8 @@ func get_character(name_hint):
 	return ch
 
 func get_characters():
+	if not characters_cache.empty():
+		return characters_cache.values()
 	var result = []
 	for name_hint in get_name_hints():
 		var character_node = get_character(name_hint)

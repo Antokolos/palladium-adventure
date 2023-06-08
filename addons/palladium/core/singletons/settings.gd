@@ -5,7 +5,6 @@ signal language_changed(ID)
 signal quality_changed(ID)
 signal difficulty_changed(ID)
 signal resolution_changed(ID)
-signal cutoff_enabled_changed(enabled)
 signal shader_cache_enabled_changed(enabled)
 signal image_adjust_changed(enabled, brightness, contrast, saturation)
 
@@ -66,7 +65,6 @@ var hide_quick_item_key_labels = false
 var camera_view = PLDDB.CAMERA_VIEW_TYPE_DEFAULT
 var pause_on_joy_disconnected = true
 var disable_mouse_if_joy_connected = false
-var cutoff_enabled = false
 var show_path = false
 var shader_cache_enabled = true
 var vsync = true
@@ -151,9 +149,6 @@ func load_settings():
 	if ("disable_mouse_if_joy_connected" in d):
 		disable_mouse_if_joy_connected = bool(d.disable_mouse_if_joy_connected)
 
-	if ("cutoff_enabled" in d):
-		cutoff_enabled = bool(d.cutoff_enabled)
-
 	if ("show_path" in d):
 		show_path = bool(d.show_path)
 
@@ -230,7 +225,6 @@ func save_settings():
 		"camera_view" : camera_view,
 		"pause_on_joy_disconnected" : pause_on_joy_disconnected,
 		"disable_mouse_if_joy_connected" : disable_mouse_if_joy_connected,
-		"cutoff_enabled" : cutoff_enabled,
 		"show_path" : show_path,
 		"shader_cache_enabled" : shader_cache_enabled,
 		"vsync" : vsync,
@@ -437,10 +431,6 @@ func get_sensitivity():
 
 func set_show_path(sp):
 	show_path = sp
-
-func set_cutoff_enabled(ce):
-	cutoff_enabled = ce
-	emit_signal("cutoff_enabled_changed", ce)
 
 func set_shader_cache_enabled(sce):
 	shader_cache_enabled = sce

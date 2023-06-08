@@ -38,7 +38,6 @@ onready var fullscreen = settings_app.get_node("VBoxContainer/HFullscreen/Fullsc
 onready var invert_yaxis = settings_app.get_node("VBoxContainer/HInvertYAxis/InvertYAxis")
 onready var show_path_holder = settings_app.get_node("VBoxContainer/HShowPath")
 onready var show_path = show_path_holder.get_node("ShowPath")
-onready var cutoff_enabled = settings_app.get_node("VBoxContainer/HCutoffEnabled/CutoffEnabled")
 onready var pause_on_joypad_disconnected_parent = settings_app.get_node("VBoxContainer/HJoypadType/HPauseOnJoypadDisconnected")
 onready var pause_on_joypad_disconnected = pause_on_joypad_disconnected_parent.get_node("PauseOnJoypadDisconnected")
 onready var disable_mouse_if_joypad_connected_parent = settings_app.get_node("VBoxContainer/HDisableMouseIfJoypadConnected")
@@ -103,9 +102,6 @@ func _ready():
 
 	show_path.pressed = __PLDRT.settings.show_path
 	_on_ShowPath_pressed()
-
-	cutoff_enabled.pressed = __PLDRT.settings.cutoff_enabled
-	_on_CutoffEnabled_pressed()
 
 	pause_on_joypad_disconnected.pressed = __PLDRT.settings.pause_on_joy_disconnected
 	_on_PauseOnJoypadDisconnected_pressed()
@@ -454,10 +450,6 @@ func _on_SensitivityCoef_value_changed(value):
 func _on_ShowPath_pressed():
 	var sp = show_path.is_pressed() if show_path else __PLDRT.settings.show_path
 	__PLDRT.settings.set_show_path(sp)
-
-func _on_CutoffEnabled_pressed():
-	var ce = cutoff_enabled.is_pressed() if cutoff_enabled else __PLDRT.settings.cutoff_enabled
-	__PLDRT.settings.set_cutoff_enabled(ce)
 
 func _on_PauseOnJoypadDisconnected_pressed():
 	var pjd = pause_on_joypad_disconnected.is_pressed() if pause_on_joypad_disconnected else __PLDRT.settings.pause_on_joy_disconnected

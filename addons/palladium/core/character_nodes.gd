@@ -243,7 +243,7 @@ func set_underwater(enable):
 	else:
 		restore_sound_walk_from(__PLDRT.CHARS.SoundId.SOUND_WALK_SWIM)
 		__PLDRT.MEDIA.restore_music_from(PLDDBMedia.MusicId.UNDERWATER)
-		__PLDRT.settings.set_reverb(__PLDRT.game_state.get_level().is_inside())
+		__PLDRT.settings.set_reverb(__PLDRT.game_state.get_level().is_reverb())
 
 func use_weapon(item):
 	if not item:

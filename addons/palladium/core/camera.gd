@@ -54,7 +54,6 @@ onready var env_high = preload("res://addons/palladium/env_high.tres")
 
 onready var backtrace_ray = get_node("BacktraceRay") if has_node("BacktraceRay") else null
 onready var projection_ray = get_node("ProjectionRay") if has_node("ProjectionRay") else null
-onready var culling_rays = get_node("culling_rays") if has_node("culling_rays") else null
 onready var shader_cache = get_node("viewpoint/shader_cache") if has_node("viewpoint/shader_cache") else null
 onready var item_preview = get_node("viewpoint/item_preview") if has_node("viewpoint/item_preview") else null
 onready var item_use = get_node("viewpoint/item_use") if has_node("viewpoint/item_use") else null
@@ -80,6 +79,7 @@ func get_character_to_switch_to():
 	return character_to_switch_to
 
 func _ready():
+	self.far = 50 if __PLDRT.game_state.is_inside() else 330
 	change_quality(__PLDRT.settings.quality)
 	__PLDRT.settings.connect("quality_changed", self, "change_quality")
 	__PLDRT.game_state.connect("game_loaded", self, "_on_game_loaded")
@@ -204,20 +204,16 @@ func set_inside(inside, bright):
 func set_target_path(path : NodePath):
 	target_path = path
 
-func change_culling():
-	if culling_rays:
-		self.far = culling_rays.get_max_distance(self.get_global_transform().origin)
-
 func activate_item_use(item):
 	# TODO: eliminate use cases when item_use is null
 	if item_use and item_use.activate_item(item):
-		separated_viewport.visible = true
+		separated_viewport.activate(true)
 
 func clear_item_use():
 	# TODO: eliminate use cases when item_use is null
 	if item_use:
 		item_use.clear_item()
-		separated_viewport.visible = false
+		separated_viewport.activate(false)
 
 func activate_transporting():
 	if __PLDRT.settings.get_camera_view() != PLDDB.CAMERA_VIEW_FIRST_PERSON:
@@ -252,14 +248,14 @@ func show_flashlight(is_show):
 func _on_preview_opened(item):
 	clear_item_use()
 	show_cutscene_flashlight(true)
-	separated_viewport.visible = true
+	separated_viewport.activate(true)
 	separated_viewport.show_dimmer(true)
 
 func _on_preview_closed(item):
 	show_cutscene_flashlight(false)
 	separated_viewport.show_dimmer(false)
 	if not item_use or not item_use.get_item_in_use():
-		separated_viewport.visible = false
+		separated_viewport.activate(false)
 
 func estimate_position(point, normal = null, up = Vector3.UP):
 	var v = global_transform.origin - point
@@ -583,7 +579,6 @@ func _process(delta):
 	if use_point:
 		var player = __PLDRT.game_state.get_player()
 		__PLDRT.game_state.get_hud().set_action_hint_label_text(use_point.highlight(player))
-	change_culling()
 	
 	if __PLDRT.game_state.is_tactical_view():
 		if perform_player_switching():

@@ -1,8 +1,7 @@
-[gd_scene load_steps=13 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://addons/palladium/env_opt.tres" type="Environment" id=1]
 [ext_resource path="res://addons/palladium/core/camera.gd" type="Script" id=2]
-[ext_resource path="res://addons/palladium/core/culling_rays.gd" type="Script" id=3]
 [ext_resource path="res://addons/palladium/core/use_point.tscn" type="PackedScene" id=4]
 [ext_resource path="res://addons/palladium/core/shader_cache.gd" type="Script" id=5]
 [ext_resource path="res://addons/palladium/core/item_preview.gd" type="Script" id=6]
@@ -30,9 +29,6 @@ collision_mask = 4
 [node name="ProjectionRay" type="RayCast" parent="."]
 cast_to = Vector3( 0, 0, 0 )
 collision_mask = 6412
-
-[node name="culling_rays" type="Spatial" parent="."]
-script = ExtResource( 3 )
 
 [node name="Gun_Fire_Points" type="Spatial" parent="."]
 transform = Transform( -1, 0, 8.74228e-08, 0, 1, 0, -8.74228e-08, 0, -1, 0, 0, -0.05 )
