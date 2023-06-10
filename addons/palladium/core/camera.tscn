@@ -159,6 +159,7 @@ size = Vector2( 1920, 1080 )
 transparent_bg = true
 handle_input_locally = false
 hdr = false
+render_target_clear_mode = 1
 render_target_update_mode = 0
 gui_disable_input = true
 script = ExtResource( 11 )

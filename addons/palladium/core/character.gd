@@ -1254,12 +1254,12 @@ func do_movement(safe_velocity, characters, delta):
 		return move_without_physics(safe_velocity, has_floor_collision(), delta)
 
 func do_movement2(safe_velocity, characters, delta):
-		var v = Vector3(
-			safe_velocity.x,
-			0 if safe_velocity.y > 0 else safe_velocity.y,
-			safe_velocity.z
-		)
-		return move_with_physics(v)
+	var v = Vector3(
+		safe_velocity.x,
+		0 if safe_velocity.y > 0 else safe_velocity.y,
+		safe_velocity.z
+	)
+	return move_with_physics(v)
 
 func move_backtrace(target: Vector3):
 	if not third_person_camera or not third_person_collision_pos:
@@ -1320,11 +1320,14 @@ func do_process(delta, is_player):
 	)
 	
 	if model:
-		model.enable_animations(
+		var animations_enabled = (
 			force_visibility
 			or is_visible_to_player()
 			or model.has_important_animations_now()
 		)
+		model.enable_animations(animations_enabled)
+		if animations_enabled:
+			model.do_advance(delta)
 	
 	if d.cannot_move:
 		reset_movement_and_rotation()

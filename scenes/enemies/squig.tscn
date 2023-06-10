@@ -4,35 +4,34 @@
 [ext_resource path="res://scenes/enemies/squig.gd" type="Script" id=2]
 [ext_resource path="res://scenes/enemies/animation_squig.tres" type="AnimationNodeBlendTree" id=3]
 
-
 [node name="squig" instance=ExtResource( 1 )]
 script = ExtResource( 2 )
 main_skeleton = NodePath("squig_new/Skeleton")
 attack_cutscene_ids = PoolIntArray( 1, 2 )
 
 [node name="BoneAttachment" parent="squig_new/Skeleton" index="0"]
-transform = Transform( -0.998819, -0.0194763, -0.0445095, -0.0349779, -0.347558, 0.937006, -0.033719, 0.937456, 0.346466, -0.0879615, -0.521372, 3.03337 )
+transform = Transform( -1, 1.98952e-13, -2.29683e-06, -2.28341e-06, -0.107917, 0.99416, -2.47866e-07, 0.994159, 0.107917, -1.77433e-12, -0.829804, 3.1184 )
 
 [node name="jaw bottom" parent="squig_new/Skeleton/BoneAttachment" index="0"]
 portal_mode = 2
 include_in_bound = false
 
 [node name="BoneAttachment2" parent="squig_new/Skeleton" index="1"]
-transform = Transform( 0.255721, 0.920517, -0.295389, -0.900873, 0.116039, -0.418284, -0.350761, 0.373071, 0.858944, 0.50732, 0.305638, 4.22232 )
+transform = Transform( 0.212083, 0.936068, -0.280708, -0.969092, 0.16441, -0.183925, -0.126015, 0.311039, 0.942006, 0.663593, 0.235759, 4.05442 )
 
 [node name="eyeL001" parent="squig_new/Skeleton/BoneAttachment2" index="0"]
 portal_mode = 2
 include_in_bound = false
 
 [node name="BoneAttachment3" parent="squig_new/Skeleton" index="2"]
-transform = Transform( -0.998819, -0.037701, -0.030641, -0.0349761, 0.120292, 0.992122, -0.0337181, 0.992022, -0.121468, -0.11512, 0.30869, 2.97685 )
+transform = Transform( -1, 9.09495e-13, -3.89416e-07, -3.63384e-07, 0.359492, 0.933148, 1.39992e-07, 0.933148, -0.359491, -5.8062e-13, -0.0380449, 2.86139 )
 
 [node name="horns" parent="squig_new/Skeleton/BoneAttachment3" index="0"]
 portal_mode = 2
 include_in_bound = false
 
 [node name="BoneAttachment4" parent="squig_new/Skeleton" index="3"]
-transform = Transform( -0.998819, -0.037701, -0.030641, -0.0349761, 0.120292, 0.992122, -0.0337181, 0.992022, -0.121468, -0.11512, 0.30869, 2.97685 )
+transform = Transform( -1, 9.09495e-13, -3.89416e-07, -3.63384e-07, 0.359492, 0.933148, 1.39992e-07, 0.933148, -0.359491, -5.8062e-13, -0.0380449, 2.86139 )
 
 [node name="jaw upper" parent="squig_new/Skeleton/BoneAttachment4" index="0"]
 portal_mode = 2
@@ -57,7 +56,7 @@ include_in_bound = false
 [node name="AnimationTree" type="AnimationTree" parent="." index="2"]
 tree_root = ExtResource( 3 )
 anim_player = NodePath("../AnimationPlayer")
-process_mode = 0
+process_mode = 2
 parameters/AliveTransition/current = 0
 parameters/CutsceneShot/active = false
 parameters/CutsceneTransition/current = 0

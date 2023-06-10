@@ -31,9 +31,8 @@ const ROTATE_HEAD_ANGLE_TOLERANCE_DEG = 2.0
 const ROTATE_HEAD_ANGLE_MAX_DEG = 45.0
 
 export(NodePath) var main_skeleton = null
-
+export var force_anim_disable = false
 export var rest_shots_max = 2
-export var ragdoll_enabled = false
 export(PoolIntArray) var attack_cutscene_ids = PoolIntArray()
 
 onready var animation_tree = $AnimationTree
@@ -49,22 +48,9 @@ var was_dying = false
 
 func _ready():
 	randomize()
-	ragdoll_stop()
 
 func activate():
 	pass
-
-func ragdoll_start():
-	enable_animations(false)
-	var sk = get_node(main_skeleton)
-	if sk and sk is Skeleton:
-		sk.physical_bones_start_simulation()
-
-func ragdoll_stop():
-	var sk = get_node(main_skeleton)
-	if sk and sk is Skeleton:
-		sk.physical_bones_stop_simulation()
-	enable_animations(true)
 
 func set_simple_mode(sm):
 	simple_mode = sm
@@ -72,6 +58,10 @@ func set_simple_mode(sm):
 		look()
 
 func enable_animations(enable):
+	if force_anim_disable:
+		if animation_tree.is_active():
+			animation_tree.set_active(false)
+		return
 	if enable and not animation_tree.is_active():
 		animation_tree.set_active(true)
 	elif not enable and animation_tree.is_active():
@@ -291,10 +281,7 @@ func kill():
 	if not alive:
 		# "You cannot kill me, I'm not alive" :)
 		return
-	if ragdoll_enabled:
-		ragdoll_start()
-	else:
-		animation_tree.set("parameters/AliveTransition/current", ALIVE_TRANSITION_DEAD)
+	animation_tree.set("parameters/AliveTransition/current", ALIVE_TRANSITION_DEAD)
 
 func set_loop(anim_name):
 	var path = animation_tree.get_animation_player()
@@ -342,12 +329,14 @@ func attack(attack_anim_idx = -1):
 	play_cutscene(attack_cutscene_id)
 	return attack_cutscene_id
 
-func _process(delta):
+func do_advance(delta):
 	if (
-		not __PLDRT.game_state.is_level_ready()
+		force_anim_disable
+		or not __PLDRT.game_state.is_level_ready()
 		or not animation_tree.is_active()
 	):
 		return
+	animation_tree.advance(delta)
 	process_head_rotation()
 	if not simple_mode:
 		var is_cutscene = is_cutscene()

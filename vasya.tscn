@@ -60,7 +60,7 @@ layers = 3
 [node name="AnimationTree" type="AnimationTree" parent="." index="2"]
 tree_root = ExtResource( 3 )
 anim_player = NodePath("../AnimationPlayer")
-process_mode = 0
+process_mode = 2
 parameters/AliveTransition/current = 0
 parameters/Blend2_Aux/blend_amount = 0
 parameters/Blend2_Head/blend_amount = 0

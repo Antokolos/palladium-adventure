@@ -234,9 +234,6 @@ func speak_text(phonetic, audio_length):
 	speech_timer.wait_time = phoneme_time
 	speak(states)
 
-func _process(delta):
-	pass
-
 func _on_SpeechTimer_timeout():
 	if speech_idx < speech_states.size():
 		set_transition_lips(speech_states[speech_idx])

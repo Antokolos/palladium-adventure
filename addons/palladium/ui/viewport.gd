@@ -9,22 +9,22 @@ func _ready():
 	var vp = __PLDRT.game_state.get_root_viewport()
 	vp.connect("size_changed", self, "_root_viewport_size_changed")
 	__PLDRT.settings.connect("resolution_changed", self, "_on_resolution_changed")
+	__PLDRT.game_state.connect("shader_cache_processed", self, "_on_shader_cache_processed")
 	_on_resolution_changed(__PLDRT.settings.resolution)
 
 func activate(enable):
 	if active and not enable:
+		active = false
 		self.size = MIN_SIZE
 		self.set_size_override(true, MIN_SIZE)
-		self.render_target_clear_mode = CLEAR_MODE_NEVER
-		self.render_target_update_mode = UPDATE_DISABLED
-		active = enable
 	elif not active and enable:
-		self.render_target_clear_mode = CLEAR_MODE_NEVER
-		self.render_target_update_mode = UPDATE_ALWAYS
-		reset_size()
-		active = enable
+		active = true
+		_on_resolution_changed(__PLDRT.settings.resolution)
 
 func _root_viewport_size_changed():
+	_on_resolution_changed(__PLDRT.settings.resolution)
+
+func _on_shader_cache_processed():
 	_on_resolution_changed(__PLDRT.settings.resolution)
 
 func _on_resolution_changed(ID):
