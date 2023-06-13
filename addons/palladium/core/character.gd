@@ -1299,6 +1299,26 @@ func do_process(delta, is_player):
 		move_backtrace(dp)
 	elif backtrace_ray and backtrace_ray.enabled:
 		backtrace_ray.enabled = false
+	
+	var has_floor_collision = has_floor_collision()
+	var should_fall = (
+		not is_air_pocket
+		and not is_on_ladder
+		and not character_nodes.has_floor_collision()
+	)
+	
+	var model = get_model()
+	if model:
+		var animations_enabled = (
+			force_visibility
+			or should_fall
+			or is_visible_to_player()
+			or model.has_important_animations_now()
+		)
+		model.enable_animations(animations_enabled)
+		if animations_enabled:
+			model.do_advance(delta)
+	
 	var characters = __PLDRT.game_state.get_characters()
 	var d = {
 		"is_moving" : false,
@@ -1311,23 +1331,6 @@ func do_process(delta, is_player):
 			or is_dead()
 		)
 	}
-	var model = get_model()
-	var has_floor_collision = has_floor_collision()
-	var should_fall = (
-		not is_air_pocket
-		and not is_on_ladder
-		and not character_nodes.has_floor_collision()
-	)
-	
-	if model:
-		var animations_enabled = (
-			force_visibility
-			or is_visible_to_player()
-			or model.has_important_animations_now()
-		)
-		model.enable_animations(animations_enabled)
-		if animations_enabled:
-			model.do_advance(delta)
 	
 	if d.cannot_move:
 		reset_movement_and_rotation()
