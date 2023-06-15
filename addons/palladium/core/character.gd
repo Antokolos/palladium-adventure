@@ -1096,6 +1096,9 @@ func get_rays_to_characters_pos():
 func add_ray_to_character(another_character):
 	return character_nodes.add_ray_to_character(another_character)
 
+func delete_ray_to_character(another_character):
+	return character_nodes.delete_ray_to_character(another_character)
+
 func update_ray_to_character(another_character, ray = null):
 	return character_nodes.update_ray_to_character(another_character, ray)
 
@@ -1145,6 +1148,7 @@ func update_rays_to_characters(characters):
 				not is_in_party() and not character.is_in_party()
 			)
 		):
+			delete_ray_to_character(character)
 			continue
 		var r = update_ray_to_character(character)
 		if not r:

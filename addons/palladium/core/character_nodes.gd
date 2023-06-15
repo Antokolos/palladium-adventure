@@ -150,12 +150,22 @@ func update_ray_to_character(another_character, ray = null):
 			r = null
 	return r
 
+func delete_ray_to_character(another_character):
+	var r = get_ray_to_character(another_character)
+	if r:
+		r.enabled = false
+		if DEBUG_RAYS:
+			print_debug(r.get_name() + " deleted for " + character.get_name_hint())
+		r.queue_free()
+		return true
+	return false
+
 func has_obstacles_between(another_character):
 	if not another_character or another_character.equals(character):
 		return false
 	var r = get_ray_to_character(another_character)
 	if not r or not r.enabled:
-		return true
+		return false
 	return r.is_colliding()
 
 func disable_rays_to_characters():

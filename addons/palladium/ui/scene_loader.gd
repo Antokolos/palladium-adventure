@@ -8,6 +8,7 @@ func _ready():
 	if __PLDRT.SCENES.DATA.has(__PLDRT.game_state.scene_path):
 		var scene_data = __PLDRT.SCENES.DATA.get(__PLDRT.game_state.scene_path)
 		if scene_data.has("progress") and not scene_data.progress:
+			finalize()
 			get_tree().change_scene(__PLDRT.game_state.scene_path)
 			return
 		if scene_data.has("splash"):
@@ -20,6 +21,10 @@ func _ready():
 func _exit_tree():
 	get_tree().paused = false
 
+func finalize():
+	__PLDRT.game_state.cleanup_paths()
+	__PLDRT.game_state.clear_caches()
+
 func _process(delta):
 	if not loader:
 		return
@@ -28,8 +33,7 @@ func _process(delta):
 	if err == ERR_FILE_EOF:
 		var pscn = loader.get_resource()
 		loader = null
-		__PLDRT.game_state.cleanup_paths()
-		__PLDRT.game_state.clear_caches()
+		finalize()
 		get_tree().change_scene_to(pscn)
 	else:
 		progress.value = loader.get_stage()
