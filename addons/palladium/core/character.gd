@@ -22,6 +22,7 @@ signal teleport_tween_started(player_node, origin)
 const TELEPORT_TWEEN_DURATION_S = 5
 const TELEPORT_TWEEN_ELEVATION_MAX = 3
 const BITMASK_WATERWAYS : int = 4 # Bit 2, value 4
+const SNAP_LENGTH = 0.2
 const GRAVITY_FALLING = 10.2
 const GRAVITY_DEFAULT = 3.2
 const GRAVITY_UNDERWATER = 0.2
@@ -886,7 +887,10 @@ func invoke_physics_pass():
 	)
 
 func get_snap():
-	return Vector3.UP
+	if character_nodes.has_floor_collision():
+		return -character_nodes.get_floor_normal() * SNAP_LENGTH
+	else:
+		return Vector3.ZERO
 
 func is_need_to_use_physics(characters):
 	if force_physics:

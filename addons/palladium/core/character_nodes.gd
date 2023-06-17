@@ -295,6 +295,9 @@ func stun_stop(prematurely):
 func has_floor_collision():
 	return under_feet_raycast.is_colliding()
 
+func get_floor_normal():
+	return under_feet_raycast.get_collision_normal()
+
 func get_under_feet_y():
 	if under_feet_raycast.is_colliding():
 		var p = under_feet_raycast.get_collision_point()

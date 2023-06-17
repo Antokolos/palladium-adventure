@@ -173,7 +173,7 @@ func process_rotation(need_to_update_collisions):
 	return { "rotate_x" : true, "rotate_y" : result.rotate_y }
 
 func get_snap():
-	return Vector3.ZERO if is_in_jump else Vector3.UP
+	return Vector3.ZERO if is_in_jump else .get_snap()
 
 func _on_character_dead(player):
 	._on_character_dead(player)
