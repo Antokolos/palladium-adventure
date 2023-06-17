@@ -106,10 +106,7 @@ func next_pos(pos):
 	return pos
 
 func add_material_meshes(pos, scn):
-	var caching_enabled = (
-		godot_shader_cache_is_off()
-		and __PLDRT.settings.shader_cache_enabled
-	)
+	var caching_enabled = caching_enabled()
 	var items = get_cacheable_items(scn)
 	pos.x = pos.x + STEP / 2.0
 	pos.y = pos.y + STEP / 2.0
@@ -183,6 +180,9 @@ func godot_shader_cache_is_off():
 	var scm = ProjectSettings.get("rendering/gles3/shaders/shader_compilation_mode")
 	return scm and scm < 2
 
+func caching_enabled():
+	return __PLDRT.settings.shader_cache_enabled or godot_shader_cache_is_off()
+
 func _process(delta):
 	match stage:
 		0:
@@ -206,9 +206,8 @@ func _process(delta):
 			# Show all items for one frame
 		_:
 			if (
-				godot_shader_cache_is_off()
-				and __PLDRT.settings.shader_cache_enabled
-				and SHADER_CACHE_HIDING_ENABLED
+				SHADER_CACHE_HIDING_ENABLED
+				and caching_enabled()
 			):
 				for rid in rids.keys():
 					var a = rids[rid]
