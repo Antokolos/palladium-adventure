@@ -175,6 +175,9 @@ func process_rotation(need_to_update_collisions):
 func get_snap():
 	return Vector3.ZERO if is_in_jump else .get_snap()
 
+func get_gravity():
+	return GRAVITY_FALLING if is_in_jump else .get_gravity()
+
 func _on_character_dead(player):
 	._on_character_dead(player)
 	if player.is_player_controlled():
