@@ -545,7 +545,11 @@ func get_movement_data(is_player):
 		or not in_party
 		or __PLDRT.cutscene_manager.is_cutscene()
 	):
-		if not is_tactical_view and not is_pathfinding_required():
+		if (
+			in_party
+			and not is_tactical_view
+			and not is_pathfinding_required()
+		):
 			var d = target_position.distance_to(current_position)
 			if d > CLOSEUP_RANGE and d < MAX_RANGE:
 				return follow(current_transform, target_position)
