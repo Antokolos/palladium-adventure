@@ -6,7 +6,6 @@ signal rest_state_changed(player_node, previous_state, new_state)
 signal target_node_changed(player_node, previous_target_node, new_target_node)
 signal teleported_to(player_node, origin, basis)
 signal arrived_to(player_node, target_node)
-signal arrived_to_boundary(player_node, target_node)
 signal out_of_bounds(player_node)
 
 const EPS = 0.001
@@ -40,6 +39,7 @@ var activated = false
 var in_party = false
 var rest_state = true
 var pathfinding_enabled = true setget set_pathfinding_enabled, is_pathfinding_enabled
+var pathfinding_required = true setget set_pathfinding_required, is_pathfinding_required
 var target_node = null
 var point_of_interest = null
 var path = []
@@ -142,14 +142,6 @@ func deactivate():
 	if activated_prev != activated:
 		emit_signal("activated_changed", self, activated_prev, activated)
 	change_rest_state_to(true)
-
-func has_collisions():
-	var sc = get_slide_count()
-	for i in range(0, sc):
-		var collision = get_slide_collision(i)
-		if not collision.collider.get_collision_mask_bit(2):
-			return true
-	return false
 
 func reset_movement():
 	rest_state = true
@@ -363,6 +355,12 @@ func set_pathfinding_enabled(enabled):
 	if not enabled:
 		clear_path()
 
+func is_pathfinding_required():
+	return pathfinding_required
+
+func set_pathfinding_required(required):
+	pathfinding_required = required
+
 func get_rotation_angle(cur_dir, target_dir):
 	var c = cur_dir.normalized()
 	var t = target_dir.normalized()
@@ -428,15 +426,6 @@ func get_follow_parameters(target, current_transform, next_position) -> PLDMovem
 	else:
 		return data.with_rest_state(true)
 
-func is_arrived_to_boundary(tgt):
-	var sc = get_slide_count()
-	if sc <= 0:
-		return false
-	for i in range(sc):
-		if get_slide_collision(i).collider_id == tgt.get_instance_id():
-			return true
-	return false
-
 func follow(current_transform, next_position):
 	var was_moving = not is_rest_state()
 	var current_actor = __PLDRT.conversation_manager.get_current_actor()
@@ -454,22 +443,20 @@ func follow(current_transform, next_position):
 		),
 		current_transform,
 		target.get_global_transform().origin
-			if target and point_of_interest and target.get_instance_id() == point_of_interest.get_instance_id()
-			else next_position
+			if (
+				target
+				and point_of_interest
+				and target.get_instance_id() == point_of_interest.get_instance_id()
+			) else next_position
 	)
 	var d = data.get_distance()
 	var zero_rotation = is_zero_rotation(data.get_rotation_angle())
 	
-	if not in_party \
-		and d > ALIGNMENT_RANGE \
-		and target \
-		and zero_rotation \
-		and is_arrived_to_boundary(target):
-		return data \
-			.clear_dir() \
-			.with_rest_state(true) \
-			.with_signal("arrived_to_boundary", [target])
-	elif has_path():
+	if has_path():
+		data.with_rest_state(false)
+	elif in_party and d > FOLLOW_RANGE:
+		data.with_rest_state(false)
+	elif in_party and d > CLOSEUP_RANGE and was_moving:
 		data.with_rest_state(false)
 	else:
 		if in_party:
@@ -541,7 +528,8 @@ func shadow_casting_enable(enable):
 func get_movement_data(is_player):
 	var data = PLDMovementData.new().with_rest_state(rest_state)
 	var current_transform = get_global_transform()
-	if current_transform.origin.y < max_lower_limit_y:
+	var current_position = current_transform.origin
+	if current_position.y < max_lower_limit_y:
 		data.with_signal("out_of_bounds", [])
 		return data
 	if not is_activated() or is_taking_damage():
@@ -550,12 +538,18 @@ func get_movement_data(is_player):
 	if not target_position:
 		data.with_rest_state(true)
 		return data
+	var is_tactical_view = __PLDRT.game_state.is_tactical_view()
 	if (
-		__PLDRT.game_state.is_tactical_view()
+		is_tactical_view
 		or not is_player
 		or not in_party
 		or __PLDRT.cutscene_manager.is_cutscene()
 	):
+		if not is_tactical_view and not is_pathfinding_required():
+			var d = target_position.distance_to(current_position)
+			if d > CLOSEUP_RANGE and d < MAX_RANGE:
+				return follow(current_transform, target_position)
+		set_pathfinding_required(false)
 		var tp = navigation_agent.get_target_location()
 		if target_position.distance_to(tp) > ALIGNMENT_RANGE:
 			update_navpath(target_position)

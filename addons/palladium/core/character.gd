@@ -1045,18 +1045,19 @@ func process_movement(delta, dir, characters):
 			and not is_floor_collision
 		):
 			nonchar_collision = collision
+	if nonchar_collision:
+		set_pathfinding_required(true)
 	for collision in character_collisions:
 		var character = collision.collider
 		if (
 			not character.is_movement_disabled()
 			and not character.is_player_controlled()
+			and character.is_in_party()
 		):
-			pass
-			#character.vel = get_push_vec(-collision.normal) * PUSH_STRENGTH
-			#character.vel.y = 0
-			#if not is_player_controlled():
-			#	vel = vel - character.vel
-			#character.invoke_physics_pass()
+			var push_vec = -collision.normal * PUSH_STRENGTH
+			push_vec.y = 0
+			character.push_back(push_vec)
+			character.invoke_physics_pass()
 	
 	return { "vel" : vel, "collides_floor" : collides_floor }
 
