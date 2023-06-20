@@ -539,15 +539,18 @@ func get_movement_data(is_player):
 		data.with_rest_state(true)
 		return data
 	var is_tactical_view = __PLDRT.game_state.is_tactical_view()
+	var is_cutscene = __PLDRT.cutscene_manager.is_cutscene()
 	if (
 		is_tactical_view
 		or not is_player
 		or not in_party
-		or __PLDRT.cutscene_manager.is_cutscene()
+		or is_cutscene
 	):
 		if (
-			in_party
-			and not is_tactical_view
+			not is_tactical_view
+			and not is_player
+			and in_party
+			and not is_cutscene
 			and not is_pathfinding_required()
 		):
 			var d = target_position.distance_to(current_position)
