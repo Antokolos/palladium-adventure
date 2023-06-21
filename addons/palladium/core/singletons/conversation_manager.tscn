@@ -13,4 +13,5 @@ one_shot = true
 [node name="PendingConversationTimer" type="Timer" parent="."]
 wait_time = 2.0
 one_shot = true
+
 [connection signal="timeout" from="AutocloseTimer" to="." method="_on_AutocloseTimer_timeout"]

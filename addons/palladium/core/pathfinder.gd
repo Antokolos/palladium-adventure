@@ -428,8 +428,17 @@ func get_follow_parameters(target, current_transform, next_position) -> PLDMovem
 
 func follow(current_transform, next_position):
 	var was_moving = not is_rest_state()
-	var current_actor = __PLDRT.conversation_manager.get_current_actor()
-	var previous_actor = __PLDRT.conversation_manager.get_previous_actor()
+	var conversation_is_finishing = __PLDRT.conversation_manager.is_about_to_finish()
+	var current_actor = (
+		null
+			if conversation_is_finishing
+			else __PLDRT.conversation_manager.get_current_actor()
+	)
+	var previous_actor = (
+		null
+			if conversation_is_finishing
+			else __PLDRT.conversation_manager.get_previous_actor()
+	)
 	var target = get_target_node() # can be overridden if needed
 	var data = get_follow_parameters(
 		point_of_interest if point_of_interest else (

@@ -18,6 +18,7 @@ var conversation_name
 var target
 var initiator
 var is_finalizing
+var is_about_to_finish
 var max_choice = 0
 var current_actor_name = null
 var previous_actor_name = null
@@ -38,6 +39,7 @@ func _ready():
 	target = null
 	initiator = null
 	is_finalizing = false
+	is_about_to_finish = false
 	last_result = 0
 	story_state_cache.clear()
 
@@ -170,6 +172,7 @@ func stop_conversation(player):
 	current_actor_name = null
 	previous_actor_name = null
 	#is_finalizing = false -- this had some troubles with the lipsync_manager, it is better to not touch it now
+	is_about_to_finish = false
 	var hud = _pldrt.game_state.get_hud()
 	if hud:
 		hud.conversation.visible = false
@@ -289,6 +292,7 @@ func start_conversation(player, conversation_name, target = null, initiator = nu
 	self.target = target
 	self.initiator = initiator
 	self.is_finalizing = false
+	self.is_about_to_finish = false
 	self.last_result = 0
 	self.conversation_name = conversation_name
 	var hud = _pldrt.game_state.get_hud()
@@ -419,17 +423,22 @@ func story_proceed(player):
 	var can_continue = not is_finalizing and _pldrt.story_node.can_continue()
 	var can_choose = not is_finalizing and _pldrt.story_node.can_choose()
 	var choices = _pldrt.story_node.get_choices(get_locale()) if can_choose else ([tr("CONVERSATION_CONTINUE")] if can_continue else [tr("CONVERSATION_END")])
-	if not can_continue and not can_choose and not has_voiceover:
-		if autoclose_timer.is_stopped():
-			autoclose_timer.start()
-		else:
-			stop_conversation(player)
-			return
+	if not can_continue and not can_choose:
+		is_about_to_finish = true
+		if not has_voiceover:
+			if autoclose_timer.is_stopped():
+				autoclose_timer.start()
+			else:
+				stop_conversation(player)
+				return
 	conversation.visible = _pldrt.settings.need_subtitles() or can_choose or not has_voiceover
 	display_choices(conversation, choices, can_choose)
 
 func is_finalizing():
 	return is_finalizing
+
+func is_about_to_finish():
+	return is_about_to_finish
 
 func clear_choices(conversation):
 	var choices_text = conversation.get_node("VBox/HBoxChoices/VBoxChoices/ChoicesText")
