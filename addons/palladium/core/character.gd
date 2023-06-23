@@ -877,7 +877,11 @@ func process_rotation(need_to_update_collisions):
 	return { "rotate_y" : true }
 
 func invoke_physics_pass():
-	set_has_floor_collision(false)
+	set_has_floor_collision(
+		false,
+		is_player(),
+		__PLDRT.game_state.get_characters()
+	)
 	var v = Vector3()
 	v.y = -get_gravity()
 	move_and_slide(
@@ -1116,7 +1120,7 @@ func has_obstacles_between(another_character):
 func disable_rays_to_characters():
 	character_nodes.disable_rays_to_characters()
 
-func set_has_floor_collision(fc):
+func set_has_floor_collision(fc, is_player, characters):
 	var fc_prev = has_floor_collision
 	has_floor_collision = fc
 	if fc_prev != fc:
@@ -1126,8 +1130,7 @@ func set_has_floor_collision(fc):
 			fc_prev,
 			fc
 		)
-		if is_player():
-			var characters = __PLDRT.game_state.get_characters()
+		if is_player:
 			for character in characters:
 				if equals(character):
 					continue
@@ -1315,7 +1318,6 @@ func do_process(delta, is_player):
 	var has_floor_collision = has_floor_collision()
 	var should_fall = (
 		not is_air_pocket
-		and not has_floor_collision
 		and not is_on_ladder
 		and not character_nodes.has_floor_collision()
 	)
@@ -1345,7 +1347,11 @@ func do_process(delta, is_player):
 		var movement_data = get_movement_data(is_player)
 		update_state(movement_data)
 		var mpd = process_movement(delta, movement_data.get_dir(), characters)
-		set_has_floor_collision(mpd.collides_floor and not should_fall)
+		set_has_floor_collision(
+			mpd.collides_floor and not should_fall,
+			is_player,
+			characters
+		)
 		has_floor_collision = has_floor_collision() or not should_fall
 		d.is_moving = has_movement(mpd.vel, has_floor_collision)
 		model.rotate_head(movement_data.get_rotation_angle_to_target_deg())
