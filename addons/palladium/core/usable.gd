@@ -16,6 +16,11 @@ func _ready():
 	if remove_on_hard_difficulty and __PLDRT.settings.is_difficulty_hard():
 		make_absent_without_state_change()
 	__PLDRT.settings.connect("difficulty_changed", self, "_on_difficulty_changed")
+	init()
+
+func init():
+	set_use_custom_integrator(true)
+	set_mode(RigidBody.MODE_STATIC)
 
 func is_existent():
 	# It can be made invisible via make_absent_without_state_change(), but in global sense it always "exists"
@@ -73,4 +78,7 @@ func add_highlight(player_node):
 	return __PLDRT.common_utils.get_action_input_control() + tr(uc)
 
 func remove_highlight(player_node):
+	pass
+
+func _integrate_forces(state):
 	pass

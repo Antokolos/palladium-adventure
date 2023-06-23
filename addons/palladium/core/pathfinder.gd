@@ -123,7 +123,7 @@ func is_activated_flag():
 
 func is_activated():
 	# Checking is_physics_processing() because node can be paused
-	return is_activated_flag() and is_physics_processing()
+	return activated and is_physics_processing()
 
 func is_rest_state():
 	return rest_state
@@ -257,6 +257,15 @@ func is_taking_damage():
 	else:
 		push_warning("Model not set")
 	return false
+
+func is_cannot_move():
+	if not activated or not is_physics_processing():
+		return true
+	var model = get_model()
+	if not model:
+		push_warning("Model not set")
+		return false
+	return model.is_movement_disabled() or model.is_dead()
 
 func is_movement_disabled():
 	var model = get_model()

@@ -627,6 +627,9 @@ func set_transporting(transporting):
 func is_hidden():
 	return is_hidden
 
+func is_cannot_move():
+	return is_hidden or is_transporting or .is_cannot_move()
+
 func set_hidden(enable, hideout_path_str : String = ""):
 	if is_hidden and not enable:
 		enable_collisions_and_interaction(true)
@@ -955,7 +958,7 @@ func get_collider_collision_layer_bit(collider, bit : int):
 	return false
 
 func process_movement(delta, dir, characters):
-	var target = Vector3.ZERO if is_movement_disabled() else dir
+	var target = dir
 	var is_need_to_use_physics = is_need_to_use_physics(characters)
 	if is_need_to_use_physics:
 		target.y = 0
@@ -1312,6 +1315,7 @@ func do_process(delta, is_player):
 	var has_floor_collision = has_floor_collision()
 	var should_fall = (
 		not is_air_pocket
+		and not has_floor_collision
 		and not is_on_ladder
 		and not character_nodes.has_floor_collision()
 	)
@@ -1332,13 +1336,7 @@ func do_process(delta, is_player):
 	var d = {
 		"is_moving" : false,
 		"is_rotating" : false,
-		"cannot_move" : (
-			is_transporting
-			or not is_activated()
-			or is_movement_disabled()
-			or is_hidden()
-			or is_dead()
-		)
+		"cannot_move" : is_cannot_move()
 	}
 	
 	if d.cannot_move:

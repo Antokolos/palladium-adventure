@@ -173,9 +173,7 @@ func is_level_ready():
 
 func set_level_ready(level_ready):
 	is_level_ready = level_ready
-	if level_ready:
-		clear_caches()
-	else:
+	if not level_ready:
 		get_tree().paused = true # To prevent possible NPEs
 
 func clear_caches():
@@ -287,10 +285,8 @@ func get_character(name_hint):
 	return ch
 
 func get_characters():
-	if not characters_cache.empty():
-		return characters_cache.values()
 	var result = []
-	for name_hint in get_name_hints():
+	for name_hint in player_paths.keys():
 		var character_node = get_character(name_hint)
 		if character_node:
 			result.append(character_node)
