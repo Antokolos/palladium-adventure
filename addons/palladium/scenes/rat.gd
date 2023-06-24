@@ -29,6 +29,10 @@ onready var player_rustle = $PlayerRustle
 var x_dir = Vector3(4, 0, 0)
 var state = RatState.REST
 
+func init():
+	.init()
+	set_mode(RigidBody.MODE_RIGID)
+
 func use(player_node, camera_node):
 	if .use(player_node, camera_node):
 		__PLDRT.PREFS.set_achievement("RAT_TERROR")
@@ -39,11 +43,7 @@ func can_move_without_collision(motion):
 	# https://github.com/godotengine/godot/issues/21212
 	return motion[0] == 1.0 and motion[1] == 1.0
 
-func _integrate_forces(state):
-	if get_mode() != RigidBody.MODE_RIGID:
-		return
-	if not is_present():
-		return
+func do_integrate_forces(state):
 	var player = __PLDRT.game_state.get_player()
 	if not player:
 		return

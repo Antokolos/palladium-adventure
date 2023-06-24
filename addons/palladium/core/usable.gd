@@ -80,5 +80,13 @@ func add_highlight(player_node):
 func remove_highlight(player_node):
 	pass
 
-func _integrate_forces(state):
+func can_do_integrate_forces(state):
+	return get_mode() == RigidBody.MODE_RIGID
+
+func do_integrate_forces(state):
 	pass
+
+func _integrate_forces(state):
+	if not can_do_integrate_forces(state):
+		return
+	do_integrate_forces(state)

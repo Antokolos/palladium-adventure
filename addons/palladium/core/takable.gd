@@ -87,3 +87,6 @@ func restore_state():
 		make_present()
 	else:
 		make_absent()
+
+func can_do_integrate_forces(state):
+	return .can_do_integrate_forces(state) and is_present()
