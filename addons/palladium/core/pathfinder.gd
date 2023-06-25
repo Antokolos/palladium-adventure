@@ -14,7 +14,7 @@ const X_DIR = Vector3(1, 0, 0)
 const Y_DIR = Vector3(0, 1, 0)
 const Z_DIR = Vector3(0, 0, 1)
 
-const ROTATION_ANGLE_MIN_RAD = 0.025
+const ROTATION_ANGLE_MIN_RAD = 0.045
 const ROTATION_ANGLE_SPEED_RAD = 0.05
 const KEY_LOOK_SPEED_FACTOR = 10
 
@@ -371,19 +371,7 @@ func set_pathfinding_required(required):
 	pathfinding_required = required
 
 func get_rotation_angle(cur_dir, target_dir):
-	var c = cur_dir.normalized()
-	var t = target_dir.normalized()
-	var cross = c.cross(t)
-	if cross.y > -EPS and cross.y < EPS:
-		return 0
-	var sgn = 1 if cross.y > 0 else -1
-	var dot = c.dot(t)
-	if dot > 1.0:
-		return 0
-	elif dot < -1.0:
-		return PI
-	else:
-		return sgn * acos(dot)
+	return cur_dir.signed_angle_to(target_dir, Vector3.UP)
 
 func is_zero_rotation(rotation_angle):
 	return rotation_angle > -ROTATION_ANGLE_MIN_RAD and rotation_angle < ROTATION_ANGLE_MIN_RAD
@@ -424,7 +412,6 @@ func get_follow_parameters(target, current_transform, next_position) -> PLDMovem
 				if (
 					not point_of_interest
 					and (in_party or need_moving)
-					and not is_zero_rotation(ratt)
 				)
 				else ratt
 		)
@@ -493,14 +480,17 @@ func follow(current_transform, next_position):
 	return data
 
 func update_navpath(target_position):
+	if not pathfinding_enabled:
+		return
 	navigation_agent.set_target_location(target_position)
 
 func has_path():
-	return not navigation_agent.is_navigation_finished()
+	return pathfinding_enabled and not navigation_agent.is_navigation_finished()
 
 func draw_path():
 	if (
-		not show_path
+		not pathfinding_enabled
+		or not show_path
 		or not __PLDRT.settings.show_path
 		or not path_drawer
 	):
@@ -564,6 +554,8 @@ func get_movement_data(is_player):
 		or not in_party
 		or is_cutscene
 	):
+		if not pathfinding_enabled:
+			return follow(current_transform, target_position)
 		if (
 			not is_tactical_view
 			and not is_player
@@ -613,7 +605,7 @@ func update_state(data : PLDMovementData):
 						else ra
 				)
 			else:
-				angle_rad_y = ra
+				angle_rad_y = 0
 	if data.has_rest_state():
 		change_rest_state_to(data.get_rest_state())
 	data.emit_sgnl_if_exists(self)
