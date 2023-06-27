@@ -92,10 +92,14 @@ func get_rays_to_characters_pos():
 	return get_rays_to_characters().get_global_transform().origin
 
 func need_ray_to_character(another_character):
-	return (
-		character.is_activated()
-		and another_character.is_activated()
-	)
+	if not character.is_activated():
+		return false
+	if another_character.is_activated():
+		return true
+	var poi = character.get_point_of_interest()
+	if not poi:
+		return false
+	return poi.get_instance_id() == another_character.get_instance_id()
 
 func get_ray_to_character_name(another_character):
 	return "ray_" + another_character.get_name_hint()
@@ -373,9 +377,9 @@ func play_sound_miss():
 	sound_player_miss.play()
 
 func attack_start(immediately = false):
-# TODO: Check it is OK
-#	if not character.is_activated():
-#		return
+	if not character.is_activated():
+		# For example, for attack in cutscenes which should not harm players
+		return
 	if not is_attacking():
 		if immediately:
 			_on_AttackTimer_timeout()
@@ -458,9 +462,9 @@ func _on_cutscene_finished(player, player_model, cutscene_id, was_active):
 			_on_AttackTimer_timeout()
 
 func _on_AttackTimer_timeout():
-# TODO: Check it is OK
-#	if not character.is_activated():
-#		return
+	if not character.is_activated():
+		# For example, for attack in cutscenes which should not harm players
+		return
 	var last_attack_data = character.get_last_attack_data()
 	var last_attack_target = last_attack_data.target
 	var attack_target = get_possible_damage_target(true)

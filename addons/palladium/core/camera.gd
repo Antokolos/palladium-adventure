@@ -138,6 +138,7 @@ func change_quality(quality):
 			#__PLDRT.game_state.get_viewport().shadow_atlas_size = 2048
 			get_tree().call_group("fire_sources", "set_quality_normal")
 			get_tree().call_group("light_sources", "set_quality_normal")
+			get_tree().call_group("fog_sources", "set_quality_normal")
 			get_tree().call_group("grass", "set_quality_normal")
 			get_tree().call_group("moving", "shadow_casting_enable", false)
 			get_tree().call_group("trees", "wind_effect_enable", false)
@@ -152,6 +153,7 @@ func change_quality(quality):
 			#__PLDRT.game_state.get_viewport().shadow_atlas_size = 2048
 			get_tree().call_group("fire_sources", "set_quality_optimal")
 			get_tree().call_group("light_sources", "set_quality_optimal")
+			get_tree().call_group("fog_sources", "set_quality_optimal")
 			get_tree().call_group("grass", "set_quality_optimal")
 			get_tree().call_group("moving", "shadow_casting_enable", false)
 			get_tree().call_group("trees", "wind_effect_enable", false)
@@ -166,6 +168,7 @@ func change_quality(quality):
 			#__PLDRT.game_state.get_viewport().shadow_atlas_size = 4096
 			get_tree().call_group("fire_sources", "set_quality_good")
 			get_tree().call_group("light_sources", "set_quality_good")
+			get_tree().call_group("fog_sources", "set_quality_good")
 			get_tree().call_group("grass", "set_quality_good")
 			get_tree().call_group("moving", "shadow_casting_enable", false)
 			get_tree().call_group("trees", "wind_effect_enable", true)
@@ -180,6 +183,7 @@ func change_quality(quality):
 			#__PLDRT.game_state.get_viewport().shadow_atlas_size = 8192
 			get_tree().call_group("fire_sources", "set_quality_high")
 			get_tree().call_group("light_sources", "set_quality_high")
+			get_tree().call_group("fog_sources", "set_quality_high")
 			get_tree().call_group("grass", "set_quality_high")
 			get_tree().call_group("moving", "shadow_casting_enable", true)
 			get_tree().call_group("trees", "wind_effect_enable", true)

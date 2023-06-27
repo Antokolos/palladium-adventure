@@ -24,7 +24,8 @@ const TELEPORT_TWEEN_ELEVATION_MAX = 3
 const BITMASK_WATERWAYS : int = 4 # Bit 2, value 4
 const SNAP_LENGTH = 0.2
 const GRAVITY_FALLING = 10.2
-const GRAVITY_DEFAULT = 0.1  # Very small, to prevent sliding from slopes
+const GRAVITY_DEFAULT = 0.1 # Very small, to prevent sliding from slopes
+const GRAVITY_PLAYER = 1.0 # Prevent sliding and at the same time prevent jumping on rough surfaces
 const GRAVITY_UNDERWATER = 0.2
 const MAX_SPEED = 3
 const MAX_SPRINT_SPEED = 10
@@ -122,9 +123,13 @@ func get_gravity():
 		GRAVITY_UNDERWATER
 		if is_underwater
 		else (
-			GRAVITY_DEFAULT
-			if has_floor_collision()
-			else GRAVITY_FALLING
+			GRAVITY_FALLING
+				if not has_floor_collision()
+				else (
+					GRAVITY_PLAYER
+						if is_player_controlled()
+						else GRAVITY_DEFAULT
+				)
 		)
 	)
 
