@@ -9,6 +9,7 @@ const DEBUG_RAYS = false
 
 onready var character = get_parent()
 
+onready var heal_timer = $HealTimer
 onready var oxygen_timer = $OxygenTimer
 onready var poison_timer = $PoisonTimer
 onready var stun_timer = $StunTimer
@@ -36,6 +37,8 @@ var visible_to_player = true
 func _ready():
 	__PLDRT.game_state.connect("player_underwater", self, "_on_player_underwater")
 	__PLDRT.game_state.connect("player_poisoned", self, "_on_player_poisoned")
+	__PLDRT.game_state.connect("health_changed", self, "_on_health_changed")
+	heal_timer.start()
 	var model = character.get_model()
 	if model:
 		model.connect("cutscene_finished", self, "_on_cutscene_finished")
@@ -84,6 +87,19 @@ func _on_player_poisoned(player, enable, intoxication_rate):
 		poison_timer.start()
 	elif not enable and not poison_timer.is_stopped():
 		poison_timer.stop()
+
+func _on_health_changed(name_hint, health_current, health_max):
+	if (
+		not character.is_in_party()
+		or character.get_name_hint().casecmp_to(name_hint) != 0
+	):
+		return
+	var heal_stopped = heal_timer.is_stopped()
+	var healed = health_current >= health_max
+	if heal_stopped and not healed:
+		heal_timer.start()
+	elif healed and not heal_stopped:
+		heal_timer.stop()
 
 func get_rays_to_characters():
 	return rays_to_characters
@@ -426,11 +442,13 @@ func is_low_ceiling():
 
 func _on_HealTimer_timeout():
 	if (
-		not character.is_player()
-		or not __PLDRT.game_state.is_level_ready()
+		not __PLDRT.game_state.is_level_ready()
 		or not oxygen_timer.is_stopped()
 		or not poison_timer.is_stopped()
 	):
+		return
+	if not character.is_in_party():
+		heal_timer.stop()
 		return
 	var name_hint = character.get_name_hint()
 	var health_current = __PLDRT.game_state.party_stats[name_hint]["health_current"]

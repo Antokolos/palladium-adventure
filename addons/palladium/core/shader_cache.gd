@@ -95,7 +95,6 @@ func make_particles(pos, particles):
 	aabb = aabb.merge(particles.get_aabb())
 	particles.set_scale(get_scale_from_aabb(aabb))
 	particles.emitting = true
-	particles.restart()
 	return particles
 
 func next_pos(pos):
@@ -166,6 +165,7 @@ func add_material_meshes(pos, scn):
 			if not rids.has(rid):
 				rids[rid] = make_particles(pos, particles.duplicate(Node.DUPLICATE_USE_INSTANCING))
 				self.add_child(rids[rid])
+				rids[rid].restart()
 				pos = next_pos(pos)
 		elif particles_cpu:
 			var pmat = particles_cpu.mesh.material
@@ -173,6 +173,7 @@ func add_material_meshes(pos, scn):
 			if not rids.has(rid):
 				rids[rid] = make_particles(pos, particles_cpu.duplicate(Node.DUPLICATE_USE_INSTANCING))
 				self.add_child(rids[rid])
+				rids[rid].restart()
 				pos = next_pos(pos)
 	return pos
 

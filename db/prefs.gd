@@ -22,6 +22,10 @@ func clear_all_achievements():
 	if CLEAR_ON_SERVER_IF_NOT_IN_PREFS:
 		_pldrt.common_utils.store_stats()
 
+func has_achievement_on_server(achievement_id):
+	var ach = _pldrt.common_utils.has_achievement(achievement_id)
+	return ach and ach.ret and ach.achieved
+
 func set_achievement(achievement_id, modification_id = MODIFICATION_ID_DEFAULT):
 	if not achievements.has(achievement_id):
 		push_warning("Cannot set achievement %d: key not found")
@@ -48,7 +52,7 @@ func set_achievement(achievement_id, modification_id = MODIFICATION_ID_DEFAULT):
 	save_prefs()
 	return true
 
-func store_achievement(achievement_id):
+func store_achievement(achievement_id, show_progress = true):
 	if not achievements.has(achievement_id):
 		push_warning("Cannot store achievement %d: key not found")
 		return
@@ -58,7 +62,8 @@ func store_achievement(achievement_id):
 		var stat_id = ACHIEVEMENTS_DATA[achievement_id]["stat_id"]
 		var stat_max = STATS_DATA[stat_id]["stat_max"]
 		var l = achievements[achievement_id].size()
-		_pldrt.common_utils.set_achievement_progress(achievement_id, l, stat_max)
+		if show_progress:
+			_pldrt.common_utils.set_achievement_progress(achievement_id, l, stat_max)
 		_pldrt.common_utils.set_stat_int(stat_id, l)
 		if l >= stat_max:
 			_pldrt.common_utils.set_achievement(achievement_id)
@@ -75,13 +80,14 @@ func get_achievement(achievement_id, modification_id = null):
 
 func resend_achievements():
 	for achievement_id in achievements.keys():
-		if achievements[achievement_id].size() > 0:
-			store_achievement(achievement_id)
-		elif CLEAR_ON_SERVER_IF_NOT_IN_PREFS:
-			_pldrt.common_utils.clear_achievement(achievement_id, false)
-		else: # not CLEAR_ON_SERVER_IF_NOT_IN_PREFS
-			var ach = _pldrt.common_utils.has_achievement(achievement_id)
-			if ach and ach.ret and ach.achieved:
+		var has_locally = achievements[achievement_id].size() > 0
+		var has_on_server = has_achievement_on_server(achievement_id)
+		if has_locally and not has_on_server:
+			store_achievement(achievement_id, false)
+		elif has_on_server and not has_locally:
+			if CLEAR_ON_SERVER_IF_NOT_IN_PREFS:
+				_pldrt.common_utils.clear_achievement(achievement_id, false)
+			elif not ACHIEVEMENTS_DATA[achievement_id].has("stat_id"):
 				set_achievement(achievement_id)
 	_pldrt.common_utils.store_stats()
 

@@ -1328,12 +1328,14 @@ func do_process(delta, is_player):
 	)
 	
 	var model = get_model()
+	var has_important_animations = false
 	if model:
+		has_important_animations = model.has_important_animations_now()
 		var animations_enabled = (
 			force_visibility
 			or should_fall
+			or has_important_animations
 			or is_visible_to_player()
-			or model.has_important_animations_now()
 		)
 		model.enable_animations(animations_enabled)
 		if animations_enabled:
@@ -1407,6 +1409,10 @@ func do_process(delta, is_player):
 	elif d.is_moving or rpd.rotate_y:
 		character_nodes.stop_rest_timer()
 		model.walk(is_crouching, is_sprinting)
-	else:
+	elif (
+		not has_important_animations
+		and not should_fall
+		and model and model.is_animations_enabled()
+	):
 		character_nodes.start_rest_timer()
 	return d

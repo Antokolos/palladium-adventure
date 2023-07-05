@@ -32,7 +32,7 @@ const ROTATE_HEAD_ANGLE_MAX_DEG = 45.0
 
 export(NodePath) var main_skeleton = null
 export var force_anim_disable = false
-export var rest_shots_max = 2
+export var rest_shots_max = 0
 export(PoolIntArray) var attack_cutscene_ids = PoolIntArray()
 
 onready var animation_tree = $AnimationTree
@@ -67,8 +67,16 @@ func enable_animations(enable):
 	elif not enable and animation_tree.is_active():
 		animation_tree.set_active(false)
 
+func is_animations_enabled():
+	return not force_anim_disable and animation_tree.is_active()
+
 func can_do_rest_shot():
-	return not is_rest_active() and not is_in_speak_mode() and not is_sitting()
+	return (
+		rest_shots_max > 0
+		and not is_rest_active()
+		and not is_in_speak_mode()
+		and not is_sitting()
+	)
 
 func do_rest_shot(shot_idx):
 	if can_do_rest_shot():
