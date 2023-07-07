@@ -249,7 +249,9 @@ func _input(event):
 			and event is InputEventMouseMotion
 		):
 			angle_rad_x = deg2rad(event.relative.y * __PLDRT.settings.get_sensitivity() * __PLDRT.settings.get_yaxis_coeff())
-			angle_rad_y = deg2rad(event.relative.x * __PLDRT.settings.get_sensitivity() * -1)
+			change_angle_rad_y_to(
+				deg2rad(event.relative.x * __PLDRT.settings.get_sensitivity() * -1)
+			)
 			angle_x_reset = true
 			angle_y_reset = true
 			__PLDRT.game_state.get_cam().process_rotation(self)
@@ -257,7 +259,11 @@ func _input(event):
 			var v = event.get_axis_value()
 			var nonzero = v > AXIS_VALUE_THRESHOLD or v < -AXIS_VALUE_THRESHOLD
 			if event.get_axis() == JOY_AXIS_2:  # Joypad Right Stick Horizontal Axis
-				angle_rad_y = deg2rad(KEY_LOOK_SPEED_FACTOR * __PLDRT.settings.get_sensitivity() * -v) if nonzero else 0
+				change_angle_rad_y_to(
+					deg2rad(KEY_LOOK_SPEED_FACTOR * __PLDRT.settings.get_sensitivity() * -v)
+						if nonzero
+						else 0
+				)
 			if event.get_axis() == JOY_AXIS_3:  # Joypad Right Stick Vertical Axis
 				angle_rad_x = deg2rad(KEY_LOOK_SPEED_FACTOR * __PLDRT.settings.get_sensitivity() * v * __PLDRT.settings.get_yaxis_coeff()) if nonzero else 0
 		elif not on_ladder:
@@ -295,11 +301,15 @@ func _input(event):
 				angle_rad_x = 0
 			
 			if event.is_action_pressed("cam_left"):
-				angle_rad_y = deg2rad(KEY_LOOK_SPEED_FACTOR * __PLDRT.settings.get_sensitivity())
+				change_angle_rad_y_to(
+					deg2rad(KEY_LOOK_SPEED_FACTOR * __PLDRT.settings.get_sensitivity())
+				)
 			elif event.is_action_pressed("cam_right"):
-				angle_rad_y = deg2rad(KEY_LOOK_SPEED_FACTOR * __PLDRT.settings.get_sensitivity() * -1)
+				change_angle_rad_y_to(
+					deg2rad(KEY_LOOK_SPEED_FACTOR * __PLDRT.settings.get_sensitivity() * -1)
+				)
 			elif event.is_action_released("cam_left") or event.is_action_released("cam_right"):
-				angle_rad_y = 0
+				change_angle_rad_y_to(0)
 			
 			if event.is_action_pressed("crouch"):
 				toggle_crouch()
@@ -318,19 +328,22 @@ func get_movement_data(is_player):
 	if not __PLDRT.game_state.is_tactical_view() \
 		and is_player \
 		and is_in_party() \
-		and input_movement_vector.length_squared() > 0 \
 		and not is_movement_disabled() \
 		and not __PLDRT.cutscene_manager.is_cutscene():
-			var dir_input = Vector3()
+			var data = PLDMovementData.new()
 			var cam_xform = cam.get_global_transform()
-			var n = input_movement_vector.normalized()
-			if is_on_ladder():
-				dir_input += Vector3.UP * n.z
+			if input_movement_vector.length_squared() > EPS:
+				var dir_input = Vector3()
+				var n = input_movement_vector.normalized()
+				if is_on_ladder():
+					dir_input += Vector3.UP * n.z
+				else:
+					dir_input += -cam_xform.basis.z.normalized() * n.y
+					dir_input += cam_xform.basis.x.normalized() * n.x
+				cam.walk_initiate(self)
+				data.with_dir(dir_input).with_rest_state(false)
 			else:
-				dir_input += -cam_xform.basis.z.normalized() * n.y
-				dir_input += cam_xform.basis.x.normalized() * n.x
-			cam.walk_initiate(self)
-			var data = PLDMovementData.new().with_dir(dir_input).with_rest_state(false)
+				data.with_rest_state(true)
 			if cam_xform.origin.y < max_lower_limit_y:
 				data.with_signal("out_of_bounds", [])
 			return data

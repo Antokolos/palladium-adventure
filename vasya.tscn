@@ -84,7 +84,6 @@ one_shot = true
 
 [node name="RestTimer" type="Timer" parent="." index="4"]
 wait_time = 7.0
-one_shot = true
 
 [connection signal="timeout" from="SpeechTimer" to="." method="_on_SpeechTimer_timeout"]
 [connection signal="timeout" from="RestTimer" to="." method="_on_RestTimer_timeout"]

@@ -768,7 +768,6 @@ func kill_party(and_finish_the_game = true):
 func set_health(character, health_current, health_max):
 	if health_current <= 0:
 		character.kill()
-		return
 	var name_hint = character.get_name_hint()
 	var hc = health_current if health_current < health_max else health_max
 	party_stats[name_hint]["health_current"] = hc

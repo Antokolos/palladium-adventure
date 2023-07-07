@@ -147,7 +147,7 @@ func reset_movement():
 	rest_state = true
 
 func reset_rotation():
-	angle_rad_y = 0
+	change_angle_rad_y_to(0)
 
 func reset_movement_and_rotation():
 	reset_movement()
@@ -471,6 +471,7 @@ func follow(current_transform, next_position):
 				and not __PLDRT.cutscene_manager.is_cutscene()
 			):
 				data.clear_rotation_angle()
+				zero_rotation = true
 			return data.clear_dir().with_rest_state(zero_rotation)
 		elif was_moving and target and zero_rotation and d <= ALIGNMENT_RANGE:
 			return data \
@@ -578,6 +579,44 @@ func get_movement_data(is_player):
 	
 	return data
 
+func is_rotating():
+	return angle_rad_y > EPS or angle_rad_y < -EPS
+
+func change_angle_rad_y_to(angle_rad_y_new, with_angle_limits = false):
+	var was_rotating = is_rotating()
+	if not with_angle_limits:
+		angle_rad_y = angle_rad_y_new
+		var is_rotating = is_rotating()
+		if not was_rotating and is_rotating:
+			return 1
+		elif was_rotating and not is_rotating:
+			return -1
+		else:
+			return 0
+	
+	if angle_rad_y_new > ROTATION_ANGLE_MIN_RAD:
+		angle_rad_y = (
+			ROTATION_ANGLE_SPEED_RAD
+				if angle_rad_y_new > ROTATION_ANGLE_SPEED_RAD
+				else angle_rad_y_new
+		)
+	elif angle_rad_y_new < -ROTATION_ANGLE_MIN_RAD:
+		angle_rad_y = (
+			-ROTATION_ANGLE_SPEED_RAD
+				if angle_rad_y_new < -ROTATION_ANGLE_SPEED_RAD
+				else angle_rad_y_new
+		)
+	else:
+		angle_rad_y = 0
+	
+	var is_rotating = is_rotating()
+	if not was_rotating and is_rotating:
+		return 1
+	elif was_rotating and not is_rotating:
+		return -1
+	else:
+		return 0
+
 func change_rest_state_to(rest_state_new):
 	if rest_state == rest_state_new:
 		return false
@@ -587,25 +626,13 @@ func change_rest_state_to(rest_state_new):
 	return true
 
 func update_state(data : PLDMovementData):
-	if not is_player_controlled():
-		angle_rad_y = 0
 	if data.has_rotation_angle():
-		if not in_party or not is_rest_state():
-			var ra = data.get_rotation_angle()
-			if ra > ROTATION_ANGLE_MIN_RAD:
-				angle_rad_y = (
-					ROTATION_ANGLE_SPEED_RAD
-						if ra > ROTATION_ANGLE_SPEED_RAD
-						else ra
-				)
-			elif ra < -ROTATION_ANGLE_MIN_RAD:
-				angle_rad_y = (
-					-ROTATION_ANGLE_SPEED_RAD
-						if ra < -ROTATION_ANGLE_SPEED_RAD
-						else ra
-				)
-			else:
-				angle_rad_y = 0
+		change_angle_rad_y_to(
+			data.get_rotation_angle() if not in_party or not is_rest_state() else 0,
+			true
+		)
+	elif not is_player_controlled():
+		change_angle_rad_y_to(0)
 	if data.has_rest_state():
 		change_rest_state_to(data.get_rest_state())
 	data.emit_sgnl_if_exists(self)

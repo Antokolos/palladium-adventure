@@ -265,8 +265,11 @@ func kill():
 	var model = get_model()
 	if model:
 		model.kill()
+		yield(model, "character_dead")
 	else:
 		push_warning("Model not set")
+	if is_in_party():
+		__PLDRT.game_state.game_over()
 
 func need_to_set_look_transition():
 	return (
@@ -877,7 +880,7 @@ func process_rotation(need_to_update_collisions):
 		rot.y = clamp(rot.y, ladder_rotation_deg + YROT_LADDER_MIN_DEG, ladder_rotation_deg + YROT_LADDER_MAX_DEG)
 		self.rotation_degrees = rot
 	if angle_y_reset:
-		angle_rad_y = 0
+		change_angle_rad_y_to(0)
 		angle_y_reset = false
 	return { "rotate_y" : true }
 
@@ -1141,11 +1144,34 @@ func set_has_floor_collision(fc, is_player, characters):
 					continue
 				character.invoke_physics_pass()
 
+func change_angle_rad_y_to(angle_rad_y_new, with_angle_limits = false):
+	var rot_result = .change_angle_rad_y_to(angle_rad_y_new, with_angle_limits)
+	if rot_result != 0:
+		if rot_result < 0 and is_rest_state():
+			# Start rest timer if character stopped rotating
+			character_nodes.start_rest_timer()
+		elif rot_result > 0:
+			character_nodes.stop_rest_timer()
+			character_nodes.play_walking_sound(is_sprinting)
+			var model = get_model()
+			if model:
+				model.walk(is_crouching, is_sprinting)
+	return rot_result
+
 func change_rest_state_to(rest_state_new):
 	var was_changed = .change_rest_state_to(rest_state_new)
 	if was_changed:
 		# When the character started to move or stopped
 		invoke_physics_pass()
+		if rest_state_new and not is_rotating():
+			# Start rest timer if character stopped movement
+			character_nodes.start_rest_timer()
+		else:
+			character_nodes.stop_rest_timer()
+			character_nodes.play_walking_sound(is_sprinting)
+			var model = get_model()
+			if model:
+				model.walk(is_crouching, is_sprinting)
 	return was_changed
 
 func update_rays_to_characters(characters):
@@ -1386,9 +1412,7 @@ func do_process(delta, is_player):
 	if d.is_moving or rpd.rotate_y:
 		if d.is_moving:
 			is_air_pocket = false
-		if has_floor_collision:
-			character_nodes.play_walking_sound(is_sprinting)
-		elif not character_nodes.has_floor_collision():
+		if not character_nodes.has_floor_collision():
 			character_nodes.stop_walking_sound()
 	if has_floor_collision:
 		if is_crouching \
@@ -1404,15 +1428,4 @@ func do_process(delta, is_player):
 		character_nodes.stop_rest_timer()
 		if should_fall:
 			model.fall()
-	if not has_floor_collision:
-		return d
-	elif d.is_moving or rpd.rotate_y:
-		character_nodes.stop_rest_timer()
-		model.walk(is_crouching, is_sprinting)
-	elif (
-		not has_important_animations
-		and not should_fall
-		and model and model.is_animations_enabled()
-	):
-		character_nodes.start_rest_timer()
 	return d
