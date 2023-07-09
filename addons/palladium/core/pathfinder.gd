@@ -134,14 +134,14 @@ func activate():
 	reset_movement_and_rotation()
 	if activated_prev != activated:
 		emit_signal("activated_changed", self, activated_prev, activated)
-	change_rest_state_to(false)
+	change_rest_state_to(false, true)
 
 func deactivate():
 	var activated_prev = activated
 	activated = false
 	if activated_prev != activated:
 		emit_signal("activated_changed", self, activated_prev, activated)
-	change_rest_state_to(true)
+	change_rest_state_to(true, true)
 
 func reset_movement():
 	rest_state = true
@@ -617,7 +617,7 @@ func change_angle_rad_y_to(angle_rad_y_new, with_angle_limits = false):
 	else:
 		return 0
 
-func change_rest_state_to(rest_state_new):
+func change_rest_state_to(rest_state_new, due_to_activation = false):
 	if rest_state == rest_state_new:
 		return false
 	var rest_state_prev = rest_state

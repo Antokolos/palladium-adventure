@@ -262,13 +262,14 @@ func kill():
 	if is_player_controlled():
 		__PLDRT.game_state.game_over()
 		return
+	var was_in_party = is_in_party()
 	var model = get_model()
 	if model:
 		model.kill()
 		yield(model, "character_dead")
 	else:
 		push_warning("Model not set")
-	if is_in_party():
+	if was_in_party:
 		__PLDRT.game_state.game_over()
 
 func need_to_set_look_transition():
@@ -450,12 +451,14 @@ func become_player():
 		push_warning("Model not set")
 	var player = __PLDRT.game_state.get_player()
 	var cam = __PLDRT.game_state.get_cam()
+	var was_player = false
 	deactivate()
 	if not player or is_player():
 		if cam:
 			cam.set_target_path(get_cam_holder_path())
 			cam.rebuild_exceptions(self)
 	else:
+		was_player = true
 		player.deactivate()
 		if cam:
 			cam.set_target_path(get_cam_holder_path())
@@ -468,8 +471,22 @@ func become_player():
 		else:
 			push_warning("Model not set")
 		player.activate()
-	__PLDRT.game_state.set_player_name_hint(get_name_hint())
+	var self_nh = get_name_hint()
+	var ps = __PLDRT.game_state.party_stats
+	__PLDRT.game_state.set_player_name_hint(self_nh)
 	__PLDRT.game_state.set_poisoned(self, is_poisoned(), get_intoxication())
+	__PLDRT.game_state.set_health(
+		self,
+		ps[self_nh]["health_current"],
+		ps[self_nh]["health_max"]
+	)
+	if was_player:
+		var nh = player.get_name_hint()
+		__PLDRT.game_state.set_health(
+			player,
+			ps[nh]["health_current"],
+			ps[nh]["health_max"]
+		)
 	activate()
 	emit_signal("player_changed", self, player)
 
@@ -1150,28 +1167,32 @@ func change_angle_rad_y_to(angle_rad_y_new, with_angle_limits = false):
 		if rot_result < 0 and is_rest_state():
 			# Start rest timer if character stopped rotating
 			character_nodes.start_rest_timer()
-		elif rot_result > 0:
+		else:
 			character_nodes.stop_rest_timer()
-			character_nodes.play_walking_sound(is_sprinting)
-			var model = get_model()
-			if model:
-				model.walk(is_crouching, is_sprinting)
+			if rot_result > 0:
+				character_nodes.play_walking_sound(is_sprinting)
+				var model = get_model()
+				if model:
+					model.walk(is_crouching, is_sprinting)
 	return rot_result
 
-func change_rest_state_to(rest_state_new):
+func change_rest_state_to(rest_state_new, due_to_activation = false):
 	var was_changed = .change_rest_state_to(rest_state_new)
 	if was_changed:
 		# When the character started to move or stopped
 		invoke_physics_pass()
+		if due_to_activation:
+			return was_changed
 		if rest_state_new and not is_rotating():
 			# Start rest timer if character stopped movement
 			character_nodes.start_rest_timer()
 		else:
 			character_nodes.stop_rest_timer()
-			character_nodes.play_walking_sound(is_sprinting)
-			var model = get_model()
-			if model:
-				model.walk(is_crouching, is_sprinting)
+			if not rest_state_new:
+				character_nodes.play_walking_sound(is_sprinting)
+				var model = get_model()
+				if model:
+					model.walk(is_crouching, is_sprinting)
 	return was_changed
 
 func update_rays_to_characters(characters):
