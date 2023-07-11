@@ -144,7 +144,7 @@ func deactivate():
 	change_rest_state_to(true, true)
 
 func reset_movement():
-	rest_state = true
+	change_rest_state_to(true)
 
 func reset_rotation():
 	change_angle_rad_y_to(0)

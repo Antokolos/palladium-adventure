@@ -537,6 +537,7 @@ func finish_load():
 		clear_caches()
 		load_state(slot_to_load_from)
 		slot_to_load_from = -1
+		set_saving_disabled(false) # If this game can be loaded, then it can be saved too
 	else:
 		restore_states()
 	get_tree().call_group("hud", "update_hud")
