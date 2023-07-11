@@ -325,11 +325,14 @@ func _input(event):
 
 func get_movement_data(is_player):
 	var cam = __PLDRT.game_state.get_cam()
+	var is_player_and_not_is_cutscene = (
+		is_player
+		and not __PLDRT.cutscene_manager.is_cutscene()
+	)
 	if not __PLDRT.game_state.is_tactical_view() \
-		and is_player \
+		and is_player_and_not_is_cutscene \
 		and is_in_party() \
-		and not is_movement_disabled() \
-		and not __PLDRT.cutscene_manager.is_cutscene():
+		and not is_movement_disabled():
 			var data = PLDMovementData.new()
 			var cam_xform = cam.get_global_transform()
 			if input_movement_vector.length_squared() > EPS:
@@ -343,12 +346,13 @@ func get_movement_data(is_player):
 				cam.walk_initiate(self)
 				data.with_dir(dir_input).with_rest_state(false)
 			else:
+				cam.walk_stop(self)
 				data.with_rest_state(true)
 			if cam_xform.origin.y < max_lower_limit_y:
 				data.with_signal("out_of_bounds", [])
 			return data
 	else:
-		if is_player and not __PLDRT.cutscene_manager.is_cutscene():
+		if is_player_and_not_is_cutscene:
 			cam.walk_stop(self)
 		return .get_movement_data(is_player)
 
