@@ -1,5 +1,5 @@
 # ############################################################################ #
-# Copyright © 2019-present Frédéric Maquin <fred@ephread.com>
+# Copyright © 2019-2022 Frédéric Maquin <fred@ephread.com>
 # All Rights Reserved
 #
 # This file is part of inkgd.
@@ -14,7 +14,11 @@ extends Node
 
 static func init(root_node, stop_on_error = true):
 	if root_node.has_node("__InkRuntime"):
-		return root_node.get_node("__InkRuntime")
+		var _ink_runtime = root_node.get_node("__InkRuntime")
+		_ink_runtime.stop_execution_on_exception = stop_on_error
+		_ink_runtime.stop_execution_on_error = stop_on_error
+
+		return _ink_runtime
 
 	var _ink_runtime = load("res://addons/inkgd/runtime/static/ink_runtime.gd").new()
 

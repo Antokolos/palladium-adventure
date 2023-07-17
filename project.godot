@@ -644,6 +644,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/palladium/core/environment/water_area.gd"
 }, {
+"base": "Reference",
+"class": "StoryError",
+"language": "GDScript",
+"path": "res://addons/inkgd/runtime/extra/story_error.gd"
+}, {
+"base": "Reference",
+"class": "StoryErrorMetadata",
+"language": "GDScript",
+"path": "res://addons/inkgd/runtime/extra/story_error_metadata.gd"
+}, {
 "base": "PLDTakable",
 "class": "TakableRat",
 "language": "GDScript",
@@ -782,6 +792,8 @@ _global_script_class_icons={
 "PLDUseTarget": "",
 "PLDViewportHack": "",
 "PLDWaterArea": "",
+"StoryError": "",
+"StoryErrorMetadata": "",
 "TakableRat": "",
 "VasyaModel": ""
 }
@@ -1883,6 +1895,10 @@ scene={
 "nodes/root_type": "Spatial",
 "nodes/storage": 0
 }
+
+[inkgd]
+
+do_not_use_mono_runtime=true
 
 [input]
 

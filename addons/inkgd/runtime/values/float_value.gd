@@ -1,8 +1,8 @@
 # warning-ignore-all:shadowed_variable
 # warning-ignore-all:unused_class_variable
 # ############################################################################ #
-# Copyright © 2015-present inkle Ltd.
-# Copyright © 2019-present Frédéric Maquin <fred@ephread.com>
+# Copyright © 2015-2021 inkle Ltd.
+# Copyright © 2019-2022 Frédéric Maquin <fred@ephread.com>
 # All Rights Reserved
 #
 # This file is part of inkgd.
@@ -24,7 +24,10 @@ func get_is_truthy():
 func _init():
 	value = 0.0
 
-func cast(new_type):
+# The method takes a `StoryErrorMetadata` object as a parameter that
+# doesn't exist in upstream. The metadat are used in case an 'exception'
+# is raised. For more information, see story.gd.
+func cast(new_type, metadata = null):
 	if new_type == self.value_type:
 		return self
 
@@ -37,7 +40,7 @@ func cast(new_type):
 	if new_type == ValueType.STRING:
 		return StringValue().new_with(str(value)) # TODO: Check formating
 
-	Utils.throw_story_exception(bad_cast_exception_message(new_type))
+	Utils.throw_story_exception(bad_cast_exception_message(new_type), false, metadata)
 	return null
 
 # ######################################################################## #

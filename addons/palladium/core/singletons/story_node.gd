@@ -92,17 +92,18 @@ func build_stories_cache_for_locale(slot : int, storiesDirectoryPath : String, l
 			break
 		elif dir.current_is_dir():
 			build_stories_cache_for_locale(slot, storiesDirectoryPath, locale, file, storiesByLocale)
-		elif file.ends_with(".ink.json"):
-			var storyName : String = ("" if subPath.empty() else subPath + "/") + file
-			var storyPath : String = basePath + "/" + file
+		elif file.ends_with(".ink.json.import"):
+			var json_file = file.substr(0, file.length() - 7) # Cut off '.import' at the end
+			var storyName : String = ("" if subPath.empty() else subPath + "/") + json_file
+			var storyPath : String = basePath + "/" + json_file
 			var story_data = load_story_from_file(storyPath)
 			var story = story_data.story
 			bind_external_functions(story)
 			# TODO: Probably we need to support multiple chat driven stories?
-			var chatDriven : bool = (file == "Chat.ink.json")
+			var chatDriven : bool = ("Chat.ink.json".nocasecmp_to(json_file) == 0)
 			var palladiumStory : PLDStory = PLDStory.new(story, storiesDirectoryPath, locale, storyName, chatDriven, story_data.actors)
 			load_save_or_reset(slot, palladiumStory)
-			storiesByLocale[("" if subPath.empty() else subPath + "/") + file] = palladiumStory
+			storiesByLocale[("" if subPath.empty() else subPath + "/") + json_file] = palladiumStory
 	dir.list_dir_end()
 
 func bind_external_functions(story):
@@ -121,22 +122,18 @@ func bind_external_functions(story):
 	story.bind_external_function("meeting_is_not_finished_exact", _pldrt.conversation_manager, "meeting_is_not_finished_exact")
 
 func load_story_from_file(path : String): # Story
-	var text : String = ""
+	var r : InkResource = load(path)
+	var text : String = r.json
 	var actors = []
-	var file : File = File.new()
-	if file.file_exists(path):
-		file.open(path, File.READ)
-		text = file.get_as_text()
-		for result in actors_regex.search_all(text):
-			var a = result.get_string(1)
-			var new_actor = true
-			for actor in actors:
-				if actor.casecmp_to(a) == 0:
-					new_actor = false
-					break
-			if new_actor:
-				actors.append(a)
-		file.close()
+	for result in actors_regex.search_all(text):
+		var a = result.get_string(1)
+		var new_actor = true
+		for actor in actors:
+			if actor.casecmp_to(a) == 0:
+				new_actor = false
+				break
+		if new_actor:
+			actors.append(a)
 	return {
 		"story" : Story.new(text),
 		"actors" : actors
@@ -154,7 +151,7 @@ func check_story_not_finished(storyPath : String) -> bool:
 			var story = ps.get_ink_story() # Story
 			result = result and (story.can_continue or not story.current_choices.empty())
 		else:
-			push_error("Story '%s' for locale '%s' was not found in cache")
+			push_error("Story '%s' for locale '%s' was not found in cache" % [storyPath, locale])
 			return true
 	return result
 
@@ -170,7 +167,7 @@ func check_story_result_was_achieved(storyPath : String, result : int) -> bool:
 			for r in results:
 				achieved = achieved or (r == result)
 		else:
-			push_error("Story '%s' for locale '%s' was not found in cache")
+			push_error("Story '%s' for locale '%s' was not found in cache" % [storyPath, locale])
 			return false
 	return achieved
 
@@ -203,7 +200,7 @@ func get_actors_name_hints(storyPath : String):
 			# In fact, all locales should hold the same actors
 			return cachedPalladiumStory.get_actors()
 		else:
-			push_error("Story '%s' for locale '%s' was not found in cache")
+			push_error("Story '%s' for locale '%s' was not found in cache" % [storyPath, locale])
 	return []
 
 func _observe_variable(variable_name, new_value) -> void:

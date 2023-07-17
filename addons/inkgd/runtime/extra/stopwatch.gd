@@ -1,7 +1,7 @@
 # warning-ignore-all:unused_class_variable
 # ############################################################################ #
-# Copyright © 2015-present inkle Ltd.
-# Copyright © 2019-present Frédéric Maquin <fred@ephread.com>
+# Copyright © 2015-2021 inkle Ltd.
+# Copyright © 2019-2022 Frédéric Maquin <fred@ephread.com>
 # All Rights Reserved
 #
 # This file is part of inkgd.
@@ -11,7 +11,6 @@
 # Simple replacement of the Stopwatch class from the .NET Framework.
 # Less accurate than the original implemntation, but good enough for
 # the use-case.
-
 
 class_name InkStopWatch
 

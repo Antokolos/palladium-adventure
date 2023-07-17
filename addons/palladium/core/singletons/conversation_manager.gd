@@ -231,9 +231,8 @@ func get_story_path(conversation_name, target_name_hint = null):
 		cp_story = story_state_cache.get(cp)
 	else:
 		var locale = get_locale()
-		var f = File.new()
 		var fpath = "res://ink-scripts/%s/%s" % [locale, cp]
-		var exists_cp = f.file_exists(fpath)
+		var exists_cp = ResourceLoader.exists(fpath)
 		if not exists_cp:
 			push_warning("Story file %s not found" % fpath)
 		cp_story = cp if exists_cp else "Default.ink.json"
