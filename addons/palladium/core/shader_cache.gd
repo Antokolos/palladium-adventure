@@ -3,6 +3,7 @@ class_name PLDShaderCache
 
 const ENABLE_BAKED_LIGHT_USAGE_FOR_ALL = true
 const SHADER_CACHE_HIDING_ENABLED = true
+const EXTRA_CULL_MARGIN_INCREMENT = 10
 const STEP = 0.005
 const HALFROW = 20
 
@@ -115,6 +116,8 @@ func add_material_meshes(pos, scn):
 		var particles_cpu = item["particles_cpu"]
 		if mesh and ENABLE_BAKED_LIGHT_USAGE_FOR_ALL:
 			mesh.use_in_baked_light = true
+		if mesh and EXTRA_CULL_MARGIN_INCREMENT > 0:
+			mesh.extra_cull_margin += EXTRA_CULL_MARGIN_INCREMENT
 		if not caching_enabled:
 			continue
 		if mesh:
