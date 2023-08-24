@@ -799,6 +799,10 @@ func set_action_points(character, action_points_current, action_points_max):
 	var name_hint = character.get_name_hint()
 	set_action_points_for_name(name_hint, action_points_current, action_points_max)
 
+func clear_action_points(character, action_points_max):
+	var name_hint = character.get_name_hint()
+	set_action_points_for_name(name_hint, 0, action_points_max)
+
 func set_action_points_for_name(name_hint, action_points_current, action_points_max):
 	var apc = action_points_current if action_points_current < action_points_max else action_points_max
 	party_stats[name_hint]["action_points_current"] = apc

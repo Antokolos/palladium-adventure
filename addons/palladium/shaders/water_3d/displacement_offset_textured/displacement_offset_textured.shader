@@ -41,17 +41,21 @@ void fragment() {
 	vec2 texture_uv = UV * texture_scale;
 	texture_uv += uv_offset_amplitude * texture_based_offset;
 	ALBEDO = texture(texturemap, texture_uv).rgb * texture_color.rgb;
+	float a = 1.0;
 	if (ALBEDO.r > 0.9 && ALBEDO.g > 0.9 && ALBEDO.b > 0.9) {
-		ALPHA = 0.9;
+		a = 0.9;
 	} else {
-		ALPHA = 0.5;
+		a = 0.5;
 	}
 	if (use_circular_area) {
 		// Making it visible only in circular area, to be used together with simple quad mesh
 		// Normalized circle, with the center in the center of the quad mesh (0.5, 0.5)
 		float circ = 1.0 - ((UV.x - 0.5) * (UV.x - 0.5) + (UV.y - 0.5) * (UV.y - 0.5)) / 0.25;
-		ALPHA = (circ < 0.0) ? 0.0 : 1.0;
+		if (circ < 0.0) {
+			a = 0.0;
+		}
 	}
+	ALPHA = a;
 	METALLIC = 0.0;
 	ROUGHNESS = 0.1;
 	NORMALMAP = texture(normalmap, base_uv_offset).rgb;
