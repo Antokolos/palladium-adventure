@@ -229,16 +229,16 @@ func activate(mode):
 		desktop_container_documents.visible = false
 		desktop_container_settings.visible = true
 		desktop_container_save.visible = false
-		desktop_container_load.visible = true
+		desktop_container_load.visible = PLDDB.USE_LOAD
 		desktop_container_quit.visible = true
 	else:
 		var is_not_cutscene = hud.has_game_ui() and not __PLDRT.cutscene_manager.is_cutscene()
-		desktop_container_chat.visible = is_not_cutscene
+		desktop_container_chat.visible = PLDDB.USE_CHAT and is_not_cutscene
 		desktop_container_credits.visible = false
 		desktop_container_map.visible = false
 		desktop_container_documents.visible = false
 		desktop_container_settings.visible = true
-		desktop_container_save.visible = is_not_cutscene
+		desktop_container_save.visible = PLDDB.USE_SAVE and is_not_cutscene
 		if __PLDRT.game_state.is_saving_disabled():
 			save_button.disabled = true
 			save_button_label.visible = false
@@ -247,7 +247,7 @@ func activate(mode):
 			save_button.disabled = false
 			save_button_label.visible = true
 			save_button_label_disabled.visible = false
-		desktop_container_load.visible = is_not_cutscene
+		desktop_container_load.visible = PLDDB.USE_LOAD and is_not_cutscene
 		desktop_container_quit.visible = true
 	match mode:
 		ActivationMode.CHAT:

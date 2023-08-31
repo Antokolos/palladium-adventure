@@ -105,6 +105,9 @@ func can_execute_custom_action(item, action = "item_preview_action_1", event = n
 #const USE_ACTION_POINTS = false
 #const USE_CROSSHAIR = true
 #const USE_INDICATORS = true
+#const USE_CHAT = true
+#const USE_LOAD = true
+#const USE_SAVE = true
 
 #const STORY_VARS_DEFAULT = {
 #	"flashlight_on" : false,
@@ -226,6 +229,9 @@ const USE_HEALTH = true
 const USE_ACTION_POINTS = false
 const USE_CROSSHAIR = true
 const USE_INDICATORS = true
+const USE_CHAT = false
+const USE_LOAD = true
+const USE_SAVE = true
 
 const STORY_VARS_DEFAULT = {
 	"flashlight_on" : false,
