@@ -809,6 +809,11 @@ func set_action_points_for_name(name_hint, action_points_current, action_points_
 	party_stats[name_hint]["action_points_max"] = action_points_max
 	emit_signal("action_points_changed", name_hint, apc, action_points_max)
 
+func clear_action_points_for_name(name_hint, action_points_max):
+	party_stats[name_hint]["action_points_current"] = 0
+	party_stats[name_hint]["action_points_max"] = action_points_max
+	emit_signal("action_points_changed", name_hint, 0, action_points_max)
+
 func get_door_state(door_path):
 	var id = scene_path + ":" + door_path
 	if not doors.has(id):
