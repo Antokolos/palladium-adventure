@@ -17,7 +17,7 @@ signal attack_finished(player_node, target, previous_target, attack_anim_idx)
 signal stun_started(player_node, weapon)
 signal stun_finished(player_node, prematurely)
 signal take_damage(player_node, fatal, hit_direction_node, hit_dir_vec)
-signal teleport_tween_started(player_node, origin)
+signal teleport_tween_started(player_node, origin, flight_params)
 
 const TELEPORT_TWEEN_DURATION_S = 5
 const TELEPORT_TWEEN_ELEVATION_MAX = 3
@@ -1256,7 +1256,7 @@ func teleport_tween_translation(tween_point : Vector3):
 	translation.y = tween_point.y + sqrt(abs(a)) * TELEPORT_TWEEN_ELEVATION_MAX
 	translation.z = tween_point.z
 
-func teleport_via_tween(origin, changed_model = null):
+func teleport_via_tween(origin, flight_params, changed_model = null):
 	if not teleport_tween or not origin:
 		return
 	var gt = get_global_transform()
@@ -1273,7 +1273,7 @@ func teleport_via_tween(origin, changed_model = null):
 	rotate_y(ra)
 	enable_collisions_and_interaction(false, true)
 	__PLDRT.game_state.set_saving_disabled(true)
-	emit_signal("teleport_tween_started", self, origin)
+	emit_signal("teleport_tween_started", self, origin, flight_params)
 	if changed_model:
 		model_to_restore = replace_model(changed_model)
 		model_to_restore.visible = false

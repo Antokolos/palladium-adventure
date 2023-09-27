@@ -10,7 +10,7 @@ signal crouching_changed(player, previous_state, new_state)
 signal sprinting_changed(player, previous_state, new_state)
 signal target_node_changed(player, previous_target_node, new_target_node)
 signal teleported_to(player, origin, basis)
-signal teleport_tween_started(player_node, origin)
+signal teleport_tween_started(player_node, origin, flight_params)
 signal player_surge(player, enabled)
 signal player_underwater(player, enabled)
 signal player_poisoned(player, enabled, intoxication_rate)
@@ -494,8 +494,8 @@ func on_target_node_changed(character, previous_target_node, new_target_node):
 func on_teleported_to(character, origin, basis):
 	emit_signal("teleported_to", character, origin, basis)
 
-func on_teleport_tween_started(character, origin):
-	emit_signal("teleport_tween_started", character, origin)
+func on_teleport_tween_started(character, origin, flight_params):
+	emit_signal("teleport_tween_started", character, origin, flight_params)
 
 func _on_ModulationTween_tween_completed(object, key):
 	var gwp = get_game_window_parent()
