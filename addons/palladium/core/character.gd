@@ -321,6 +321,9 @@ func enable_collisions_and_interaction(enable, all_shapes = false):
 	set_collision_mask_bit(COLLISION_LAYER_OBSTACLES, enable)
 	set_collision_layer_bit(COLLISION_LAYER_INTERACTIVE, not enable)
 
+func is_selected():
+	return selection_mark and selection_mark.visible
+
 func enable_selection_mark(enable):
 	if selection_mark:
 		selection_mark.visible = enable
@@ -1274,6 +1277,7 @@ func teleport_via_tween(origin, flight_params, changed_model = null):
 	enable_collisions_and_interaction(false, true)
 	__PLDRT.game_state.set_saving_disabled(true)
 	emit_signal("teleport_tween_started", self, origin, flight_params)
+	enable_selection_mark(false)
 	if changed_model:
 		model_to_restore = replace_model(changed_model)
 		model_to_restore.visible = false
@@ -1289,6 +1293,9 @@ func _on_TeleportTween_tween_completed(object, key):
 	enable_collisions_and_interaction(true, true)
 	__PLDRT.game_state.set_saving_disabled(false)
 	teleport_to_global_transform(global_transform)
+	var cam = __PLDRT.game_state.get_cam()
+	if cam.is_tactical_player_character(self):
+		enable_selection_mark(true)
 
 func _on_NavigationAgent_velocity_computed(safe_velocity):
 	var characters = __PLDRT.game_state.get_characters()
