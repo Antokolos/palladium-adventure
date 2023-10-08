@@ -782,7 +782,7 @@ func sit_down():
 		for companion in companions:
 			companion.sit_down()
 	if is_sprinting:
-		emit_signal("sprinting_changed", self, false, is_sprinting)
+		emit_signal("sprinting_changed", self, is_sprinting, false)
 	is_sprinting = false
 	is_crouching = true
 	emit_signal("crouching_changed", self, false, true)
@@ -837,7 +837,7 @@ func set_sprinting(enable):
 	if enable and not can_run():
 		return
 	if is_sprinting != enable:
-		emit_signal("sprinting_changed", self, enable, is_sprinting)
+		emit_signal("sprinting_changed", self, is_sprinting, enable)
 	is_sprinting = enable
 	var is_player = is_player()
 	if is_player:

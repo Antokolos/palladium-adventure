@@ -50,6 +50,6 @@ texture_progress = ExtResource( 5 )
 margin_top = 163.0
 margin_right = 854.0
 margin_bottom = 195.0
-text = "X%"
+text = "0%"
 align = 1
 valign = 1
