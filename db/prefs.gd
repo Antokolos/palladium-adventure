@@ -26,9 +26,32 @@ func has_achievement_on_server(achievement_id):
 	var ach = _pldrt.common_utils.has_achievement(achievement_id)
 	return ach and ach.ret and ach.achieved
 
+func get_achievement_progress(achievement_id):
+	if not achievements.has(achievement_id):
+		push_warning("Cannot get progress for achievement %s: key not found")
+		return 0
+	var l = achievements[achievement_id].size()
+	if l <= 0:
+		return 0
+	# Default modification ID has priority over another modification IDs
+	# If you want to have stat that is dependent on different modifications count
+	# (e.g. GREEK_LANGUAGE_LOVER in Palladium), then
+	# you should NOT use default modification ID
+	var r = (
+		achievements[achievement_id][MODIFICATION_ID_DEFAULT]
+			if achievements[achievement_id].has(MODIFICATION_ID_DEFAULT)
+			else l
+	)
+	if ACHIEVEMENTS_DATA[achievement_id].has("stat_id"):
+		var stat_id = ACHIEVEMENTS_DATA[achievement_id]["stat_id"]
+		var stat_max = STATS_DATA[stat_id]["stat_max"]
+		if r > stat_max:
+			return stat_max
+	return r
+
 func set_achievement(achievement_id, modification_id = MODIFICATION_ID_DEFAULT):
 	if not achievements.has(achievement_id):
-		push_warning("Cannot set achievement %d: key not found")
+		push_warning("Cannot set achievement %s: key not found" % achievement_id)
 		return false
 	if not achievements[achievement_id].has(modification_id):
 		achievements[achievement_id][modification_id] = 1
@@ -41,7 +64,7 @@ func set_achievement(achievement_id, modification_id = MODIFICATION_ID_DEFAULT):
 			if ACHIEVEMENTS_DATA[aid].has("stat_id"):
 				var stat_id = ACHIEVEMENTS_DATA[aid]["stat_id"]
 				m = STATS_DATA[stat_id]["stat_max"]
-			var l = achievements[aid].size()
+			var l = get_achievement_progress(aid)
 			if PERFECT_GAME_ACHIEVEMENT_ID.casecmp_to(aid) != 0 and l < m:
 				achievements[PERFECT_GAME_ACHIEVEMENT_ID].clear()
 				_pldrt.common_utils.clear_achievement(PERFECT_GAME_ACHIEVEMENT_ID)
@@ -54,14 +77,14 @@ func set_achievement(achievement_id, modification_id = MODIFICATION_ID_DEFAULT):
 
 func store_achievement(achievement_id, show_progress = true):
 	if not achievements.has(achievement_id):
-		push_warning("Cannot store achievement %d: key not found")
+		push_warning("Cannot store achievement %s: key not found" % achievement_id)
 		return
 	if not ACHIEVEMENTS_DATA[achievement_id].has("stat_id"):
 		_pldrt.common_utils.set_achievement(achievement_id)
 	else:
 		var stat_id = ACHIEVEMENTS_DATA[achievement_id]["stat_id"]
 		var stat_max = STATS_DATA[stat_id]["stat_max"]
-		var l = achievements[achievement_id].size()
+		var l = get_achievement_progress(achievement_id)
 		if show_progress:
 			_pldrt.common_utils.set_achievement_progress(achievement_id, l, stat_max)
 		_pldrt.common_utils.set_stat_int(stat_id, l)
@@ -70,17 +93,17 @@ func store_achievement(achievement_id, show_progress = true):
 
 func get_achievement(achievement_id, modification_id = null):
 	if not achievements.has(achievement_id):
-		push_warning("Cannot get achievement %d: achievement key not found")
+		push_warning("Cannot get achievement %s: achievement key not found" % achievement_id)
 		return 0
 	if not modification_id:
-		return achievements[achievement_id].size()
+		return get_achievement_progress(achievement_id)
 	if not achievements[achievement_id].has(modification_id):
 		return 0
 	return achievements[achievement_id][modification_id]
 
 func resend_achievements():
 	for achievement_id in achievements.keys():
-		var has_locally = achievements[achievement_id].size() > 0
+		var has_locally = (get_achievement_progress(achievement_id) > 0)
 		var has_on_server = has_achievement_on_server(achievement_id)
 		if has_locally and not has_on_server:
 			store_achievement(achievement_id, false)
@@ -122,15 +145,15 @@ func save_prefs():
 ### GAME-SPECIFIC PART ###
 
 const STATS_DATA = {
-	"STAT_GREEK_LANGUAGE_LOVER" : {"stat_min" : 0, "stat_max" : 17}
+	"STAT_WINNER" : {"stat_min" : 0, "stat_max" : 3}
 }
 
 const ACHIEVEMENTS_DATA = {
 	"MAIN_MENU" : {},
-	"GREEK_LANGUAGE_LOVER" : {
-		"stat_id" : "STAT_GREEK_LANGUAGE_LOVER"
-	},
-	"ALL_ENDINGS" : {}
+	"PERFECT_GAME" : {},
+	"WINNER" : {
+		"stat_id" : "STAT_WINNER"
+	}
 }
 
-const PERFECT_GAME_ACHIEVEMENT_ID = "ALL_ENDINGS"
+const PERFECT_GAME_ACHIEVEMENT_ID = "PERFECT_GAME"
