@@ -5,7 +5,7 @@ signal tactical_cursor_action(collider)
 signal tactical_cursor_over(collider)
 signal tactical_cursor_out(collider)
 
-const EPS = 0.001
+const EPS = 0.02
 const TACTICAL_CAMERA_ROT_EPS = deg2rad(0.5)
 const TACTICAL_CAMERA_ROT_MIN_RAD = deg2rad(20)
 const TACTICAL_CAMERA_ROT_MAX_RAD = deg2rad(75)
@@ -266,8 +266,8 @@ func estimate_position(point, normal = null, up = Vector3.UP):
 	var v = global_transform.origin - point
 	var nva = normal.angle_to(v) if normal else 0
 	var uva = up.angle_to(v)
-	var vdn = (v.dot(normal) < 0) if normal else false
-	var vdu = (v.dot(up) < 0)
+	var vdn = (v.dot(normal) < EPS) if normal else false
+	var vdu = (v.dot(up) < EPS)
 	if not (
 			(
 				normal
@@ -355,17 +355,16 @@ func process_tactical_camera_movement():
 			global_translate(diff)
 		var normal = use_point.get_collision_normal()
 		var axis = Vector3(cos(global_rotation.y), 0, -sin(global_rotation.y))
+		var emergency = false
 		var epx = rotate_around(point, axis, -angle_rad_x, normal)
 		if not epx.acceptable:
-			if epx.emergency:
-				return result.create_error()
-			else:
+			emergency = emergency or epx.emergency
+			if not epx.emergency:
 				rotate_around(point, axis, -epx.diff, normal)
 		var epy = rotate_around(point, Vector3.UP, angle_rad_y, normal)
 		if not epy.acceptable:
-			if epy.emergency:
-				return result.create_error()
-			else:
+			emergency = emergency or epy.emergency
+			if not epy.emergency:
 				rotate_around(point, Vector3.UP, -epy.diff, normal)
 		origin = global_transform.origin
 		var v = origin - point
@@ -377,9 +376,11 @@ func process_tactical_camera_movement():
 		backtrace_ray.cast_to = backtrace_ray.to_local(origin)
 		backtrace_ray.force_raycast_update()
 		if backtrace_ray.is_colliding():
-			return result.create_error(
-				backtrace_ray.get_collision_normal() * TACTICAL_MOVEMENT_SPEED
-			)
+			var brn = backtrace_ray.get_collision_normal()
+			var pbv = brn + normal if emergency else brn
+			return result.create_error(pbv * TACTICAL_MOVEMENT_SPEED)
+		if emergency:
+			return result.create_error(normal * TACTICAL_MOVEMENT_SPEED)
 	else:
 		translate_object_local(Vector3(0, 0, -tactical_zoom_speed) * TACTICAL_MOVEMENT_SPEED)
 		rotate_object_local(Vector3(1, 0, 0), -angle_rad_x)
