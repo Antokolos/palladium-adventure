@@ -62,9 +62,12 @@ func action(player_node, camera_node):
 	if not item or item.is_weapon():
 		return
 	var custom_actions = __PLDRT.game_state.get_custom_actions(item)
-	if custom_actions.empty() or not __PLDRT.DB.can_execute_custom_action(item, custom_actions[0]):
+	if custom_actions.empty():
 		return
-	__PLDRT.DB.execute_custom_action(item, custom_actions[0])
+	var level = __PLDRT.game_state.get_level()
+	if not level or not level.can_execute_custom_action(item, custom_actions[0]):
+		return
+	level.execute_custom_action(item, custom_actions[0])
 
 func switch_highlight(player_node, body, distance_to_body):
 	if action_body:
@@ -83,7 +86,10 @@ func highlight_custom_action():
 	if not item or item.is_weapon():
 		return ""
 	var custom_actions = __PLDRT.game_state.get_custom_actions(item)
-	if custom_actions.empty() or not __PLDRT.DB.can_execute_custom_action(item, custom_actions[0]):
+	if custom_actions.empty():
+		return ""
+	var level = __PLDRT.game_state.get_level()
+	if not level or not level.can_execute_custom_action(item, custom_actions[0]):
 		return ""
 	return (
 		"["

@@ -491,8 +491,9 @@ func _on_preview_opened(item):
 	for ch in custom_actions_node.get_children():
 		ch.queue_free()
 	var custom_actions = __PLDRT.game_state.get_custom_actions(item)
+	var level = __PLDRT.game_state.get_level()
 	for act in custom_actions:
-		if not __PLDRT.DB.can_execute_custom_action(item, act):
+		if not level or not level.can_execute_custom_action(item, act):
 			continue
 		var ch = label_close_node.duplicate(0)
 		ch.text = __PLDRT.common_utils.get_input_control(act) + tr(PLDDB.get_item_name(item.item_id) + "_" + act)

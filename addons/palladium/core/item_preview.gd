@@ -64,6 +64,7 @@ func open_preview(item):
 	emit_signal("preview_opened", item)
 
 func process_input():
+	var level = __PLDRT.game_state.get_level()
 	if Input.is_action_just_pressed("item_preview_toggle"):
 		if just_opened:
 			just_opened = false
@@ -78,29 +79,33 @@ func process_input():
 		if des_zoom > ZOOM_MIN:
 			des_zoom -= ZOOM_SPEED
 	elif (
-		Input.is_action_just_pressed("item_preview_action_1")
-		and __PLDRT.DB.can_execute_custom_action(item, "item_preview_action_1")
+		Input.is_action_just_pressed(PLDDB.ITEM_PREVIEW_ACTION_1)
+		and level
+		and level.can_execute_custom_action(item, PLDDB.ITEM_PREVIEW_ACTION_1)
 	):
 		close_preview()
-		__PLDRT.DB.execute_custom_action(item, "item_preview_action_1")
+		level.execute_custom_action(item, PLDDB.ITEM_PREVIEW_ACTION_1)
 	elif (
-		Input.is_action_just_pressed("item_preview_action_2")
-		and __PLDRT.DB.can_execute_custom_action(item, "item_preview_action_2")
+		Input.is_action_just_pressed(PLDDB.ITEM_PREVIEW_ACTION_2)
+		and level
+		and level.can_execute_custom_action(item, PLDDB.ITEM_PREVIEW_ACTION_2)
 	):
 		close_preview()
-		__PLDRT.DB.execute_custom_action(item, "item_preview_action_2")
+		level.execute_custom_action(item, PLDDB.ITEM_PREVIEW_ACTION_2)
 	elif (
-		Input.is_action_just_pressed("item_preview_action_3")
-		and __PLDRT.DB.can_execute_custom_action(item, "item_preview_action_3")
+		Input.is_action_just_pressed(PLDDB.ITEM_PREVIEW_ACTION_3)
+		and level
+		and level.can_execute_custom_action(item, PLDDB.ITEM_PREVIEW_ACTION_3)
 	):
 		close_preview()
-		__PLDRT.DB.execute_custom_action(item, "item_preview_action_3")
+		level.execute_custom_action(item, PLDDB.ITEM_PREVIEW_ACTION_3)
 	elif (
-		Input.is_action_just_pressed("item_preview_action_4")
-		and __PLDRT.DB.can_execute_custom_action(item, "item_preview_action_4")
+		Input.is_action_just_pressed(PLDDB.ITEM_PREVIEW_ACTION_4)
+		and level
+		and level.can_execute_custom_action(item, PLDDB.ITEM_PREVIEW_ACTION_4)
 	):
 		close_preview()
-		__PLDRT.DB.execute_custom_action(item, "item_preview_action_4")
+		level.execute_custom_action(item, PLDDB.ITEM_PREVIEW_ACTION_4)
 	else:
 		var mouse_relative = __PLDRT.game_state.get_hud().get_mouse_cursor().get_mouse_relative_and_warp_in_center()
 		if mouse_relative.length_squared() > 0:

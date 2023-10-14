@@ -2,8 +2,6 @@ tool
 extends Reference
 class_name PLDDB
 
-signal custom_action_executed(takable_id, custom_action)
-
 ### COMMON PART ###
 const HEALING_RATE = 1
 const INTOXICATION_RATE_DEFAULT = 1
@@ -22,6 +20,11 @@ const PLAYER_ACTION_POINTS_MAX_DEFAULT = 6
 const CAMERA_VIEW_FIRST_PERSON = 0
 const CAMERA_VIEW_THIRD_PERSON_STRICT = 1
 const CAMERA_VIEW_THIRD_PERSON_FOLLOW = 2
+
+const ITEM_PREVIEW_ACTION_1 = "item_preview_action_1"
+const ITEM_PREVIEW_ACTION_2 = "item_preview_action_2"
+const ITEM_PREVIEW_ACTION_3 = "item_preview_action_3"
+const ITEM_PREVIEW_ACTION_4 = "item_preview_action_4"
 
 var _pldrt = null
 
@@ -84,19 +87,6 @@ static func get_weapon_stun_data(takable_id):
 
 static func get_weapon_ranged_data(takable_id):
 	return WEAPONS_RANGED[takable_id] if is_weapon_ranged(takable_id) else null
-
-func can_execute_custom_action(item, action = "item_preview_action_1", event = null):
-	var item_data = get_item_data(item.item_id)
-	if not item_data.has("custom_actions"):
-		return false
-	var custom_actions = item_data.custom_actions
-	if not custom_actions:
-		return false
-	if custom_actions.find(action) < 0:
-		return false
-	if event and not event.is_action_pressed(action):
-		return false
-	return item_constraints_satisfied(item, action)
 
 ### CODE THAT MUST BE INCLUDED IN THE GAME-SPECIFIC PART ###
 
@@ -178,49 +168,9 @@ func can_execute_custom_action(item, action = "item_preview_action_1", event = n
 #	TakableIds.MEDUSA_HEAD : { "stun_duration" : 5, "sound_id" : PLDDBMedia.SoundId.SNAKE_HISS }
 #}
 
-#func execute_give_item_action(player, target):
-#	if not player or not target:
-#		return false
-#	var hud = _pldrt.game_state.get_hud()
-#	var item = hud.get_active_item()
-#	if not item:
-#		return false
-#	match item.item_id:
-#		_:
-#			return false
-#	hud.inventory.visible = false
-#	item.used(player, target)
-#	item.remove()
-#	return true
-
-#func item_constraints_satisfied(item, action = "item_preview_action_1"):
-#	match action:
-#		"item_preview_action_1":
-#			match item.item_id:
-#				TakableIds.SOME_ID:
-#					return some_constraint()
-#		"item_preview_action_2":
-#			pass
-#		"item_preview_action_3":
-#			pass
-#		"item_preview_action_4":
-#			pass
-#	return true
-
-#func execute_custom_action(item, action = "item_preview_action_1"):
-#	match action:
-#		"item_preview_action_1":
-#			match item.item_id:
-#				_:
-#					pass
-#		"item_preview_action_2":
-#			pass
-#		"item_preview_action_3":
-#			pass
-#		"item_preview_action_4":
-#			pass
-#	
-#	emit_signal("custom_action_executed", item.item_id, action)
+#const WEAPONS_RANGED = {
+#	TakableIds.RIFLE : { "injury_rate" : 10, "poison_rate" : 0, "sound_id" : PLDDBMedia.SoundId.RAT_SQUEAK }
+#}
 
 ### GAME-SPECIFIC PART ###
 
@@ -301,9 +251,9 @@ const QUICK_ITEMS_DEFAULT = {
 }
 
 const ITEMS = {
-	TakableIds.RAT : { "item_nam" : "rat", "item_image" : "rat.png", "model_path" : "res://scenes/rat_grey.tscn", "model_use_path" : null, "stackable" : true, "can_give" : false, "custom_actions" : ["item_preview_action_1"] },
-	TakableIds.TORCH : { "item_nam" : "torch", "item_image" : "torch.png", "model_path" : "res://assets/torch.dae", "model_use_path" : null, "stackable" : false, "can_give" : false, "custom_actions" : ["item_preview_action_1"] },
-	TakableIds.RIFLE : { "item_nam" : "rifle", "item_image" : "rifle.png", "model_path" : "res://scenes/air_rifle_rigid.tscn", "model_use_path" : null, "stackable" : false, "can_give" : false, "custom_actions" : ["item_preview_action_1"] },
+	TakableIds.RAT : { "item_nam" : "rat", "item_image" : "rat.png", "model_path" : "res://scenes/rat_grey.tscn", "model_use_path" : null, "stackable" : true, "can_give" : false, "custom_actions" : [ ITEM_PREVIEW_ACTION_1 ] },
+	TakableIds.TORCH : { "item_nam" : "torch", "item_image" : "torch.png", "model_path" : "res://assets/torch.dae", "model_use_path" : null, "stackable" : false, "can_give" : false, "custom_actions" : [ ITEM_PREVIEW_ACTION_1 ] },
+	TakableIds.RIFLE : { "item_nam" : "rifle", "item_image" : "rifle.png", "model_path" : "res://scenes/air_rifle_rigid.tscn", "model_use_path" : null, "stackable" : false, "can_give" : false, "custom_actions" : [ ITEM_PREVIEW_ACTION_1 ] },
 }
 
 const WEAPONS_STUN = {
@@ -313,88 +263,3 @@ const WEAPONS_STUN = {
 const WEAPONS_RANGED = {
 	TakableIds.RIFLE : { "injury_rate" : 10, "poison_rate" : 0, "sound_id" : PLDDBMedia.SoundId.RAT_SQUEAK }
 }
-
-func execute_give_item_action(player, target):
-	if not player or not target:
-		return false
-	var hud = _pldrt.game_state.get_hud()
-	var item = hud.get_active_item()
-	if not item:
-		return false
-	match item.item_id:
-#		TakableIds.BUN:
-#			_pldrt.conversation_manager.start_conversation(player, "Bun", target)
-#			item.remove()
-		_:
-			return false
-	hud.inventory.visible = false
-	item.used(player, target)
-	return true
-
-func item_constraints_satisfied(item, action = "item_preview_action_1"):
-	match action:
-		"item_preview_action_1":
-#			match item.item_id:
-#				TakableIds.CELL_PHONE:
-#					return _pldrt.conversation_manager.conversation_is_not_finished("Chat")
-			pass
-		"item_preview_action_2":
-			pass
-		"item_preview_action_3":
-			pass
-		"item_preview_action_4":
-			pass
-	return true
-
-func execute_custom_action(item, action = "item_preview_action_1"):
-	match action:
-		"item_preview_action_1":
-			match item.item_id:
-#				TakableIds.CELL_PHONE:
-#					_pldrt.game_state.get_hud().show_tablet(true, PLDTablet.ActivationMode.CHAT)
-				TakableIds.RAT:
-					item.remove()
-					var rat = PLDRatSource.create_rat(90)
-					var pl = _pldrt.game_state.get_player().get_model()
-					var pl_origin = pl.get_global_transform().origin
-					var shift = pl.to_global(pl.get_transform().basis.xform(Vector3(0, 0, 1))) - pl_origin
-					shift.y = 0
-					shift = shift.normalized()
-					var cross = shift.cross(Vector3(0, 1, 0))
-					var basis = Basis(shift, Vector3(0, 1, 0), cross)
-					var origin = pl_origin - shift * 2
-					rat.set_global_transform(Transform(basis, origin))
-					rat.rotate_y(deg2rad(180))
-					_pldrt.game_state.get_level().add_child(rat)
-#				TakableIds.FLASK_HEALING, TakableIds.AMBROSIA_CUP:
-#					use_healing_item(item)
-#				TakableIds.AIR_TANK:
-#					_pldrt.game_state.set_oxygen(_pldrt.game_state.get_player(), _pldrt.game_state.player_oxygen_max, _pldrt.game_state.player_oxygen_max)
-#					_pldrt.MEDIA.play_sound(PLDDBMedia.SoundId.MAN_BREATHE_IN_TANK)
-	
-	emit_signal("custom_action_executed", item.item_id, action)
-
-func use_healing_item(item):
-	var name_hint = PLDChars.PLAYER_NAME_HINT
-	var ps = __PLDRT.game_state.party_stats[name_hint]
-	var health_current = ps["health_current"]
-	var health_max = ps["health_max"]
-	if health_current >= health_max:
-		_pldrt.game_state.get_hud().queue_popup_message("MESSAGE_FULL_HEALTH")
-		return false
-	var sound_id = PLDDBMedia.SoundId.MAN_DRINKS
-	_pldrt.MEDIA.play_sound(sound_id)
-	var player = _pldrt.game_state.get_player()
-	var heal_amount = health_max / 2
-	_pldrt.game_state.set_health(player, health_current + heal_amount, health_max)
-	_pldrt.game_state.set_poisoned(player, false, 0)
-	var last_item = (item.get_item_count() == 1)
-	item.remove()
-	if last_item:
-#		_pldrt.game_state.take(
-#			TakableIds.HEBE_CUP
-#				if item.item_id == TakableIds.AMBROSIA_CUP
-#				else TakableIds.FLASK_EMPTY
-#		)
-		pass
-	return true

@@ -98,7 +98,7 @@ var ladder_ymax = 0 setget set_ladder_ymax, get_ladder_ymax
 var is_poisoned = false
 # player_type is like a class in RPG: Warrior, Cleric, Thief, Mage etc
 # it can be used to determine player traits based on its class
-# corresponding integer constants can be placed in PLDDB
+# corresponding integer constants can be placed in the classes extending PLDLevel
 var player_type : int = 0 setget set_player_type, get_player_type
 var intoxication : int = 0
 var relationship : int = 0

@@ -421,7 +421,8 @@ func shader_cache_processed():
 func handle_conversation(player, target, initiator):
 	if _pldrt.conversation_manager.arrange_meeting(player, target, initiator):
 		return
-	if _pldrt.DB.execute_give_item_action(player, target):
+	var level = get_level()
+	if level and level.execute_give_item_action(player, target):
 		return
 	if not target.is_in_party():
 		return
