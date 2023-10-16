@@ -209,9 +209,14 @@ func is_joypad_look(event):
 	return a == JOY_AXIS_2 or a == JOY_AXIS_3
 
 func _input(event):
-	if __PLDRT.game_state.is_tactical_view() or not is_player() or not is_activated():
-		return
 	var hud = __PLDRT.game_state.get_hud()
+	if (
+		hud.is_paused()
+		or __PLDRT.game_state.is_tactical_view()
+		or not is_player()
+		or not is_activated()
+	):
+		return
 	if __PLDRT.conversation_manager.conversation_is_in_progress():
 		if __PLDRT.story_node.can_choose():
 			if event.is_action_pressed("dialogue_option_1"):

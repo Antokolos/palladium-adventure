@@ -697,8 +697,8 @@ func _input(event):
 		return
 	
 	if event.is_action_pressed("ui_tablet_toggle"):
-		get_tree().set_input_as_handled()
 		if not is_paused():
+			get_tree().set_input_as_handled()
 			show_tablet(true)
 			# Tablet hiding via show_tablet(false) is done in tablet.gd
 	
