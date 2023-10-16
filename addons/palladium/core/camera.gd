@@ -642,7 +642,7 @@ func convert_mouse_event(event : InputEventMouse):
 	return mouseEvent
 
 func _unhandled_input(event):
-	if get_tree().paused \
+	if __PLDRT.game_state.get_hud().is_paused() \
 		or __PLDRT.conversation_manager.conversation_is_in_progress():
 		return
 	var player = __PLDRT.game_state.get_player()

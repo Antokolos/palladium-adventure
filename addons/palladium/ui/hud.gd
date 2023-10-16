@@ -54,6 +54,7 @@ onready var style_party_nonsel = preload("res://addons/palladium/styles/party_no
 
 onready var mouse_cursor = get_node("mouse_cursor")
 
+var is_paused = false setget pause_game, is_paused
 var info_panel = null
 var char_stats = null
 var active_item_idx = 0
@@ -324,10 +325,17 @@ func is_quit_dialog_visible():
 
 func pause_game(enable, with_dimmer = true):
 	dimmer.visible = with_dimmer and enable
-	get_tree().paused = enable
+	is_paused = enable
+	if __PLDRT.DB.USE_PAUSE:
+		get_tree().paused = enable
+	elif get_tree().paused:
+		get_tree().paused = false
 	var player = __PLDRT.game_state.get_player()
 	if player:
 		player.reset_movement()
+
+func is_paused():
+	return is_paused or get_tree().paused
 
 func set_surge(player, enable):
 	if player and not player.equals(__PLDRT.game_state.get_player()):
@@ -690,7 +698,7 @@ func _input(event):
 	
 	if event.is_action_pressed("ui_tablet_toggle"):
 		get_tree().set_input_as_handled()
-		if not get_tree().paused:
+		if not is_paused():
 			show_tablet(true)
 			# Tablet hiding via show_tablet(false) is done in tablet.gd
 	

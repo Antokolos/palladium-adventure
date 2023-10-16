@@ -33,7 +33,7 @@ func _on_joy_connection_changed(device_id, is_connected):
 	if not is_connected:
 		if not _pldrt.settings.pause_on_joy_disconnected:
 			return
-		if not get_tree().paused:
+		if not _pldrt.game_state.get_hud().is_paused():
 			# When the controller is unplugged during gameplay, automatically pause the game
 			toggle_pause_menu()
 		set_mouse_mode(Input.MOUSE_MODE_VISIBLE)

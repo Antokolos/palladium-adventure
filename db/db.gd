@@ -182,6 +182,7 @@ const USE_INDICATORS = true
 const USE_CHAT = false
 const USE_LOAD = true
 const USE_SAVE = true
+const USE_PAUSE = false
 
 const STORY_VARS_DEFAULT = {
 	"flashlight_on" : false,

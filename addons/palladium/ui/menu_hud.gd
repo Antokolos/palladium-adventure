@@ -32,7 +32,11 @@ func get_mouse_cursor():
 
 func pause_game(enable, with_dimmer = true):
 	dimmer.visible = with_dimmer and enable
+	# Menu HUD does not use _PLDRT.DB.USE_PAUSE setting
 	get_tree().paused = enable
+
+func is_paused():
+	return get_tree().paused
 
 func show_tablet(is_show, activation_mode = PLDTablet.ActivationMode.DESKTOP):
 	if is_show:
@@ -89,6 +93,6 @@ func _on_image_adjust_changed(enabled, brightness, contrast, saturation):
 	image_adjust.material.set_shader_param("saturation", saturation)
 
 func _unhandled_input(event):
-	if not get_tree().paused and event.is_action_pressed("ui_tablet_toggle") and not __PLDRT.game_state.is_video_cutscene():
+	if not is_paused() and event.is_action_pressed("ui_tablet_toggle") and not __PLDRT.game_state.is_video_cutscene():
 		get_tree().set_input_as_handled()
 		show_tablet(true, PLDTablet.ActivationMode.DESKTOP)

@@ -4,7 +4,7 @@ class_name PLDViewportHack
 # See https://github.com/godotengine/godot/issues/17326
 func do_input(event):
 	var r = .do_input(event)
-	if get_tree().paused:
+	if __PLDRT.game_state.get_hud().is_paused():
 		return r
 	if event is InputEventMouse:
 		var mouseEvent = event.duplicate()

@@ -30,7 +30,7 @@ func do_input(event):
 	):
 		if (
 			(
-				not get_tree().paused
+				not hud.is_paused()
 				and not __PLDRT.game_state.is_tactical_view()
 			)
 			or hud.is_tablet_visible()

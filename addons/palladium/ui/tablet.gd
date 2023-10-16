@@ -270,7 +270,7 @@ func activate(mode):
 			_on_HomeButton_pressed()
 
 func _unhandled_input(event):
-	if not get_tree().paused or __PLDRT.game_state.is_video_cutscene():
+	if not hud.is_paused() or __PLDRT.game_state.is_video_cutscene():
 		return
 	if event.is_action_pressed("ui_tablet_toggle"):
 		get_tree().set_input_as_handled()
