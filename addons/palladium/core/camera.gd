@@ -18,6 +18,7 @@ const TACTICAL_MOVEMENT_THRESHOLD = 10
 const TACTICAL_MOVEMENT_SPEED = 0.3
 const TACTICAL_ZOOM_SPEED = 4
 const TACTICAL_CAMERA_BACKTRACE_INDENT = 0.05
+const TACTICAL_CAMERA_IMMEDIATE_WAYPOINT = false
 
 # The factor to use for asymptotical translation lerping.
 # If 0, the camera will stop moving. If 1, the camera will move instantly.
@@ -468,10 +469,14 @@ func process_tactical_view_cursor(needs_action):
 			return
 		if not tactical_player_character.is_activated():
 			tactical_player_character.activate()
-		var level = __PLDRT.game_state.get_level()
-		var pos3d = level.create_waypoint(tactical_player_character, point)
-		if pos3d:
-			tactical_player_character.set_target_node(pos3d)
+		if TACTICAL_CAMERA_IMMEDIATE_WAYPOINT:
+			set_waypoint(point)
+
+func set_waypoint(point):
+	var level = __PLDRT.game_state.get_level()
+	var pos3d = level.create_waypoint(tactical_player_character, point)
+	if pos3d:
+		tactical_player_character.set_target_node(pos3d)
 
 func process_tactical_player_attack():
 	var possible_attack_target = (
