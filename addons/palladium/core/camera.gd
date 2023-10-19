@@ -16,6 +16,7 @@ const TACTICAL_CAMERA_DISTANCE_PLAYER_SW = 19.9
 const TACTICAL_CAMERA_PROJECTION_LENGTH = 9999
 const TACTICAL_MOVEMENT_THRESHOLD = 10
 const TACTICAL_MOVEMENT_SPEED = 0.3
+const TACTICAL_MOVEMENT_ACCEL_RATE = 0.1
 const TACTICAL_ZOOM_SPEED = 4
 const TACTICAL_CAMERA_BACKTRACE_INDENT = 0.05
 const TACTICAL_CAMERA_IMMEDIATE_WAYPOINT = false
@@ -70,6 +71,7 @@ var tactical_player_character = null
 var tactical_cursor_collider = null
 var tactical_camera_distance = TACTICAL_CAMERA_DISTANCE_PLAYER_SW
 var tactical_zoom_speed = 0
+var tactical_move_accel = 1.0
 var angle_rad_x = 0
 var angle_x_reset = false
 var angle_rad_y = 0
@@ -325,19 +327,34 @@ func rotate_around(point, axis, angle, normal = null, up = Vector3.UP):
 	global_transform = Transform(rotated_basis, rotated_origin)
 	return estimate_position(point, normal)
 
-func process_tactical_camera_movement():
+func process_tactical_camera_movement(delta):
 	var result = PLDTacticalCameraMovement.new()
+	var no_movement_detected = input_movement_vector.length_squared() < EPS
+	if no_movement_detected:
+		tactical_move_accel = 1.0
 	if (
 		not tactical_view_rotation # No rotation detected
-		and input_movement_vector.length_squared() < EPS # No movement detected
+		and no_movement_detected
 		and abs(tactical_zoom_speed) < EPS # No zooming detected
 	):
 		return result.create_ok()
 	var roty = global_rotation.y
 	var x = -sin(roty) * input_movement_vector.y
 	var y = -cos(roty) * input_movement_vector.y
-	global_translate(Vector3(x, 0, y) * TACTICAL_MOVEMENT_SPEED)
-	translate_object_local(Vector3(input_movement_vector.x, 0, 0) * TACTICAL_MOVEMENT_SPEED)
+	tactical_move_accel *= pow(
+		1.0 + TACTICAL_MOVEMENT_ACCEL_RATE,
+		delta * 10
+	)
+	global_translate(
+		tactical_move_accel
+		* Vector3(x, 0, y)
+		* TACTICAL_MOVEMENT_SPEED
+	)
+	translate_object_local(
+		tactical_move_accel
+		* Vector3(input_movement_vector.x, 0, 0)
+		* TACTICAL_MOVEMENT_SPEED
+	)
 	var point = use_point.get_collision_point()
 	if point:
 		result.with_point(point)
@@ -577,7 +594,7 @@ func _process(delta):
 		elif Input.is_action_just_released("tactical_view_zoom_out"):
 			tactical_zoom_speed = 0
 		var prev_transform = global_transform
-		var m = process_tactical_camera_movement()
+		var m = process_tactical_camera_movement(delta)
 		if not m.get_result():
 			global_transform = prev_transform # revert anything
 			var push_back_vector = m.get_push_back_vector()
