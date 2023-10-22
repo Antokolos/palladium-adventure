@@ -57,23 +57,17 @@ func show_tablet(is_show, activation_mode = PLDTablet.ActivationMode.DESKTOP):
 func show_difficulty_dialog():
 	get_node("difficulty_dialog").popup_centered_ratio(0.5)
 
+func set_game_logo_texture(texture_path : String):
+	var logo = get_node("VBoxContainer/TextureGameName")
+	logo.texture = load(texture_path)
+
 func set_game_name_font(
 	name_font_path : String,
-	name_size : int = 100,
-	name_extra_spacing_bottom : int = -22,
-	subname_size : int = 50,
-	subname_extra_spacing_char : int = 26,
+	subname_size : int = 36,
+	subname_extra_spacing_char : int = 15,
 	outline_size : int = 5,
 	outline_color : Color = Color.black
 ):
-	var gn = get_node("VBoxContainer/LabelGameName")
-	var fgn = DynamicFont.new()
-	fgn.font_data = load(name_font_path)
-	fgn.size = name_size
-	fgn.extra_spacing_bottom = name_extra_spacing_bottom
-	fgn.outline_size = outline_size
-	fgn.outline_color = outline_color
-	gn.set("custom_fonts/font", fgn)
 	var gsn = get_node("VBoxContainer/LabelGameSubname")
 	var fgsn = DynamicFont.new()
 	fgsn.font_data = load(name_font_path)
