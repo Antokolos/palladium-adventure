@@ -2,7 +2,7 @@ extends KinematicBody
 class_name PLDPathfinder
 
 signal activated_changed(player_node, previous_state, new_state)
-signal rest_state_changed(player_node, previous_state, new_state)
+signal rest_state_changed(player_node, previous_state, new_state, due_to_activation)
 signal target_node_changed(player_node, previous_target_node, new_target_node)
 signal teleported_to(player_node, origin, basis)
 signal arrived_to(player_node, target_node)
@@ -622,7 +622,7 @@ func change_rest_state_to(rest_state_new, due_to_activation = false):
 		return false
 	var rest_state_prev = rest_state
 	rest_state = rest_state_new
-	emit_signal("rest_state_changed", self, rest_state_prev, rest_state)
+	emit_signal("rest_state_changed", self, rest_state_prev, rest_state, due_to_activation)
 	return true
 
 func update_state(data : PLDMovementData):

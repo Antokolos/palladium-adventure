@@ -5,7 +5,7 @@ signal game_saved()
 signal game_loaded()
 signal shader_cache_processed()
 signal player_registered(player)
-signal rest_state_changed(player, previous_state, new_state)
+signal rest_state_changed(player, previous_state, new_state, due_to_activation)
 signal crouching_changed(player, previous_state, new_state)
 signal sprinting_changed(player, previous_state, new_state)
 signal target_node_changed(player, previous_target_node, new_target_node)
@@ -480,8 +480,8 @@ func on_party_left(character):
 	emit_stats_signals_for_everyone()
 	get_hud().set_party_name_datas()
 
-func on_rest_state_changed(character, previous_state, new_state):
-	emit_signal("rest_state_changed", character, previous_state, new_state)
+func on_rest_state_changed(character, previous_state, new_state, due_to_activation):
+	emit_signal("rest_state_changed", character, previous_state, new_state, due_to_activation)
 
 func on_crouching_changed(character, previous_state, new_state):
 	emit_signal("crouching_changed", character, previous_state, new_state)
