@@ -473,7 +473,6 @@ func become_player():
 			player_model.set_simple_mode(false)
 		else:
 			push_warning("Model not set")
-		player.activate()
 	var self_nh = get_name_hint()
 	var ps = __PLDRT.game_state.party_stats
 	__PLDRT.game_state.set_player_name_hint(self_nh)
@@ -490,6 +489,7 @@ func become_player():
 			ps[nh]["health_current"],
 			ps[nh]["health_max"]
 		)
+		player.activate()
 	activate()
 	emit_signal("player_changed", self, player)
 
@@ -1179,8 +1179,16 @@ func change_angle_rad_y_to(angle_rad_y_new, with_angle_limits = false):
 					model.walk(is_crouching, is_sprinting)
 	return rot_result
 
-func change_rest_state_to(rest_state_new, due_to_activation = false):
-	var was_changed = .change_rest_state_to(rest_state_new)
+func change_rest_state_to(
+	rest_state_new,
+	due_to_activation = false,
+	due_to_reset = false
+):
+	var was_changed = .change_rest_state_to(
+		rest_state_new,
+		due_to_activation,
+		due_to_reset
+	)
 	if was_changed:
 		# When the character started to move or stopped
 		invoke_physics_pass()

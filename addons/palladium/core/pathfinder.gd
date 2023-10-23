@@ -2,7 +2,7 @@ extends KinematicBody
 class_name PLDPathfinder
 
 signal activated_changed(player_node, previous_state, new_state)
-signal rest_state_changed(player_node, previous_state, new_state, due_to_activation)
+signal rest_state_changed(player_node, previous_state, new_state, due_to_activation, due_to_reset)
 signal target_node_changed(player_node, previous_target_node, new_target_node)
 signal teleported_to(player_node, origin, basis)
 signal arrived_to(player_node, target_node)
@@ -144,7 +144,7 @@ func deactivate():
 	change_rest_state_to(true, true)
 
 func reset_movement():
-	change_rest_state_to(true)
+	change_rest_state_to(true, false, true)
 
 func reset_rotation():
 	change_angle_rad_y_to(0)
@@ -617,12 +617,23 @@ func change_angle_rad_y_to(angle_rad_y_new, with_angle_limits = false):
 	else:
 		return 0
 
-func change_rest_state_to(rest_state_new, due_to_activation = false):
+func change_rest_state_to(
+	rest_state_new,
+	due_to_activation = false,
+	due_to_reset = false
+):
 	if rest_state == rest_state_new:
 		return false
 	var rest_state_prev = rest_state
 	rest_state = rest_state_new
-	emit_signal("rest_state_changed", self, rest_state_prev, rest_state, due_to_activation)
+	emit_signal(
+		"rest_state_changed",
+		self,
+		rest_state_prev,
+		rest_state,
+		due_to_activation,
+		due_to_reset
+	)
 	return true
 
 func update_state(data : PLDMovementData):
