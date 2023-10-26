@@ -12,14 +12,19 @@ bus = "Music"
 [node name="sound_players" type="Node" parent="."]
 
 [node name="SoundPlayer1" type="AudioStreamPlayer" parent="sound_players"]
+bus = "Sound"
 
 [node name="SoundPlayer2" type="AudioStreamPlayer" parent="sound_players"]
+bus = "Sound"
 
 [node name="SoundPlayer3" type="AudioStreamPlayer" parent="sound_players"]
+bus = "Sound"
 
 [node name="SoundPlayer4" type="AudioStreamPlayer" parent="sound_players"]
+bus = "Sound"
 
 [node name="SoundPlayer5" type="AudioStreamPlayer" parent="sound_players"]
+bus = "Sound"
 
 [node name="pre_delay_timers" type="Node" parent="."]
 

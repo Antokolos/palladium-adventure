@@ -15,6 +15,7 @@ one_shot = true
 
 [node name="PreDelayTimer" type="Timer" parent="."]
 one_shot = true
+
 [connection signal="finished" from="AudioStreamPlayer" to="." method="_on_AudioStreamPlayer_finished"]
 [connection signal="timeout" from="PostDelayTimer" to="." method="_on_PostDelayTimer_timeout"]
 [connection signal="timeout" from="PreDelayTimer" to="." method="_on_PreDelayTimer_timeout"]
