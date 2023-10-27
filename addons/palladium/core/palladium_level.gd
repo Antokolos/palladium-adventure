@@ -166,7 +166,7 @@ func get_custom_action_params_for(custom_action, item_id):
 		"need_remove" : false
 	}
 
-func do_custom_action_for(custom_action, item_id):
+func do_custom_action_for(custom_action, item_id, is_ai_action = false):
 	match custom_action:
 		PLDDB.ITEM_PREVIEW_ACTION_1:
 			match item_id:
