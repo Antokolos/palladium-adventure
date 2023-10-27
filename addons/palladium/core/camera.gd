@@ -490,10 +490,17 @@ func process_tactical_view_cursor(needs_action):
 			set_waypoint(point)
 
 func set_waypoint(point):
+	if not tactical_player_character:
+		return
 	var level = __PLDRT.game_state.get_level()
 	var pos3d = level.create_waypoint(tactical_player_character, point)
 	if pos3d:
 		tactical_player_character.set_target_node(pos3d)
+
+func set_waypoint_from_node(node):
+	if not tactical_player_character:
+		return
+	tactical_player_character.set_target_node(node)
 
 func process_tactical_player_attack():
 	var possible_attack_target = (
@@ -507,6 +514,18 @@ func process_tactical_player_attack():
 			tactical_player_character.clear_target_node()
 		else:
 			tactical_player_character.attack_start(possible_attack_target)
+
+func get_position_data():
+	return {
+		"transform" : get_global_transform(),
+		"distance" : tactical_camera_distance
+	}
+
+func restore_position(position_data):
+	if not position_data:
+		return
+	set_global_transform(position_data.transform)
+	tactical_camera_distance = position_data.distance
 
 func switch_to_character(character):
 	var cht = character.get_cam_holder().get_global_transform()
