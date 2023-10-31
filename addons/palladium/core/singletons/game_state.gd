@@ -818,12 +818,18 @@ func clear_action_points(character, action_points_max):
 	set_action_points_for_name(name_hint, 0, action_points_max)
 
 func set_action_points_for_name(name_hint, action_points_current, action_points_max):
+	if not party_stats.has(name_hint):
+		push_error("No name %s in party_stats!" % name_hint)
+		return
 	var apc = action_points_current if action_points_current < action_points_max else action_points_max
 	party_stats[name_hint]["action_points_current"] = apc
 	party_stats[name_hint]["action_points_max"] = action_points_max
 	emit_signal("action_points_changed", name_hint, apc, action_points_max)
 
 func clear_action_points_for_name(name_hint, action_points_max):
+	if not party_stats.has(name_hint):
+		push_error("No name %s in party_stats!" % name_hint)
+		return
 	party_stats[name_hint]["action_points_current"] = 0
 	party_stats[name_hint]["action_points_max"] = action_points_max
 	emit_signal("action_points_changed", name_hint, 0, action_points_max)

@@ -69,7 +69,11 @@ var tactical_view_action = false
 var tactical_view_double_click = false
 var tactical_player_character = null
 var tactical_cursor_collider = null
-var tactical_camera_distance = TACTICAL_CAMERA_DISTANCE_PLAYER_SW
+var tactical_camera_distance = TACTICAL_CAMERA_DISTANCE_PLAYER_SW \
+	setget , get_tactical_camera_distance
+func get_tactical_camera_distance():
+	return tactical_camera_distance
+var tactical_camera_distance_sw = TACTICAL_CAMERA_DISTANCE_PLAYER_SW
 var tactical_zoom_speed = 0
 var tactical_move_accel = 1.0
 var angle_rad_x = 0
@@ -489,6 +493,10 @@ func process_tactical_view_cursor(needs_action):
 		if TACTICAL_CAMERA_IMMEDIATE_WAYPOINT:
 			set_waypoint(point)
 
+func set_character_to_switch_to_with_distance(character, distance_after_switch):
+	character_to_switch_to = character
+	tactical_camera_distance_sw = distance_after_switch
+
 func set_waypoint(point):
 	if not tactical_player_character:
 		return
@@ -533,9 +541,9 @@ func switch_to_character(character):
 	var vn = v.normalized()
 	set_global_transform(Transform(
 		cht.basis,
-		cht.origin + (TACTICAL_CAMERA_DISTANCE_PLAYER_SW - v.length()) * vn
+		cht.origin + (tactical_camera_distance_sw - v.length()) * vn
 	))
-	tactical_camera_distance = TACTICAL_CAMERA_DISTANCE_PLAYER_SW
+	tactical_camera_distance = tactical_camera_distance_sw
 
 func switch_to_main_player():
 	var player = __PLDRT.game_state.get_player()
