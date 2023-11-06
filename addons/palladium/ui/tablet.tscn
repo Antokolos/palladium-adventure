@@ -84,10 +84,10 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="apps" type="Container" parent="TabletPanel/TabletScreen"]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 1621.0
-margin_bottom = 865.0
+margin_left = 14.0
+margin_top = 14.0
+margin_right = 1614.0
+margin_bottom = 858.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -781,8 +781,8 @@ size_flags_vertical = 3
 scroll_horizontal_enabled = false
 
 [node name="GridContainer" type="GridContainer" parent="TabletPanel/TabletScreen/apps/controls_app/VBoxContainer/HInputActions/ScrollContainer"]
-margin_right = 1614.0
-margin_bottom = 838.0
+margin_right = 1600.0
+margin_bottom = 824.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_constants/hseparation = 10
@@ -999,10 +999,10 @@ text = "EMPTY_SLOT"
 visible = false
 
 [node name="desktop" type="Panel" parent="TabletPanel/TabletScreen"]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 1621.0
-margin_bottom = 865.0
+margin_left = 14.0
+margin_top = 14.0
+margin_right = 1614.0
+margin_bottom = 858.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 custom_styles/panel = SubResource( 4 )
@@ -1022,7 +1022,7 @@ columns = 3
 
 [node name="VChatContainer" type="VBoxContainer" parent="TabletPanel/TabletScreen/desktop/GridContainer"]
 margin_right = 220.0
-margin_bottom = 124.0
+margin_bottom = 128.0
 alignment = 1
 
 [node name="HChatContainer" type="HBoxContainer" parent="TabletPanel/TabletScreen/desktop/GridContainer/VChatContainer"]
@@ -1041,9 +1041,9 @@ texture_focused = ExtResource( 35 )
 stretch_mode = 3
 
 [node name="Label" type="Label" parent="TabletPanel/TabletScreen/desktop/GridContainer/VChatContainer"]
-margin_top = 84.0
+margin_top = 88.0
 margin_right = 220.0
-margin_bottom = 124.0
+margin_bottom = 128.0
 rect_min_size = Vector2( 220, 40 )
 text = "TABLET_CHAT"
 align = 1
@@ -1052,7 +1052,7 @@ autowrap = true
 [node name="VCreditsContainer" type="VBoxContainer" parent="TabletPanel/TabletScreen/desktop/GridContainer"]
 margin_left = 240.0
 margin_right = 460.0
-margin_bottom = 124.0
+margin_bottom = 128.0
 
 [node name="HCreditsContainer" type="HBoxContainer" parent="TabletPanel/TabletScreen/desktop/GridContainer/VCreditsContainer"]
 margin_right = 220.0
@@ -1070,9 +1070,9 @@ texture_focused = ExtResource( 37 )
 stretch_mode = 3
 
 [node name="Label" type="Label" parent="TabletPanel/TabletScreen/desktop/GridContainer/VCreditsContainer"]
-margin_top = 84.0
+margin_top = 88.0
 margin_right = 220.0
-margin_bottom = 124.0
+margin_bottom = 128.0
 rect_min_size = Vector2( 220, 40 )
 text = "TABLET_CREDITS"
 align = 1
@@ -1135,7 +1135,7 @@ autowrap = true
 [node name="VSettingsContainer" type="VBoxContainer" parent="TabletPanel/TabletScreen/desktop/GridContainer"]
 margin_left = 480.0
 margin_right = 700.0
-margin_bottom = 124.0
+margin_bottom = 128.0
 
 [node name="HContainer" type="HBoxContainer" parent="TabletPanel/TabletScreen/desktop/GridContainer/VSettingsContainer"]
 margin_right = 220.0
@@ -1153,18 +1153,18 @@ texture_focused = ExtResource( 33 )
 stretch_mode = 3
 
 [node name="Label" type="Label" parent="TabletPanel/TabletScreen/desktop/GridContainer/VSettingsContainer"]
-margin_top = 84.0
+margin_top = 88.0
 margin_right = 220.0
-margin_bottom = 124.0
+margin_bottom = 128.0
 rect_min_size = Vector2( 220, 40 )
 text = "TABLET_SETTINGS"
 align = 1
 autowrap = true
 
 [node name="VControlsGameContainer" type="VBoxContainer" parent="TabletPanel/TabletScreen/desktop/GridContainer"]
-margin_top = 144.0
+margin_top = 148.0
 margin_right = 220.0
-margin_bottom = 268.0
+margin_bottom = 292.0
 
 [node name="HContainer" type="HBoxContainer" parent="TabletPanel/TabletScreen/desktop/GridContainer/VControlsGameContainer"]
 margin_right = 220.0
@@ -1182,9 +1182,9 @@ texture_focused = ExtResource( 30 )
 stretch_mode = 3
 
 [node name="Label" type="Label" parent="TabletPanel/TabletScreen/desktop/GridContainer/VControlsGameContainer"]
-margin_top = 84.0
+margin_top = 88.0
 margin_right = 220.0
-margin_bottom = 124.0
+margin_bottom = 128.0
 rect_min_size = Vector2( 220, 40 )
 text = "TABLET_CONTROLS"
 align = 1
@@ -1192,9 +1192,9 @@ autowrap = true
 
 [node name="VSaveGameContainer" type="VBoxContainer" parent="TabletPanel/TabletScreen/desktop/GridContainer"]
 margin_left = 240.0
-margin_top = 144.0
+margin_top = 148.0
 margin_right = 460.0
-margin_bottom = 268.0
+margin_bottom = 292.0
 
 [node name="HContainer" type="HBoxContainer" parent="TabletPanel/TabletScreen/desktop/GridContainer/VSaveGameContainer"]
 margin_right = 220.0
@@ -1213,9 +1213,9 @@ texture_focused = ExtResource( 32 )
 stretch_mode = 3
 
 [node name="Label" type="Label" parent="TabletPanel/TabletScreen/desktop/GridContainer/VSaveGameContainer"]
-margin_top = 84.0
+margin_top = 88.0
 margin_right = 220.0
-margin_bottom = 124.0
+margin_bottom = 144.0
 rect_min_size = Vector2( 220, 40 )
 text = "TABLET_SAVE_GAME"
 align = 1
@@ -1235,9 +1235,9 @@ autowrap = true
 
 [node name="VLoadGameContainer" type="VBoxContainer" parent="TabletPanel/TabletScreen/desktop/GridContainer"]
 margin_left = 480.0
-margin_top = 144.0
+margin_top = 148.0
 margin_right = 700.0
-margin_bottom = 268.0
+margin_bottom = 292.0
 
 [node name="HContainer" type="HBoxContainer" parent="TabletPanel/TabletScreen/desktop/GridContainer/VLoadGameContainer"]
 margin_right = 220.0
@@ -1255,18 +1255,18 @@ texture_focused = ExtResource( 34 )
 stretch_mode = 3
 
 [node name="Label" type="Label" parent="TabletPanel/TabletScreen/desktop/GridContainer/VLoadGameContainer"]
-margin_top = 84.0
+margin_top = 88.0
 margin_right = 220.0
-margin_bottom = 124.0
+margin_bottom = 144.0
 rect_min_size = Vector2( 220, 40 )
 text = "TABLET_LOAD_GAME"
 align = 1
 autowrap = true
 
 [node name="VQuitGameContainer" type="VBoxContainer" parent="TabletPanel/TabletScreen/desktop/GridContainer"]
-margin_top = 288.0
+margin_top = 312.0
 margin_right = 220.0
-margin_bottom = 412.0
+margin_bottom = 456.0
 
 [node name="HContainer" type="HBoxContainer" parent="TabletPanel/TabletScreen/desktop/GridContainer/VQuitGameContainer"]
 margin_right = 220.0
@@ -1284,9 +1284,9 @@ texture_focused = ExtResource( 31 )
 stretch_mode = 3
 
 [node name="Label" type="Label" parent="TabletPanel/TabletScreen/desktop/GridContainer/VQuitGameContainer"]
-margin_top = 84.0
+margin_top = 88.0
 margin_right = 220.0
-margin_bottom = 124.0
+margin_bottom = 144.0
 rect_min_size = Vector2( 220, 40 )
 text = "TABLET_QUIT_GAME"
 align = 1

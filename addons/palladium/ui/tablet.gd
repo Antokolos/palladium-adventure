@@ -112,10 +112,10 @@ func _ready():
 	sensitivity_coef_node.value = __PLDRT.common_utils.log10(__PLDRT.settings.sensitivity_coef)
 	_on_SensitivityCoef_value_changed(sensitivity_coef_node.value)
 
-	quality.add_item("Normal", PLDSettings.QUALITY_NORM)
-	quality.add_item("Optimal", PLDSettings.QUALITY_OPT)
-	quality.add_item("Good", PLDSettings.QUALITY_GOOD)
-	quality.add_item("High", PLDSettings.QUALITY_HIGH)
+	quality.add_item("SETTINGS_QUALITY_NORMAL", PLDSettings.QUALITY_NORM)
+	quality.add_item("SETTINGS_QUALITY_OPTIMAL", PLDSettings.QUALITY_OPT)
+	quality.add_item("SETTINGS_QUALITY_GOOD", PLDSettings.QUALITY_GOOD)
+	quality.add_item("SETTINGS_QUALITY_HIGH", PLDSettings.QUALITY_HIGH)
 	match (__PLDRT.settings.quality):
 		PLDSettings.QUALITY_NORM:
 			quality.select(0)
@@ -127,8 +127,8 @@ func _ready():
 			quality.select(3)
 	# _on_Quality_item_selected(__PLDRT.settings.quality) -- not needed here, will be done on player _ready
 
-	difficulty.add_item(tr("SETTINGS_DIFFICULTY_NORMAL"), PLDSettings.DIFFICULTY_NORMAL)
-	difficulty.add_item(tr("SETTINGS_DIFFICULTY_HARD"), PLDSettings.DIFFICULTY_HARD)
+	difficulty.add_item("SETTINGS_DIFFICULTY_NORMAL", PLDSettings.DIFFICULTY_NORMAL)
+	difficulty.add_item("SETTINGS_DIFFICULTY_HARD", PLDSettings.DIFFICULTY_HARD)
 	match (__PLDRT.settings.difficulty):
 		PLDSettings.DIFFICULTY_NORMAL:
 			difficulty.select(0)
@@ -155,7 +155,7 @@ func _ready():
 			resolution.select(i)
 	_on_Resolution_item_selected(__PLDRT.settings.resolution)
 
-	aa.add_item("Disabled", PLDSettings.AA_DISABLED)
+	aa.add_item("SETTINGS_AA_DISABLED", PLDSettings.AA_DISABLED)
 	aa.add_item("2x", PLDSettings.AA_2X)
 	aa.add_item("4x", PLDSettings.AA_4X)
 	aa.add_item("8x", PLDSettings.AA_8X)
@@ -170,8 +170,8 @@ func _ready():
 			aa.select(3)
 	_on_AA_item_selected(__PLDRT.settings.aa_quality)
 	
-	language.add_item("English", PLDSettings.LANGUAGE_EN)
-	language.add_item("Russian", PLDSettings.LANGUAGE_RU)
+	language.add_item("SETTINGS_LANGUAGE_ENGLISH", PLDSettings.LANGUAGE_EN)
+	language.add_item("SETTINGS_LANGUAGE_RUSSIAN", PLDSettings.LANGUAGE_RU)
 	match (__PLDRT.settings.language):
 		PLDSettings.LANGUAGE_EN:
 			language.select(0)
@@ -183,9 +183,9 @@ func _ready():
 			language.select(0)
 			_on_Language_item_selected(0)
 	
-	vlanguage.add_item("None", PLDSettings.VLANGUAGE_NONE)
-	vlanguage.add_item("English", PLDSettings.VLANGUAGE_EN)
-	vlanguage.add_item("Russian", PLDSettings.VLANGUAGE_RU)
+	vlanguage.add_item("SETTINGS_VLANGUAGE_NONE", PLDSettings.VLANGUAGE_NONE)
+	vlanguage.add_item("SETTINGS_VLANGUAGE_ENGLISH", PLDSettings.VLANGUAGE_EN)
+	vlanguage.add_item("SETTINGS_VLANGUAGE_RUSSIAN", PLDSettings.VLANGUAGE_RU)
 	match (__PLDRT.settings.vlanguage):
 		PLDSettings.VLANGUAGE_NONE:
 			vlanguage.select(0)
