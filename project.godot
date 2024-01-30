@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Node",
+"class": "EOSUtils",
+"language": "GDScript",
+"path": "res://addons/palladium/core/singletons/eos_utils.gd"
+}, {
 "base": "ColorRect",
 "class": "GodotCredits",
 "language": "GDScript",
@@ -665,6 +670,7 @@ _global_script_classes=[ {
 "path": "res://vasya_model.gd"
 } ]
 _global_script_class_icons={
+"EOSUtils": "",
 "GodotCredits": "",
 "HTerrainDataLoader": "",
 "HTerrainDataSaver": "",
@@ -813,6 +819,7 @@ config/auto_accept_quit=false
 
 [autoload]
 
+eos_utils="*res://addons/palladium/core/singletons/eos_utils.tscn"
 __InkRuntime="*res://addons/inkgd/runtime/static/ink_runtime.gd"
 __PLDRT="*res://addons/palladium/core/singletons/pld_runtime.gd"
 

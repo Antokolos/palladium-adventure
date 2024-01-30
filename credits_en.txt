@@ -1,0 +1,184 @@
+A game by NLB project : https://nlbproject.com
+
+
+Made with Godot Engine
+
+
+Special thanks for English text proofreading: Christine Ewert
+
+
+Special thanks for testing
+Diezel Game
+Stefan "Bluemaster1981" Werdelmann
+techniX
+
+
+Software
+GIMP, free and open source image editor.
+Audacity, free, open source, cross-platform audio software for multi-track recording and editing.
+Blender, free and open source 3D Creation Suite.
+MakeHuman, open source tool for making 3D characters.
+Materialize, stand alone open source tool for creating materials for use in games from images.
+LibreOffice, a powerful and free office suite.
+Sublime Text, the sophisticated text editor for code, markup and prose.
+OBS Studio, free and open source software for video recording and live streaming.
+VSDC, Free Video Editor for Windows.
+FFmpeg, a complete, cross-platform solution to record, convert and stream audio and video.
+Visual Studio, full-featured IDE to code, debug, test, and deploy to any platform.
+Godot Engine, free and open source 2D and 3D game engine.
+Inkle's Ink, scripting language for writing interactive narrative.
+Inkgd, implementation of inkle's Ink in pure GDScript, with editor support.
+GodotSteam, Steam API for the Godot game engine (version 3.0 - 3.3.1). For the Windows, Linux, and Mac platforms.
+Godot-credits, a basic credits scene for use in Godot game development engine.
+
+
+Fonts
+Roboto Font Family by Christian Robertson, Font data copyright Google 2014, Apache License
+Forum Regular Copyright (c) 2011, Denis Masharov <denis.masharov@gmail.com>, OFL
+Norse Font Family by Joël Carrouché, CC0
+LinuxLibertine by Philipp H. Poll, GPL font exception and OFL
+
+
+Voiceover
+Leonidas: Roman Orfeev / The Shadeborn
+Andreas: Anton Kolosov
+Xenia: Olga Kolosova
+Max: Sergey Sevostianov
+
+
+Sounds
+Click sound from INSTEAD engine
+A mouse going "squeek" by JoseAgudelo, CC0
+Flame Ignition by hykenfreak, CC BY 3.0
+Button On and Off by ryanconway, CC BY 3.0
+Cigarette-lighter click light by klankbeeld, CC BY 3.0
+Torch fire by sculptor, CC BY 3.0
+Kicking/Forcing/Breaking Wooden Door by Iwan ‘qubodup’ Gabovitch, CC0
+Swosh Sword Swing by Iwan ‘qubodup’ Gabovitch, CC0
+Gentle Sea On Flat Beach by digifishmusic, CC BY 3.0
+Walking in the sand by DasDeer, CC0
+Footsteps, Concrete, A by InspectorJ, CC BY 3.0
+Footsteps on Grass by harrietniamh, CC BY 3.0
+Body falling to floor by JakLocke, CC BY 3.0
+Lock Unlock Wooden Door by plumaudio, CC0
+Hidden Wall Opening by ertfelda, CC0
+Nails on cardboard imact by KieVinay, CC0
+Forest, trees rustling in the wind by arpeggio1980, CC0
+Single Rock hitting wood by worthahep88, CC0
+Water emptied into metal sink by kwahmah_02, CC BY 3.0
+Stone hits the cup by k06a, CC0
+Spider Voice by columbia23, CC BY 3.0
+Angry spider monster by Darsycho, CC0
+Spider Sound by Atrius1, CC0
+Seven branches are breaking (short), close up, H6 by Bini_trns, CC0
+Man made out of stone blinks by natharra, CC BY 3.0
+Water splash & drops 3 by giddster, CC0
+Tapping two stones together by UncleSigmund, CC0
+Fuze Switch Flick by LordForklift, CC0
+A metal pipe hitting the ground by CGEffex, CC BY 3.0
+Metal rattle by jorickhoofd, CC BY 3.0
+Unlocking and locking door by jakobhandersen, CC0
+Metal rattle by Cell31_Sound_Productions, CC BY 3.0
+An object thrown on a stone floor in an empty basement by RutgerMuller, CC0
+Zipper and hoodie clothes rustle by reconsider59, CC0
+Body falling on a wood floor by Suburbanwizard, CC0
+Sound of a cigarette being extinguished by the_semen_incident, CC0
+Man getting hit by Under7dude, CC0
+Girl scream by Adam Wayne Gistarb, CC BY 3.0
+Monster 4 by Sea Fury, CC BY 3.0
+Metal Impact by Rickplayer, CC0
+Slingshot being pulled back by KomradeJack, CC0
+Water splashes by Michel Baradari (Submitted by qubodup), CC BY 3.0
+Bubble Sound Effects by BMacZero, CC0
+Door Squeak, Normal by InspectorJ, CC BY 3.0
+Door 13 by LG, CC BY 3.0
+Heavy Thud by arithni, Sampling Plus 1.0
+A Dart Being Thrown by theguitarmanjp, CC BY 3.0
+Putting a glass on a table by dersuperanton, CC BY 3.0
+Stone on stone by thanvannispen, CC BY 3.0
+Stones kwandalist by kwandalist, CC BY 3.0
+Doors Porte pierre 2 by Slanesh, CC BY 3.0
+Foley Pingu Final Audio 1 by darkiron98, CC BY 3.0
+Steinwurf by kwandalist, CC BY 3.0
+Metal Creak 02 by joanasjoan, CC BY 3.0
+Bones breaking by VlatkoBlazek, CC BY 3.0
+Neck crack pure by Halleck, CC BY 3.0
+Beast breathing by THE_bizniss, CC BY 3.0
+Monster Slow exhail by cylon8472, CC BY 3.0
+Stone tile dragging friction scrape by johanwestling, CC BY 3.0
+Metal Pipe Drag 01 by dheming, CC BY 3.0
+Metal Tool Drag by timgormly, CC BY 3.0
+Turning dial by xtrgamr, CC BY 3.0
+Clicky Toy Winding Mechanism by d.n.audio.uk, CC BY 3.0
+Turning Key by akelley6, CC BY 3.0
+Insert Key Slowly by Iwan ‘qubodup’ Gabovitch, CC BY 3.0
+Metal Door Groaning by Mafon2, CC BY 3.0
+Door creaking 03 with Reverb by Jagadamba, CC BY 3.0
+Stream, Water, C by InspectorJ, CC BY 3.0
+Water on metal and glass by afmediaarmstrong, CC BY 3.0
+Bubbling, Large, A by InspectorJ, CC BY 3.0
+Dripping, Very Fast, A by InspectorJ, CC BY 3.0
+Water bubbles 02 by audiolarx, CC BY 3.0
+Footsteps Water Light 001 by duckduckpony, CC BY 3.0
+Footsteps Water Light 005 by duckduckpony, CC BY 3.0
+Footsteps Water Light 006 by duckduckpony, CC BY 3.0
+Arrow by EverHeat, CC BY 3.0
+Arrow whoosh by smcameron, CC BY 3.0
+BC arrow shoot by cmusounddesign, CC BY 3.0
+Metal sword fall by GET_Accel, CC BY 3.0
+Metal Cayendo by Thingy17, CC BY 3.0
+Small metal lamp crash (BOOM MIC) by youandbiscuitme, CC BY 3.0
+Small metal lamp crash (CONDENSER MIC) by youandbiscuitme, CC BY 3.0
+Clattering by TheScarlettWitch89, CC BY 3.0
+Crash by Sparrer, CC BY 3.0
+Metallic plate fall by sonsdebarcelona, CC BY 3.0
+Thin metal sliding door close noslam by kernschall, CC BY 3.0
+Creepy Metal Door Bang by Iwan ‘qubodup’ Gabovitch, CC BY 3.0
+Open rolling door by klankbeeld, CC BY 3.0
+Door Metal Groans Ext by Cell31_Sound_Productions, CC BY 3.0
+Metal door 01 by michael_kur95, CC BY 3.0
+Metallic Groan by johnzwick45, CC BY 3.0
+Prison, jail, a guard opens and closes doors and locks of prison cells with keys in an echoing corridor by YleArkisto, CC BY 3.0
+Familiar Game Jam Sounds -- charging power by JavierZumer, CC BY 3.0
+Electricity Hum by jameswrowles, CC BY 3.0
+Jacob's Ladder Single by Halleck, CC BY 3.0
+Electric Buzz Shock by visualasylum, CC BY 3.0
+Electric shock by LG, CC BY 3.0
+Electrical Transition by Iwan ‘qubodup’ Gabovitch, CC BY 3.0
+Electric wire 02 by Glaneur de sons, CC BY 3.0
+Electric Zap 001 by bevibeldesign, CC BY 3.0
+Electric zap by JoelAudio, CC BY 3.0
+Metal Chisel Hit 03 by Ev-Dawg, CC BY 3.0
+Rock Hammer Chisel 01 by dheming, CC BY 3.0
+
+Music
+Underwater Theme by CleytonKauffman, CC BY-SA 3.0, OGA-BY 3.0
+Cinema World 27 by C.Gspan, CC BY 3.0, OGA-BY 3.0
+Bejoscha goes into the Forest by C.Gspan, CC BY 4.0, OGA-BY 3.0
+Serenade for BJS by C.Gspan, CC BY 3.0, OGA-BY 3.0
+Bleeding out by Brandon Morris, OGA-BY 3.0, CC0
+Sinking Island by Gundatsch, CC BY 3.0, OGA-BY 3.0
+"A Raindrop Gentle" (Kymi's Theme) by Spring/Spring Enterprises (Rasmus Damsgaard)
+CC BY 4.0, CC BY 3.0, CC BY-SA 4.0, CC BY-SA 3.0
+Dark Ambient Loop 13 by Lucas Calvo -- mundosound.com, CC BY 3.0, OGA-BY 3.0
+Dark Ambient by Alexandr Zhelanov -- https://soundcloud.com/alexandr-zhelanov, CC BY 3.0
+RPG Ambient 3 by HitCtrl -- https://soundcloud.com/hitctrl, CC BY 3.0
+Ambient Soundtrack by Type 42 -- type42.bandcamp.com, CC BY 4.0
+Ambient music by manakade, CC BY-SA 3.0
+Calm Ambient 1 (Synthwave 4k) by The Cynic Project / cynicmusic.com / pixelsphere.org, CC0
+Mysterious Ambience (song21) by The Cynic Project / cynicmusic.com / pixelsphere.org, CC BY 3.0, CC BY-SA 3.0, GPL 3.0, CC0
+Choir positive feedback 1 by SouljahdeShiva, GPL 2.0, GPL 3.0, CC BY-SA 3.0
+A dark and desperate intro by anonymous fix, GPL 2.0, GPL 3.0, CC BY-SA 3.0
+Ice Shine Bells by hc, CC BY 3.0, CC0
+Dark Ambience by SpringySpringo from opengameart.org, CC BY 4.0, CC0
+Loopable Dungeon Ambience by JaggedStone, CC0
+Tragic ambient main menu by brandon75689, OGA-BY 3.0, CC0
+Watcher by Alexandr Zhelanov -- https://soundcloud.com/alexandr-zhelanov, CC BY 3.0
+Light battle theme by Alexandr Zhelanov -- https://soundcloud.com/alexandr-zhelanov, CC BY 4.0
+
+
+Images
+Palace Of Knossos by davestem, Pixabay License
+Greek Meander Ornament Pattern by OpenClipart-Vectors, Pixabay License
+Greek Meander Ancient Pattern by OpenClipart-Vectors, Pixabay License
+Splatter pack by johndh, CC BY 3.0

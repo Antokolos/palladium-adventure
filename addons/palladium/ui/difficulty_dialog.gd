@@ -22,13 +22,13 @@ func _on_DifficultyHardButton_pressed():
 	visible = false
 	__PLDRT.settings.set_difficulty(PLDSettings.DIFFICULTY_HARD)
 	__PLDRT.game_state.get_hud().pause_game(false)
-	__PLDRT.game_state.change_scene("res://intro_full.tscn")
+	__PLDRT.game_state.change_scene("res://arena.tscn")
 
 func _on_DifficultyNormalButton_pressed():
 	visible = false
 	__PLDRT.settings.set_difficulty(PLDSettings.DIFFICULTY_NORMAL)
 	__PLDRT.game_state.get_hud().pause_game(false)
-	__PLDRT.game_state.change_scene("res://intro_full.tscn")
+	__PLDRT.game_state.change_scene("res://arena.tscn")
 
 func _on_difficulty_dialog_about_to_show():
 	__PLDRT.game_state.get_hud().pause_game(true)

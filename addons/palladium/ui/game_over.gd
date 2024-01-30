@@ -42,7 +42,7 @@ func _on_ButtonSlot5_pressed():
 	__PLDRT.game_state.initiate_load(5)
 
 func _on_ButtonMainMenu_pressed():
-	__PLDRT.game_state.change_scene("res://main_menu.tscn")
+	__PLDRT.game_state.change_scene("res://main_menu/main_menu.tscn")
 
 func _on_ButtonQuit_pressed():
 	get_tree().quit()

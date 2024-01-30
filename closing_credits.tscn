@@ -1,0 +1,153 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://addons/palladium/default_theme.tres" type="Theme" id=1]
+[ext_resource path="res://closing_credits.gd" type="Script" id=2]
+[ext_resource path="res://addons/palladium/assets/fonts/Forum-Regular.ttf" type="DynamicFontData" id=3]
+[ext_resource path="res://addons/palladium/ui/mouse_cursor.tscn" type="PackedScene" id=4]
+
+[sub_resource type="DynamicFont" id=1]
+size = 36
+use_filter = true
+font_data = ExtResource( 3 )
+
+[sub_resource type="DynamicFont" id=2]
+size = 50
+outline_size = 1
+outline_color = Color( 0.6, 0.8, 0.2, 1 )
+use_filter = true
+extra_spacing_char = 4
+font_data = ExtResource( 3 )
+
+[sub_resource type="DynamicFont" id=3]
+size = 36
+use_filter = true
+
+[sub_resource type="StyleBoxFlat" id=4]
+bg_color = Color( 0.00392157, 0.0745098, 0.133333, 1 )
+
+[node name="closing_credits" type="ColorRect"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme = ExtResource( 1 )
+color = Color( 0.00392157, 0.0745098, 0.133333, 1 )
+script = ExtResource( 2 )
+font_text = SubResource( 1 )
+font_caption = SubResource( 2 )
+credits_container_path = NodePath("VBoxContainer/HBoxCenter/CreditsContainer")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+custom_constants/separation = 0
+alignment = 1
+
+[node name="ColorRectUpper" type="ColorRect" parent="VBoxContainer"]
+margin_right = 1920.0
+margin_bottom = 162.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.15
+color = Color( 0.00392157, 0.0745098, 0.133333, 1 )
+
+[node name="VBoxUpper" type="VBoxContainer" parent="VBoxContainer/ColorRectUpper"]
+anchor_left = 0.2
+anchor_right = 0.8
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+
+[node name="HBoxUpper" type="HBoxContainer" parent="VBoxContainer/ColorRectUpper/VBoxUpper"]
+margin_right = 1152.0
+margin_bottom = 162.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+
+[node name="Label" type="Label" parent="VBoxContainer/ColorRectUpper/VBoxUpper/HBoxUpper"]
+margin_top = 65.0
+margin_right = 1152.0
+margin_bottom = 97.0
+size_flags_horizontal = 3
+text = "TEXT_REVIEW"
+align = 1
+valign = 3
+autowrap = true
+
+[node name="HBoxCenter" type="HBoxContainer" parent="VBoxContainer"]
+show_behind_parent = true
+margin_top = 162.0
+margin_right = 1920.0
+margin_bottom = 972.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.75
+alignment = 1
+
+[node name="CreditsContainer" type="ColorRect" parent="VBoxContainer/HBoxCenter"]
+margin_right = 1920.0
+margin_bottom = 810.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color( 0.00392157, 0.0745098, 0.133333, 1 )
+
+[node name="Line" type="Label" parent="VBoxContainer/HBoxCenter/CreditsContainer"]
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_vertical = 8
+custom_fonts/font = SubResource( 3 )
+align = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+margin_top = 972.0
+margin_right = 1920.0
+margin_bottom = 1080.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+custom_styles/panel = SubResource( 4 )
+
+[node name="VBoxLower" type="VBoxContainer" parent="VBoxContainer/PanelContainer"]
+margin_right = 1920.0
+margin_bottom = 108.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+size_flags_stretch_ratio = 0.1
+alignment = 1
+
+[node name="HBoxLower" type="HBoxContainer" parent="VBoxContainer/PanelContainer/VBoxLower"]
+margin_top = 35.0
+margin_right = 1920.0
+margin_bottom = 73.0
+size_flags_horizontal = 3
+size_flags_vertical = 4
+custom_constants/separation = 40
+alignment = 1
+
+[node name="ButtonMainMenu" type="Button" parent="VBoxContainer/PanelContainer/VBoxLower/HBoxLower"]
+margin_left = 578.0
+margin_right = 857.0
+margin_bottom = 38.0
+custom_colors/font_color = Color( 0.6, 0.8, 0.2, 1 )
+text = "BUTTON_MAIN_MENU"
+
+[node name="ButtonReview" type="Button" parent="VBoxContainer/PanelContainer/VBoxLower/HBoxLower"]
+margin_left = 897.0
+margin_right = 1117.0
+margin_bottom = 38.0
+custom_colors/font_color = Color( 0.6, 0.8, 0.2, 1 )
+text = "BUTTON_REVIEW"
+
+[node name="ButtonQuit" type="Button" parent="VBoxContainer/PanelContainer/VBoxLower/HBoxLower"]
+margin_left = 1157.0
+margin_right = 1342.0
+margin_bottom = 38.0
+custom_colors/font_color = Color( 0.6, 0.8, 0.2, 1 )
+text = "BUTTON_QUIT"
+
+[node name="mouse_cursor" parent="." instance=ExtResource( 4 )]
+
+[connection signal="pressed" from="VBoxContainer/PanelContainer/VBoxLower/HBoxLower/ButtonMainMenu" to="." method="_on_ButtonMainMenu_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/VBoxLower/HBoxLower/ButtonReview" to="." method="_on_ButtonReview_pressed"]
+[connection signal="pressed" from="VBoxContainer/PanelContainer/VBoxLower/HBoxLower/ButtonQuit" to="." method="_on_ButtonQuit_pressed"]
