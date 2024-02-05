@@ -47,15 +47,6 @@ void fragment() {
 	} else {
 		a = 0.5;
 	}
-	if (use_circular_area) {
-		// Making it visible only in circular area, to be used together with simple quad mesh
-		// Normalized circle, with the center in the center of the quad mesh (0.5, 0.5)
-		float circ = 1.0 - ((UV.x - 0.5) * (UV.x - 0.5) + (UV.y - 0.5) * (UV.y - 0.5)) / 0.25;
-		if (circ < 0.0) {
-			a = 0.0;
-		}
-	}
-	ALPHA = a;
 	METALLIC = 0.0;
 	ROUGHNESS = 0.1;
 	NORMALMAP = texture(normalmap, base_uv_offset).rgb;
@@ -65,9 +56,9 @@ void fragment() {
 	if (use_refraction && (!OUTPUT_IS_SRGB || !use_proximity_fade)) {
 		vec3 ref_normal = normalize( mix(NORMAL,TANGENT * NORMALMAP.x + BINORMAL * NORMALMAP.y + NORMAL * NORMALMAP.z,NORMALMAP_DEPTH) );
 		vec2 ref_ofs = SCREEN_UV - ref_normal.xy * refraction;
-		EMISSION += textureLod(SCREEN_TEXTURE,ref_ofs,ROUGHNESS * 8.0).rgb * (1.0 - ALPHA);
-		ALBEDO *= ALPHA;
-		ALPHA = 1.0;
+		EMISSION += textureLod(SCREEN_TEXTURE,ref_ofs,ROUGHNESS * 8.0).rgb * (1.0 - a);
+		ALBEDO *= a;
+		a = 1.0;
 	}
 	
 	// Proximity fade
@@ -75,6 +66,15 @@ void fragment() {
 		float depth_tex = textureLod(DEPTH_TEXTURE,SCREEN_UV,0.0).r;
 		vec4 world_pos = INV_PROJECTION_MATRIX * vec4(SCREEN_UV*2.0-1.0,depth_tex*2.0-1.0,1.0);
 		world_pos.xyz/=world_pos.w;
-		ALPHA*=clamp(1.0-smoothstep(world_pos.z+proximity_fade_distance,world_pos.z,VERTEX.z),0.0,1.0);
+		a*=clamp(1.0-smoothstep(world_pos.z+proximity_fade_distance,world_pos.z,VERTEX.z),0.0,1.0);
 	}
+	if (use_circular_area) {
+		// Making it visible only in circular area, to be used together with simple quad mesh
+		// Normalized circle, with the center in the center of the quad mesh (0.5, 0.5)
+		float circ = 1.0 - ((UV.x - 0.5) * (UV.x - 0.5) + (UV.y - 0.5) * (UV.y - 0.5)) / 0.25;
+		if (circ < 0.0) {
+			a = 0.0;
+		}
+	}
+	ALPHA = a;
 }

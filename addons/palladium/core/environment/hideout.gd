@@ -16,7 +16,9 @@ func use(player_node, camera_node):
 	.use(player_node, camera_node)
 	if is_conversation_finished_or_not_applicable(player_node) and all_party_members_can_hide():
 		emit_signal("use_hideout", player_node, self)
-		__PLDRT.cutscene_manager.borrow_camera(player_node, get_node("camera_holder"), true)
+		var camera_holder = get_node("camera_holder")
+		camera_holder.prepare()
+		__PLDRT.cutscene_manager.borrow_camera(player_node, camera_holder, true)
 		player_node.set_hidden(true, get_path())
 		player_node.set_too_late_to_unhide(false)
 		hidden_player = player_node
@@ -37,6 +39,8 @@ func unhide_player():
 	if not hidden_player or hidden_player.is_too_late_to_unhide():
 		return
 	hidden_player.set_hidden(false)
+	var camera_holder = get_node("camera_holder")
+	camera_holder.deconstruct()
 	__PLDRT.cutscene_manager.restore_camera(hidden_player)
 	hidden_player = null
 
