@@ -55,5 +55,7 @@ func _input(event):
 	if not hidden_player or hidden_player.is_too_late_to_unhide():
 		return
 	if event.is_action_pressed("action"):
-		unhide_player()
-		get_tree().set_input_as_handled()
+		var cam = __PLDRT.game_state.get_cam()
+		if not cam.highlight(hidden_player).target_exists:
+			unhide_player()
+			get_tree().set_input_as_handled()

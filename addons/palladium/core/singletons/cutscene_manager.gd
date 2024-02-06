@@ -51,8 +51,8 @@ func borrow_camera(player, cutscene_node, is_hideout = false):
 		return
 	var camera = _pldrt.game_state.get_cam()
 	is_cutscene = true
-	_pldrt.game_state.get_hud().show_game_ui(false)
 	if not is_hideout:
+		_pldrt.game_state.get_hud().show_game_ui(false)
 		camera.enable_use(false)
 		camera.show_cutscene_flashlight(true)
 	self.cutscene_node = cutscene_node

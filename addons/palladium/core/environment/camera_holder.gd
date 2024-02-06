@@ -2,10 +2,11 @@ extends Position3D
 class_name PLDCameraHolder
 
 const GLOBAL_ROTATE = true
-const ANGLE_LIMIT_RAD = PI / 1.1
+const ANGLE_LIMIT_X_MIN_DEG = -75
+const ANGLE_LIMIT_X_MAX_DEG = 75
+const ANGLE_LIMIT_Y_MIN_DEG = -75
+const ANGLE_LIMIT_Y_MAX_DEG = 75
 const EPS = 0.02
-
-onready var global_axis = to_global(Vector3(0, 0, 1)) - to_global(Vector3(0, 0, 0))
 
 var angle_rad_x = 0
 var angle_x_reset = true
@@ -25,10 +26,15 @@ func prepare():
 func deconstruct():
 	get_parent().get_node("SpotLight").visible = false
 
+func ensure_rotation_limits():
+	rotation_degrees.x = clamp(rotation_degrees.x, ANGLE_LIMIT_X_MIN_DEG, ANGLE_LIMIT_X_MAX_DEG)
+	rotation_degrees.y = clamp(rotation_degrees.y, ANGLE_LIMIT_Y_MIN_DEG, ANGLE_LIMIT_Y_MAX_DEG)
+
 func reset_transform():
 	if holder_transform:
 		global_transform = holder_transform
 		holder_transform = null
+	ensure_rotation_limits()
 
 func _unhandled_input(event):
 	if not get_hidden_player():
@@ -50,15 +56,12 @@ func _process(delta):
 	if abs(angle_rad_x) > EPS or abs(angle_rad_y) > EPS:
 		if not holder_transform:
 			holder_transform = global_transform
-		var t = global_transform
 		if GLOBAL_ROTATE:
 			global_rotate(Vector3.UP, angle_rad_y)
 		else:
 			rotate_object_local(Vector3.UP, angle_rad_y)
 		rotate_object_local(Vector3(1, 0, 0), -angle_rad_x)
-		var a = global_axis.angle_to(to_global(Vector3(0, 0, 1)) - to_global(Vector3(0, 0, 0)))
-		if a > ANGLE_LIMIT_RAD:
-			global_transform = t
+		ensure_rotation_limits()
 	if angle_x_reset:
 		angle_rad_x = 0
 		angle_x_reset = false

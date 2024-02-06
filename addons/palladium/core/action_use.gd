@@ -84,35 +84,58 @@ func switch_highlight(player_node, body, distance_to_body):
 func highlight_custom_action():
 	var item = __PLDRT.game_state.get_hud().get_active_item()
 	if not item or item.is_weapon():
-		return ""
+		return {
+			"target_exists" : false,
+			"text" : ""
+		}
 	var custom_actions = __PLDRT.game_state.get_custom_actions(item)
 	if custom_actions.empty():
-		return ""
+		return {
+			"target_exists" : false,
+			"text" : ""
+		}
 	var level = __PLDRT.game_state.get_level()
 	if not level or not level.can_execute_custom_action(item, custom_actions[0]):
-		return ""
-	return (
-		"["
-		+ __PLDRT.common_utils.get_action_input_control()
-		+ tr(PLDDB.get_item_name(item.item_id) + "_" + custom_actions[0])
-		+ "]"
-	)
+		return {
+			"target_exists" : false,
+			"text" : ""
+		}
+	return {
+		"target_exists" : false,
+		"text" : (
+			"["
+			+ __PLDRT.common_utils.get_action_input_control()
+			+ tr(PLDDB.get_item_name(item.item_id) + "_" + custom_actions[0])
+			+ "]"
+		)
+	}
 
 func highlight(player_node):
 	if __PLDRT.game_state.get_hud().is_in_conversation():
-		return ""
-	if player_node and player_node.is_hidden():
-		if player_node.is_too_late_to_unhide():
-			return ""
-		return __PLDRT.common_utils.get_action_input_control() + tr("ACTION_UNHIDE") + " | " + tr("MESSAGE_CONTROLS_FLASHLIGHT") % __PLDRT.common_utils.get_input_control("flashlight", false)
+		return {
+			"target_exists" : false,
+			"text" : ""
+		}
+	var player_is_hidden = player_node and player_node.is_hidden()
+	if player_is_hidden and player_node.is_too_late_to_unhide():
+		return {
+			"target_exists" : false,
+			"text" : ""
+		}
 	var data_use_targets = ray_highlight(ray_use_targets, player_node)
 	use_distance = data_use_targets.use_distance
 	if data_use_targets.hint_message:
-		return data_use_targets.hint_message
+		return {
+			"target_exists" : true,
+			"text" : data_use_targets.hint_message
+		}
 	var data_items = ray_highlight(ray_items, player_node)
 	use_distance = data_items.use_distance
 	if data_items.hint_message:
-		return data_items.hint_message
+		return {
+			"target_exists" : true,
+			"text" : data_items.hint_message
+		}
 	var data_chars = ray_highlight(ray_characters, player_node)
 	if use_distance == 0 \
 		or (
@@ -121,7 +144,19 @@ func highlight(player_node):
 		):
 		use_distance = data_chars.use_distance
 	if data_chars.hint_message:
-		return data_chars.hint_message
+		return {
+			"target_exists" : true,
+			"text" : data_chars.hint_message
+		}
+	if player_is_hidden:
+		return {
+			"target_exists" : false,
+			"text" : (
+				__PLDRT.common_utils.get_action_input_control()
+					+ tr("ACTION_UNHIDE") + " | "
+					+ tr("MESSAGE_CONTROLS_FLASHLIGHT") % __PLDRT.common_utils.get_input_control("flashlight", false)
+			)
+		}
 	return highlight_custom_action()
 
 func ray_highlight(ray, player_node):

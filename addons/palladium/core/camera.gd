@@ -6,6 +6,7 @@ signal tactical_cursor_over(collider)
 signal tactical_cursor_out(collider)
 
 const EPS = 0.02
+const DISABLE_USE_WHEN_HIDDEN = false
 const TACTICAL_CAMERA_ROT_EPS = deg2rad(0.5)
 const TACTICAL_CAMERA_ROT_MIN_RAD = deg2rad(20)
 const TACTICAL_CAMERA_ROT_MAX_RAD = deg2rad(75)
@@ -582,6 +583,15 @@ func perform_player_switching():
 		return true
 	return false
 
+func highlight(player):
+	if use_point and player:
+		return use_point.highlight(player)
+	else:
+		return {
+			"target_exists" : false,
+			"text" : ""
+		}
+
 func _process(delta):
 	if not __PLDRT.game_state.is_level_ready():
 		return
@@ -603,7 +613,7 @@ func _process(delta):
 	
 	if use_point:
 		var player = __PLDRT.game_state.get_player()
-		__PLDRT.game_state.get_hud().set_action_hint_label_text(use_point.highlight(player))
+		__PLDRT.game_state.get_hud().set_action_hint_label_text(highlight(player).text)
 	
 	if __PLDRT.game_state.is_tactical_view():
 		if perform_player_switching():
@@ -695,7 +705,7 @@ func _unhandled_input(event):
 		or __PLDRT.conversation_manager.conversation_is_in_progress():
 		return
 	var player = __PLDRT.game_state.get_player()
-	if player and player.is_hidden():
+	if DISABLE_USE_WHEN_HIDDEN and player and player.is_hidden():
 		return
 	if __PLDRT.game_state.is_tactical_view():
 		if event is InputEventMouse:
