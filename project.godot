@@ -464,6 +464,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/palladium/ui/hud.gd"
 }, {
+"base": "ColorRect",
+"class": "PLDHUDEffect",
+"language": "GDScript",
+"path": "res://addons/palladium/ui/hud_effect.gd"
+}, {
 "base": "PLDDiscussable",
 "class": "PLDHideout",
 "language": "GDScript",
@@ -766,6 +771,7 @@ _global_script_class_icons={
 "PLDGameState": "",
 "PLDGameWindow": "",
 "PLDHUD": "",
+"PLDHUDEffect": "",
 "PLDHideout": "",
 "PLDItemContainer": "",
 "PLDItemInUse": "",
