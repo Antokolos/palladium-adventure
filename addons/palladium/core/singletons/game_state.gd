@@ -14,6 +14,7 @@ signal teleport_tween_started(player_node, origin, flight_params)
 signal player_surge(player, enabled)
 signal player_underwater(player, enabled)
 signal player_poisoned(player, enabled, intoxication_rate)
+signal player_drunk(player, enabled, drunk_degree)
 signal item_taken(item_id, count_total, count_taken, item_path)
 signal item_removed(item_id, count_total, count_removed)
 signal item_removed_from_player(name_hint, item_id, count_removed)
@@ -410,6 +411,9 @@ func set_underwater(player, enable):
 
 func set_poisoned(player, enable, intoxication_rate):
 	emit_signal("player_poisoned", player, enable, intoxication_rate)
+
+func set_drunk(player, enable, drunk_degree):
+	emit_signal("player_drunk", player, enable, drunk_degree)
 
 func get_custom_actions(item):
 	var item_record = get_registered_item_data(item.item_id)
@@ -1131,6 +1135,10 @@ func set_character_data(dd, character):
 		character.intoxication = int(dd.intoxication)
 		set_poisoned(character, dd.is_poisoned, character.intoxication)
 	
+	if ("is_drunk" in dd and "drunk_degree" in dd):
+		character.drunk_degree = int(dd.drunk_degree)
+		set_drunk(character, dd.is_drunk, character.drunk_degree)
+	
 	if ("relationship" in dd):
 		character.relationship = int(dd.relationship)
 	
@@ -1280,9 +1288,11 @@ func get_character_data(character):
 		"ladder_rotation_deg" : character.get_ladder_rotation_deg(),
 		"ladder_ymin" : character.get_ladder_ymin(),
 		"ladder_ymax" : character.get_ladder_ymax(),
-		"is_poisoned" : character.is_poisoned(),
 		"player_type" : character.get_player_type(),
+		"is_poisoned" : character.is_poisoned(),
 		"intoxication" : character.get_intoxication(),
+		"is_drunk" : character.is_drunk(),
+		"drunk_degree" : character.get_drunk_degree(),
 		"relationship" : character.get_relationship(),
 		"morale" : character.get_morale(),
 		"stuns_count" : character.get_stuns_count(),

@@ -95,12 +95,14 @@ var is_on_ladder = false setget set_on_ladder, is_on_ladder
 var ladder_rotation_deg = 0 setget set_ladder_rotation_deg, get_ladder_rotation_deg
 var ladder_ymin = 0 setget set_ladder_ymin, get_ladder_ymin
 var ladder_ymax = 0 setget set_ladder_ymax, get_ladder_ymax
-var is_poisoned = false
 # player_type is like a class in RPG: Warrior, Cleric, Thief, Mage etc
 # it can be used to determine player traits based on its class
 # corresponding integer constants can be placed in the classes extending PLDLevel
 var player_type : int = 0 setget set_player_type, get_player_type
+var is_poisoned = false
 var intoxication : int = 0
+var is_drunk = false
+var drunk_degree : int = 0
 var relationship : int = 0
 var morale : int = 0 setget set_morale
 var stuns_count : int = 0
@@ -115,6 +117,7 @@ var model_to_restore = null
 func _ready():
 	__PLDRT.game_state.connect("player_underwater", self, "_on_player_underwater")
 	__PLDRT.game_state.connect("player_poisoned", self, "_on_player_poisoned")
+	__PLDRT.game_state.connect("player_drunk", self, "_on_player_drunk")
 	__PLDRT.game_state.connect("player_registered", self, "_on_player_registered")
 	__PLDRT.game_state.register_player(self)
 
@@ -477,6 +480,7 @@ func become_player():
 	var ps = __PLDRT.game_state.party_stats
 	__PLDRT.game_state.set_player_name_hint(self_nh)
 	__PLDRT.game_state.set_poisoned(self, is_poisoned(), get_intoxication())
+	__PLDRT.game_state.set_drunk(self, is_drunk(), get_drunk_degree())
 	__PLDRT.game_state.set_health(
 		self,
 		ps[self_nh]["health_current"],
@@ -569,17 +573,17 @@ func get_ladder_ymax():
 func set_ladder_ymax(ymax):
 	ladder_ymax = ymax
 
-func is_poisoned():
-	return is_poisoned
-
-func set_poisoned(enable):
-	is_poisoned = enable
-
 func get_player_type() -> int:
 	return player_type
 
 func set_player_type(type : int):
 	player_type = type
+
+func is_poisoned():
+	return is_poisoned
+
+func set_poisoned(enable):
+	is_poisoned = enable
 
 func get_intoxication() -> int:
 	return intoxication
@@ -587,11 +591,31 @@ func get_intoxication() -> int:
 func set_intoxication(intoxication : int):
 	self.intoxication = intoxication
 
+func is_drunk():
+	return is_drunk
+
+func set_drunk(enable, and_emit_signal = true):
+	is_drunk = enable
+	if and_emit_signal and is_player():
+		__PLDRT.game_state.set_drunk(self, enable)
+
+func get_drunk_degree() -> int:
+	return drunk_degree
+
+func set_drunk_degree(drunk_degree : int):
+	self.drunk_degree = drunk_degree
+
 func _on_player_poisoned(player, enable, intoxication_rate):
 	if player and not equals(player):
 		return
 	set_poisoned(enable)
 	set_intoxication(intoxication_rate)
+
+func _on_player_drunk(player, enable, drunk_degree):
+	if player and not equals(player):
+		return
+	set_drunk(enable, false)
+	set_drunk_degree(drunk_degree)
 
 func _on_player_registered(player):
 	if not player:

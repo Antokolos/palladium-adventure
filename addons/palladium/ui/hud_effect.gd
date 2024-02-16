@@ -1,4 +1,5 @@
 extends ColorRect
+class_name PLDHUDEffect
 
 func _ready():
 	__PLDRT.settings.connect("image_adjust_changed", self, "_on_image_adjust_changed")

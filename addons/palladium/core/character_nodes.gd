@@ -37,6 +37,7 @@ var visible_to_player = true
 func _ready():
 	__PLDRT.game_state.connect("player_underwater", self, "_on_player_underwater")
 	__PLDRT.game_state.connect("player_poisoned", self, "_on_player_poisoned")
+	__PLDRT.game_state.connect("player_drunk", self, "_on_player_drunk")
 	__PLDRT.game_state.connect("health_changed", self, "_on_health_changed")
 	heal_timer.start()
 	var model = character.get_model()
@@ -87,6 +88,11 @@ func _on_player_poisoned(player, enable, intoxication_rate):
 		poison_timer.start()
 	elif not enable and not poison_timer.is_stopped():
 		poison_timer.stop()
+
+func _on_player_drunk(player, enable, drunk_degree):
+	if player and not player.equals(character):
+		return
+	# Some effects on the character?
 
 func _on_health_changed(name_hint, health_current, health_max):
 	if (

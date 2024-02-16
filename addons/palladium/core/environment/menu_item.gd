@@ -110,7 +110,7 @@ func click():
 		MenuType.NEW_GAME:
 			__PLDRT.game_state.get_hud().show_difficulty_dialog()
 		MenuType.OUR_GAMES:
-			__PLDRT.game_state.change_scene("res://main_menu/our_games.tscn")
+			__PLDRT.game_state.change_scene("res://our_games.tscn")
 		MenuType.SETTINGS:
 			__PLDRT.game_state.get_hud().show_tablet(true, PLDTablet.ActivationMode.SETTINGS)
 		_:

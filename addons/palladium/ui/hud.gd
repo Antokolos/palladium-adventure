@@ -42,6 +42,7 @@ onready var tablet = get_node("tablet")
 onready var crosshair = get_node("Crosshair")
 onready var surge_effect = get_node("SurgeEffect")
 onready var underwater_effect = get_node("UnderwaterEffect")
+onready var drunk_effect = get_node("DrunkEffect")
 onready var image_adjust = get_node("ImageAdjust")
 
 onready var indicators_panel = get_node("Indicators")
@@ -77,6 +78,7 @@ func _ready():
 	__PLDRT.game_state.connect("action_points_changed", self, "on_action_points_changed")
 	__PLDRT.game_state.connect("player_surge", self, "set_surge")
 	__PLDRT.game_state.connect("player_underwater", self, "set_underwater")
+	__PLDRT.game_state.connect("player_drunk", self, "set_drunk")
 	__PLDRT.settings.connect("language_changed", self, "on_language_changed")
 	__PLDRT.settings.connect("image_adjust_changed", self, "_on_image_adjust_changed")
 	_on_image_adjust_changed(__PLDRT.settings.use_image_adjust, __PLDRT.settings.brightness, __PLDRT.settings.contrast, __PLDRT.settings.saturation)
@@ -348,6 +350,14 @@ func set_underwater(player, enable):
 	if enable:
 		queue_popup_message("MESSAGE_CONTROLS_SWIM_UP", [__PLDRT.common_utils.get_input_control("movement_jump", false)])
 	underwater_effect.visible = enable
+
+func set_drunk(player, enable, drunk_degree):
+	if player and not player.equals(__PLDRT.game_state.get_player()):
+		return
+	drunk_effect.visible = enable
+	drunk_effect.material.set_shader_param("frequency", 4 + drunk_degree * 2)
+	drunk_effect.material.set_shader_param("depth", 0.005 * drunk_degree)
+	drunk_effect.material.set_shader_param("blur_amount", drunk_degree * 0.25)
 
 func set_quick_items_dimmed(dimmed):
 	var panel_style = quick_items_dimmer.get("custom_styles/panel")
