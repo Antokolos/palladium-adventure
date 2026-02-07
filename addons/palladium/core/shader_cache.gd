@@ -3,7 +3,7 @@ class_name PLDShaderCache
 
 const ENABLE_BAKED_LIGHT_USAGE_FOR_ALL = true
 const SHADER_CACHE_HIDING_ENABLED = true
-const EXTRA_CULL_MARGIN_INCREMENT = 10
+const EXTRA_CULL_MARGIN_INCREMENT = 0 # TODO: Can break baked lights?
 const STEP = 0.005
 const HALFROW = 20
 
