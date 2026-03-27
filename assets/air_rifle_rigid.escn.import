@@ -2,12 +2,12 @@
 
 importer="scene"
 type="PackedScene"
-path="res://.import/curly_palm.fbx-a4320f612a50498dc186a88a506dda15.scn"
+path="res://.import/air_rifle_rigid.escn-9bfddf28ac43eabb4f96a80d4d37eb1a.scn"
 
 [deps]
 
-source_file="res://assets/trees/curly_palm.fbx"
-dest_files=[ "res://.import/curly_palm.fbx-a4320f612a50498dc186a88a506dda15.scn" ]
+source_file="res://assets/air_rifle_rigid.escn"
+dest_files=[ "res://.import/air_rifle_rigid.escn-9bfddf28ac43eabb4f96a80d4d37eb1a.scn" ]
 
 [params]
 
@@ -16,7 +16,7 @@ nodes/root_name="Scene Root"
 nodes/root_scale=1.0
 nodes/custom_script=""
 nodes/storage=0
-nodes/use_legacy_names=false
+nodes/use_legacy_names=true
 materials/location=1
 materials/storage=1
 materials/keep_on_reimport=true

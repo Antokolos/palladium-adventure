@@ -246,6 +246,9 @@ func set_pause_scene(rootNode : Node, pause : bool, ignoredChilds : PoolStringAr
 			set_pause_scene(node, pause, ignoredChilds)
 
 func shadow_casting_enable(root, enable):
+	if not root:
+		push_warning("Called shadow_casting_enable() on null instance")
+		return
 	var s = GeometryInstance.SHADOW_CASTING_SETTING_ON if enable else GeometryInstance.SHADOW_CASTING_SETTING_OFF
 	for ch in root.get_children():
 		if ch is GeometryInstance:

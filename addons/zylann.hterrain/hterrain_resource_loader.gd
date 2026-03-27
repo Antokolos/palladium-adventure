@@ -21,7 +21,7 @@ func handles_type(typename):
 	return typename == "Resource"
 
 
-func load(path, original_path):
+func load(path, original_path, flag):
 	var res = HTerrainData.new()
 	res.load_data(path.get_base_dir())
 	return res

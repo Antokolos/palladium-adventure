@@ -33,6 +33,9 @@ func coord_div(vec1, vec2):
 	return Vector3(vec1.x / vec2.x, vec1.y / vec2.y, vec1.z / vec2.z)
 
 func toggle_meshes(root, enable):
+	if not root:
+		push_warning("Called toggle_meshes() on null instance")
+		return
 	for m in root.get_children():
 		if m is MeshInstance:
 			m.set_layer_mask_bit(5, enable)
@@ -47,6 +50,9 @@ func open_preview(item):
 		return
 	self.item = item
 	self.inst = item.get_model_instance()
+	if not self.inst:
+		push_warning("get_model_instance() returned null for item: " + item.model_path)
+		return
 	for ch in item_holder_node.get_children():
 		ch.queue_free()
 	__PLDRT.common_utils.shadow_casting_enable(inst, false)
