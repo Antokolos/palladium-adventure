@@ -22,7 +22,7 @@ func _on_DifficultyHardButton_pressed():
 	visible = false
 	__PLDRT.settings.set_difficulty(PLDSettings.DIFFICULTY_HARD)
 	__PLDRT.game_state.get_hud().pause_game(false)
-	__PLDRT.game_state.change_scene("res://arena.tscn")
+	__PLDRT.game_state.change_scene("res://building.tscn")
 
 func _on_DifficultyNormalButton_pressed():
 	visible = false

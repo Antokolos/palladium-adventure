@@ -174,7 +174,7 @@ static func get_weapon_ranged_data(takable_id):
 
 ### GAME-SPECIFIC PART ###
 
-const CAMERA_VIEW_TYPE_DEFAULT = CAMERA_VIEW_THIRD_PERSON_STRICT
+const CAMERA_VIEW_TYPE_DEFAULT = CAMERA_VIEW_FIRST_PERSON
 const USE_HEALTH = true
 const USE_ACTION_POINTS = false
 const USE_CROSSHAIR = true

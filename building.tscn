@@ -217,17 +217,11 @@ script = ExtResource( 8 )
 
 [node name="Viewport" parent="ViewportContainer" instance=ExtResource( 12 )]
 size = Vector2( 1920, 1080 )
+render_target_update_mode = 3
 
 [node name="Building" type="Navigation" parent="ViewportContainer/Viewport"]
 script = ExtResource( 5 )
 is_bright = true
-is_inside = true
-is_reverb = false
-is_loadable = true
-is_need_show_path = true
-player_path = "player"
-player_female_path = "player_female"
-player_bandit_path = "player_bandit"
 cam_path = NodePath("camera")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="ViewportContainer/Viewport/Building"]
@@ -1703,12 +1697,6 @@ omni_range = 13.0
 [node name="elevator" type="Spatial" parent="ViewportContainer/Viewport/Building"]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.825 )
 script = ExtResource( 9 )
-floors_count = 5
-floor_height = 4.0
-speed = 2.0
-door_time = 0.6
-door_slide = 1.0
-initial_floor = 0
 
 [node name="cabin" type="KinematicBody" parent="ViewportContainer/Viewport/Building/elevator"]
 collision_layer = 6
@@ -1781,11 +1769,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.425, 0.9, -1.225 )
 collision_layer = 128
 collision_mask = 0
 script = ExtResource( 10 )
-use_distance = 2.6
-usable_id = 0
-remove_on_hard_difficulty = false
-elevator_path = NodePath("../../..")
-target_floor = 0
 
 [node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons/button_1"]
 shape = SubResource( 45 )
@@ -1807,10 +1790,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.425, 1.12, -1.225 )
 collision_layer = 128
 collision_mask = 0
 script = ExtResource( 10 )
-use_distance = 2.6
-usable_id = 0
-remove_on_hard_difficulty = false
-elevator_path = NodePath("../../..")
 target_floor = 1
 
 [node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons/button_2"]
@@ -1833,10 +1812,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.425, 1.34, -1.225 )
 collision_layer = 128
 collision_mask = 0
 script = ExtResource( 10 )
-use_distance = 2.6
-usable_id = 0
-remove_on_hard_difficulty = false
-elevator_path = NodePath("../../..")
 target_floor = 2
 
 [node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons/button_3"]
@@ -1859,10 +1834,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.425, 1.56, -1.225 )
 collision_layer = 128
 collision_mask = 0
 script = ExtResource( 10 )
-use_distance = 2.6
-usable_id = 0
-remove_on_hard_difficulty = false
-elevator_path = NodePath("../../..")
 target_floor = 3
 
 [node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons/button_4"]
@@ -1885,10 +1856,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.425, 1.78, -1.225 )
 collision_layer = 128
 collision_mask = 0
 script = ExtResource( 10 )
-use_distance = 2.6
-usable_id = 0
-remove_on_hard_difficulty = false
-elevator_path = NodePath("../../..")
 target_floor = 4
 
 [node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons/button_5"]
@@ -1939,11 +1906,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.45, 1.2, -2.15 )
 collision_layer = 128
 collision_mask = 0
 script = ExtResource( 10 )
-use_distance = 2.6
-usable_id = 0
-remove_on_hard_difficulty = false
-elevator_path = NodePath("../../..")
-target_floor = 0
 
 [node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_0/call_button"]
 shape = SubResource( 51 )
@@ -1984,10 +1946,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.45, 1.2, -2.15 )
 collision_layer = 128
 collision_mask = 0
 script = ExtResource( 10 )
-use_distance = 2.6
-usable_id = 0
-remove_on_hard_difficulty = false
-elevator_path = NodePath("../../..")
 target_floor = 1
 
 [node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_1/call_button"]
@@ -2029,10 +1987,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.45, 1.2, -2.15 )
 collision_layer = 128
 collision_mask = 0
 script = ExtResource( 10 )
-use_distance = 2.6
-usable_id = 0
-remove_on_hard_difficulty = false
-elevator_path = NodePath("../../..")
 target_floor = 2
 
 [node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_2/call_button"]
@@ -2074,10 +2028,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.45, 1.2, -2.15 )
 collision_layer = 128
 collision_mask = 0
 script = ExtResource( 10 )
-use_distance = 2.6
-usable_id = 0
-remove_on_hard_difficulty = false
-elevator_path = NodePath("../../..")
 target_floor = 3
 
 [node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_3/call_button"]
@@ -2119,10 +2069,6 @@ transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.45, 1.2, -2.15 )
 collision_layer = 128
 collision_mask = 0
 script = ExtResource( 10 )
-use_distance = 2.6
-usable_id = 0
-remove_on_hard_difficulty = false
-elevator_path = NodePath("../../..")
 target_floor = 4
 
 [node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_4/call_button"]
@@ -2139,889 +2085,533 @@ mesh = SubResource( 52 )
 [node name="enemy_f1_l1" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -9, 0, -3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f1_l1"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_l1"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_l1/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f1_l2" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -13, 0, 3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f1_l2"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_l2"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_l2/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f1_l3" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -18, 0, -3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f1_l3"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_l3"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_l3/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f1_l4" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -22.5, 0, 3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f1_l4"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_l4"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_l4/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f1_r1" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 9, 0, -3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f1_r1"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_r1"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_r1/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f1_r2" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 13, 0, 3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f1_r2"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_r2"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_r2/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f1_r3" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 18, 0, -3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f1_r3"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_r3"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_r3/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f1_r4" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 22.5, 0, 3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f1_r4"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_r4"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_r4/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f2_l1" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -9, 4, -3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f2_l1"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_l1"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_l1/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f2_l2" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -13, 4, 3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f2_l2"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_l2"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_l2/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f2_l3" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -18, 4, -3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f2_l3"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_l3"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_l3/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f2_l4" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -22.5, 4, 3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f2_l4"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_l4"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_l4/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f2_r1" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 9, 4, -3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f2_r1"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_r1"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_r1/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f2_r2" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 13, 4, 3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f2_r2"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_r2"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_r2/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f2_r3" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 18, 4, -3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f2_r3"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_r3"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_r3/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f2_r4" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 22.5, 4, 3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f2_r4"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_r4"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_r4/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f3_l1" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -9, 8, -3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f3_l1"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_l1"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_l1/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f3_l2" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -13, 8, 3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f3_l2"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_l2"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_l2/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f3_l3" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -18, 8, -3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f3_l3"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_l3"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_l3/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f3_l4" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -22.5, 8, 3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f3_l4"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_l4"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_l4/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f3_r1" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 9, 8, -3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f3_r1"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_r1"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_r1/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f3_r2" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 13, 8, 3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f3_r2"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_r2"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_r2/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f3_r3" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 18, 8, -3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f3_r3"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_r3"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_r3/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f3_r4" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 22.5, 8, 3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f3_r4"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_r4"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_r4/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f4_l1" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -9, 12, -3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f4_l1"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_l1"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_l1/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f4_l2" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -13, 12, 3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f4_l2"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_l2"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_l2/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f4_l3" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -18, 12, -3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f4_l3"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_l3"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_l3/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f4_l4" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -22.5, 12, 3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f4_l4"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_l4"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_l4/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f4_r1" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 9, 12, -3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f4_r1"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_r1"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_r1/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f4_r2" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 13, 12, 3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f4_r2"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_r2"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_r2/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f4_r3" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 18, 12, -3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f4_r3"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_r3"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_r3/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f4_r4" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 22.5, 12, 3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f4_r4"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_r4"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_r4/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f5_l1" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -9, 16, -3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f5_l1"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_l1"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_l1/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f5_l2" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -13, 16, 3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f5_l2"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_l2"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_l2/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f5_l3" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -18, 16, -3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f5_l3"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_l3"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_l3/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f5_l4" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -22.5, 16, 3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f5_l4"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_l4"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_l4/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f5_r1" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 9, 16, -3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f5_r1"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_r1"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_r1/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f5_r2" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 13, 16, 3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f5_r2"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_r2"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_r2/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f5_r3" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 18, 16, -3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f5_r3"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_r3"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_r3/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="enemy_f5_r4" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 22.5, 16, 3.5 )
 script = ExtResource( 11 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
 name_hint = "enemy_f5_r4"
-has_ranged_attack = false
 has_melee_attack = true
-attack_speed = 0.7
 can_hide = false
-can_read = false
-auto_sit_down = false
 max_hits = 1
 use_distance_limits = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_r4"]
 
 [node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_r4/Model" instance=ExtResource( 4 )]
-force_anim_disable = false
-rest_shots_max = 0
 
 [node name="camera" parent="ViewportContainer/Viewport/Building" instance=ExtResource( 2 )]
 transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 2.2, -8 )
-translate_speed = 0.95
-rotate_speed = 0.95
-fov_speed = 0.95
-near_far_speed = 0.95
-target_path = NodePath("")
 
 [node name="player" parent="ViewportContainer/Viewport/Building" instance=ExtResource( 1 )]
 transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3.5 )
-max_lower_limit_y = -999.1
-use_distance = 2.2
-name_hint = "player"
-show_path = true
 has_ranged_attack = true
-has_melee_attack = false
-attack_speed = 0.7
-can_hide = true
-can_read = false
-auto_sit_down = false
-initial_player = true
 
 [node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/player"]
 
 [node name="vasya" parent="ViewportContainer/Viewport/Building/player/Model" instance=ExtResource( 14 )]
 transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0 )
-force_anim_disable = false
-rest_shots_max = 0
-attack_cutscene_ids = PoolIntArray(  )
-backpack_animation_player_path = null
-backpack_speak_animations = {
-}
-backpack_rest_animations = {
-}
-backpack_cutscene_animations = {
-}
-backpack_damage_animations = {
-}
-backpack_squats_reversed_anim = ""
-backpack_squats_anim = ""
-backpack_squats_rest_anim = ""
-backpack_crouch_squatted_anim = ""
-backpack_walk_anim = ""
-backpack_runs_anim = ""
-backpack_fall_down_anim = ""
-speak_shots_max = 2
 
 [node name="hud" parent="." instance=ExtResource( 13 )]
-cutscene_mode = false
