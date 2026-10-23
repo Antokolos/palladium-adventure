@@ -1,0 +1,3027 @@
+[gd_scene load_steps=67 format=2]
+
+[ext_resource path="res://addons/palladium/core/player.tscn" type="PackedScene" id=1]
+[ext_resource path="res://addons/palladium/core/camera.tscn" type="PackedScene" id=2]
+[ext_resource path="res://addons/palladium/core/enemy.tscn" type="PackedScene" id=3]
+[ext_resource path="res://scenes/enemies/squig.tscn" type="PackedScene" id=4]
+[ext_resource path="res://building.gd" type="Script" id=5]
+[ext_resource path="res://addons/palladium/core/environment/navigation_mesh_instance.gd" type="Script" id=6]
+[ext_resource path="res://addons/palladium/styles/menu_font.tres" type="DynamicFont" id=7]
+[ext_resource path="res://addons/palladium/ui/game_window.gd" type="Script" id=8]
+[ext_resource path="res://scenes/building/elevator.gd" type="Script" id=9]
+[ext_resource path="res://scenes/building/elevator_button.gd" type="Script" id=10]
+[ext_resource path="res://scenes/enemies/enemy_squig.gd" type="Script" id=11]
+[ext_resource path="res://addons/palladium/ui/viewport.tscn" type="PackedScene" id=12]
+[ext_resource path="res://addons/palladium/ui/hud.tscn" type="PackedScene" id=13]
+[ext_resource path="res://vasya.tscn" type="PackedScene" id=14]
+
+[sub_resource type="Environment" id=1]
+background_mode = 1
+background_color = Color( 0.08, 0.09, 0.11, 1 )
+ambient_light_color = Color( 0.85, 0.85, 0.9, 1 )
+ambient_light_energy = 0.35
+
+[sub_resource type="NavigationMesh" id=2]
+vertices = PoolVector3Array( -25, 0.45, 1, -20.75, 0.45, 1, -21, 0.45, -0.75, -25, 0.45, -6, -19.25, 0.45, -1, -11.75, 0.45, -1, -15.5, 0.45, -6, -10.25, 0.45, -1, -5.75, 0.45, -1, -5.75, 0.45, -6, -10.25, 0.45, -1, -5.75, 0.45, -6, -15.5, 0.45, -6, -11.75, 0.45, -1, -21, 0.45, -0.75, -19.25, 0.45, -1, -15.5, 0.45, -6, -25, 0.45, -6, -25, 4.45, 1, -20.75, 4.45, 1, -21, 4.45, -0.75, -25, 4.45, -6, -19.25, 4.45, -1, -11.75, 4.45, -1, -15.5, 4.45, -6, -10.25, 4.45, -1, -5.75, 4.45, -1, -5.75, 4.45, -6, -10.25, 4.45, -1, -5.75, 4.45, -6, -15.5, 4.45, -6, -11.75, 4.45, -1, -21, 4.45, -0.75, -19.25, 4.45, -1, -15.5, 4.45, -6, -25, 4.45, -6, -25, 8.45, 1, -20.75, 8.45, 1, -21, 8.45, -0.75, -25, 8.45, -6, -19.25, 8.45, -1, -11.75, 8.45, -1, -15.5, 8.45, -6, -10.25, 8.45, -1, -5.75, 8.45, -1, -5.75, 8.45, -6, -10.25, 8.45, -1, -5.75, 8.45, -6, -15.5, 8.45, -6, -11.75, 8.45, -1, -21, 8.45, -0.75, -19.25, 8.45, -1, -15.5, 8.45, -6, -25, 8.45, -6, -25, 12.45, 1, -20.75, 12.45, 1, -21, 12.45, -0.75, -25, 12.45, -6, -19.25, 12.45, -1, -11.75, 12.45, -1, -15.5, 12.45, -6, -10.25, 12.45, -1, -5.75, 12.45, -1, -5.75, 12.45, -6, -10.25, 12.45, -1, -5.75, 12.45, -6, -15.5, 12.45, -6, -11.75, 12.45, -1, -21, 12.45, -0.75, -19.25, 12.45, -1, -15.5, 12.45, -6, -25, 12.45, -6, -25, 16.45, 1, -20.75, 16.45, 1, -21, 16.45, -0.75, -25, 16.45, -6, -19.25, 16.45, -1, -11.75, 16.45, -1, -15.5, 16.45, -6, -10.25, 16.45, -1, -5.75, 16.45, -1, -5.75, 16.45, -6, -10.25, 16.45, -1, -5.75, 16.45, -6, -15.5, 16.45, -6, -11.75, 16.45, -1, -21, 16.45, -0.75, -19.25, 16.45, -1, -15.5, 16.45, -6, -25, 16.45, -6, -4.5, 0.45, -0.75, 4.5, 0.45, -0.75, 4.25, 0.45, -6, -4.25, 0.45, -6, -4.5, 4.45, -0.75, 4.5, 4.45, -0.75, 4.25, 4.45, -6, -4.25, 4.45, -6, -4.5, 8.45, -0.75, 4.5, 8.45, -0.75, 4.25, 8.45, -6, -4.25, 8.45, -6, -4.5, 12.45, -0.75, 4.5, 12.45, -0.75, 4.25, 12.45, -6, -4.25, 12.45, -6, -4.5, 16.45, -0.75, 4.5, 16.45, -0.75, 4.25, 16.45, -6, -4.25, 16.45, -6, 20.75, 0.45, -1, 25, 0.45, -1, 25, 0.45, -6, 5.75, 0.45, -6, 5.75, 0.45, -1, 10.25, 0.45, -1, 15.25, 0.45, -6, 5.75, 0.45, -6, 10.25, 0.45, -1, 12, 0.45, -0.75, 19, 0.45, -0.75, 15.25, 0.45, -6, 12, 0.45, -0.75, 11.75, 0.45, 1, 19.25, 0.45, 1, 20.75, 0.45, -1, 25, 0.45, -6, 15.25, 0.45, -6, 19, 0.45, -0.75, 20.75, 4.45, -1, 25, 4.45, -1, 25, 4.45, -6, 5.75, 4.45, -6, 5.75, 4.45, -1, 10.25, 4.45, -1, 15.25, 4.45, -6, 5.75, 4.45, -6, 10.25, 4.45, -1, 12, 4.45, -0.75, 19, 4.45, -0.75, 15.25, 4.45, -6, 12, 4.45, -0.75, 11.75, 4.45, 1, 19.25, 4.45, 1, 20.75, 4.45, -1, 25, 4.45, -6, 15.25, 4.45, -6, 19, 4.45, -0.75, 20.75, 8.45, -1, 25, 8.45, -1, 25, 8.45, -6, 5.75, 8.45, -6, 5.75, 8.45, -1, 10.25, 8.45, -1, 15.25, 8.45, -6, 5.75, 8.45, -6, 10.25, 8.45, -1, 12, 8.45, -0.75, 19, 8.45, -0.75, 15.25, 8.45, -6, 12, 8.45, -0.75, 11.75, 8.45, 1, 19.25, 8.45, 1, 20.75, 8.45, -1, 25, 8.45, -6, 15.25, 8.45, -6, 19, 8.45, -0.75, 20.75, 12.45, -1, 25, 12.45, -1, 25, 12.45, -6, 5.75, 12.45, -6, 5.75, 12.45, -1, 10.25, 12.45, -1, 15.25, 12.45, -6, 5.75, 12.45, -6, 10.25, 12.45, -1, 12, 12.45, -0.75, 19, 12.45, -0.75, 15.25, 12.45, -6, 12, 12.45, -0.75, 11.75, 12.45, 1, 19.25, 12.45, 1, 20.75, 12.45, -1, 25, 12.45, -6, 15.25, 12.45, -6, 19, 12.45, -0.75, 20.75, 16.45, -1, 25, 16.45, -1, 25, 16.45, -6, 5.75, 16.45, -6, 5.75, 16.45, -1, 10.25, 16.45, -1, 15.25, 16.45, -6, 5.75, 16.45, -6, 10.25, 16.45, -1, 12, 16.45, -0.75, 19, 16.45, -0.75, 15.25, 16.45, -6, 12, 16.45, -0.75, 11.75, 16.45, 1, 19.25, 16.45, 1, 20.75, 16.45, -1, 25, 16.45, -6, 15.25, 16.45, -6, 19, 16.45, -0.75, -20.75, 0.45, 1, -25, 0.45, 1, -25, 0.45, 6, -5.75, 0.45, 6, -5.5, 0.45, 1, -10.25, 0.45, 1, -20.75, 0.45, 1, -25, 0.45, 6, -15.5, 0.45, 6, -19, 0.45, 0.75, -12, 0.45, 0.75, -11.75, 0.45, -1, -19.25, 0.45, -1, -19, 0.45, 0.75, -15.5, 0.45, 6, -15.5, 0.45, 6, -5.75, 0.45, 6, -10.25, 0.45, 1, -12, 0.45, 0.75, -20.75, 4.45, 1, -25, 4.45, 1, -25, 4.45, 6, -5.75, 4.45, 6, -5.5, 4.45, 1, -10.25, 4.45, 1, -20.75, 4.45, 1, -25, 4.45, 6, -15.5, 4.45, 6, -19, 4.45, 0.75, -12, 4.45, 0.75, -11.75, 4.45, -1, -19.25, 4.45, -1, -19, 4.45, 0.75, -15.5, 4.45, 6, -15.5, 4.45, 6, -5.75, 4.45, 6, -10.25, 4.45, 1, -12, 4.45, 0.75, -20.75, 8.45, 1, -25, 8.45, 1, -25, 8.45, 6, -5.75, 8.45, 6, -5.5, 8.45, 1, -10.25, 8.45, 1, -20.75, 8.45, 1, -25, 8.45, 6, -15.5, 8.45, 6, -19, 8.45, 0.75, -12, 8.45, 0.75, -11.75, 8.45, -1, -19.25, 8.45, -1, -19, 8.45, 0.75, -15.5, 8.45, 6, -15.5, 8.45, 6, -5.75, 8.45, 6, -10.25, 8.45, 1, -12, 8.45, 0.75, -20.75, 12.45, 1, -25, 12.45, 1, -25, 12.45, 6, -5.75, 12.45, 6, -5.5, 12.45, 1, -10.25, 12.45, 1, -20.75, 12.45, 1, -25, 12.45, 6, -15.5, 12.45, 6, -19, 12.45, 0.75, -12, 12.45, 0.75, -11.75, 12.45, -1, -19.25, 12.45, -1, -19, 12.45, 0.75, -15.5, 12.45, 6, -15.5, 12.45, 6, -5.75, 12.45, 6, -10.25, 12.45, 1, -12, 12.45, 0.75, -20.75, 16.45, 1, -25, 16.45, 1, -25, 16.45, 6, -5.75, 16.45, 6, -5.5, 16.45, 1, -10.25, 16.45, 1, -20.75, 16.45, 1, -25, 16.45, 6, -15.5, 16.45, 6, -19, 16.45, 0.75, -12, 16.45, 0.75, -11.75, 16.45, -1, -19.25, 16.45, -1, -19, 16.45, 0.75, -15.5, 16.45, 6, -15.5, 16.45, 6, -5.75, 16.45, 6, -10.25, 16.45, 1, -12, 16.45, 0.75, -0.5, 0.45, 2, -0.25, 0.45, 2.5, 2.5, 0.45, 2, -4.25, 0.45, 6, -2.5, 0.45, 6, -2.5, 0.45, 2, -4.25, 0.45, 1.25, -5.5, 0.45, 1, -4.25, 0.45, 1.25, -4.5, 0.45, -0.75, -5.75, 0.45, -1, -4.25, 0.45, 1.25, -2.5, 0.45, 2, -0.5, 0.45, 2, 2.5, 0.45, 2, 2.5, 0.45, 6, 4.25, 0.45, 6, 4.25, 0.45, 1.25, -5.75, 0.45, -1, -10.25, 0.45, -1, -10.25, 0.45, 1, -5.5, 0.45, 1, -0.5, 0.45, 2, 2.5, 0.45, 2, 4.25, 0.45, 1.25, 4.5, 0.45, -0.75, -4.5, 0.45, -0.75, -4.25, 0.45, 1.25, 5.5, 0.45, 1, 10.25, 0.45, 1, 10.25, 0.45, -1, 5.75, 0.45, -1, 4.5, 0.45, -0.75, 4.25, 0.45, 1.25, 5.5, 0.45, 1, 4.5, 0.45, -0.75, -0.5, 4.45, 2, -0.25, 4.45, 2.5, 2.5, 4.45, 2, -4.25, 4.45, 6, -2.5, 4.45, 6, -2.5, 4.45, 2, -4.25, 4.45, 1.25, -5.5, 4.45, 1, -4.25, 4.45, 1.25, -4.5, 4.45, -0.75, -5.75, 4.45, -1, -4.25, 4.45, 1.25, -2.5, 4.45, 2, -0.5, 4.45, 2, 2.5, 4.45, 2, 2.5, 4.45, 6, 4.25, 4.45, 6, 4.25, 4.45, 1.25, -5.75, 4.45, -1, -10.25, 4.45, -1, -10.25, 4.45, 1, -5.5, 4.45, 1, -0.5, 4.45, 2, 2.5, 4.45, 2, 4.25, 4.45, 1.25, 4.5, 4.45, -0.75, -4.5, 4.45, -0.75, -4.25, 4.45, 1.25, 5.5, 4.45, 1, 10.25, 4.45, 1, 10.25, 4.45, -1, 5.75, 4.45, -1, 4.5, 4.45, -0.75, 4.25, 4.45, 1.25, 5.5, 4.45, 1, 4.5, 4.45, -0.75, -0.5, 8.45, 2, -0.25, 8.45, 2.5, 2.5, 8.45, 2, -4.25, 8.45, 6, -2.5, 8.45, 6, -2.5, 8.45, 2, -4.25, 8.45, 1.25, -5.5, 8.45, 1, -4.25, 8.45, 1.25, -4.5, 8.45, -0.75, -5.75, 8.45, -1, -4.25, 8.45, 1.25, -2.5, 8.45, 2, -0.5, 8.45, 2, 2.5, 8.45, 2, 2.5, 8.45, 6, 4.25, 8.45, 6, 4.25, 8.45, 1.25, -5.75, 8.45, -1, -10.25, 8.45, -1, -10.25, 8.45, 1, -5.5, 8.45, 1, -0.5, 8.45, 2, 2.5, 8.45, 2, 4.25, 8.45, 1.25, 4.5, 8.45, -0.75, -4.5, 8.45, -0.75, -4.25, 8.45, 1.25, 5.5, 8.45, 1, 10.25, 8.45, 1, 10.25, 8.45, -1, 5.75, 8.45, -1, 4.5, 8.45, -0.75, 4.25, 8.45, 1.25, 5.5, 8.45, 1, 4.5, 8.45, -0.75, -0.5, 12.45, 2, -0.25, 12.45, 2.5, 2.5, 12.45, 2, -4.25, 12.45, 6, -2.5, 12.45, 6, -2.5, 12.45, 2, -4.25, 12.45, 1.25, -5.5, 12.45, 1, -4.25, 12.45, 1.25, -4.5, 12.45, -0.75, -5.75, 12.45, -1, -4.25, 12.45, 1.25, -2.5, 12.45, 2, -0.5, 12.45, 2, 2.5, 12.45, 2, 2.5, 12.45, 6, 4.25, 12.45, 6, 4.25, 12.45, 1.25, -5.75, 12.45, -1, -10.25, 12.45, -1, -10.25, 12.45, 1, -5.5, 12.45, 1, -0.5, 12.45, 2, 2.5, 12.45, 2, 4.25, 12.45, 1.25, 4.5, 12.45, -0.75, -4.5, 12.45, -0.75, -4.25, 12.45, 1.25, 5.5, 12.45, 1, 10.25, 12.45, 1, 10.25, 12.45, -1, 5.75, 12.45, -1, 4.5, 12.45, -0.75, 4.25, 12.45, 1.25, 5.5, 12.45, 1, 4.5, 12.45, -0.75, -0.5, 16.45, 2, -0.25, 16.45, 2.5, 2.5, 16.45, 2, -4.25, 16.45, 6, -2.5, 16.45, 6, -2.5, 16.45, 2, -4.25, 16.45, 1.25, -5.5, 16.45, 1, -4.25, 16.45, 1.25, -4.5, 16.45, -0.75, -5.75, 16.45, -1, -4.25, 16.45, 1.25, -2.5, 16.45, 2, -0.5, 16.45, 2, 2.5, 16.45, 2, 2.5, 16.45, 6, 4.25, 16.45, 6, 4.25, 16.45, 1.25, -5.75, 16.45, -1, -10.25, 16.45, -1, -10.25, 16.45, 1, -5.5, 16.45, 1, -0.5, 16.45, 2, 2.5, 16.45, 2, 4.25, 16.45, 1.25, 4.5, 16.45, -0.75, -4.5, 16.45, -0.75, -4.25, 16.45, 1.25, 5.5, 16.45, 1, 10.25, 16.45, 1, 10.25, 16.45, -1, 5.75, 16.45, -1, 4.5, 16.45, -0.75, 4.25, 16.45, 1.25, 5.5, 16.45, 1, 4.5, 16.45, -0.75, 25, 0.45, -1, 20.75, 0.45, -1, 21, 0.45, 0.75, 25, 0.45, 6, 19.25, 0.45, 1, 11.75, 0.45, 1, 15.25, 0.45, 6, 10.25, 0.45, 1, 5.5, 0.45, 1, 5.75, 0.45, 6, 10.25, 0.45, 1, 5.75, 0.45, 6, 15.25, 0.45, 6, 11.75, 0.45, 1, 19.25, 0.45, 1, 15.25, 0.45, 6, 25, 0.45, 6, 21, 0.45, 0.75, 25, 4.45, -1, 20.75, 4.45, -1, 21, 4.45, 0.75, 25, 4.45, 6, 19.25, 4.45, 1, 11.75, 4.45, 1, 15.25, 4.45, 6, 10.25, 4.45, 1, 5.5, 4.45, 1, 5.75, 4.45, 6, 10.25, 4.45, 1, 5.75, 4.45, 6, 15.25, 4.45, 6, 11.75, 4.45, 1, 19.25, 4.45, 1, 15.25, 4.45, 6, 25, 4.45, 6, 21, 4.45, 0.75, 25, 8.45, -1, 20.75, 8.45, -1, 21, 8.45, 0.75, 25, 8.45, 6, 19.25, 8.45, 1, 11.75, 8.45, 1, 15.25, 8.45, 6, 10.25, 8.45, 1, 5.5, 8.45, 1, 5.75, 8.45, 6, 10.25, 8.45, 1, 5.75, 8.45, 6, 15.25, 8.45, 6, 11.75, 8.45, 1, 19.25, 8.45, 1, 15.25, 8.45, 6, 25, 8.45, 6, 21, 8.45, 0.75, 25, 12.45, -1, 20.75, 12.45, -1, 21, 12.45, 0.75, 25, 12.45, 6, 19.25, 12.45, 1, 11.75, 12.45, 1, 15.25, 12.45, 6, 10.25, 12.45, 1, 5.5, 12.45, 1, 5.75, 12.45, 6, 10.25, 12.45, 1, 5.75, 12.45, 6, 15.25, 12.45, 6, 11.75, 12.45, 1, 19.25, 12.45, 1, 15.25, 12.45, 6, 25, 12.45, 6, 21, 12.45, 0.75, 25, 16.45, -1, 20.75, 16.45, -1, 21, 16.45, 0.75, 25, 16.45, 6, 19.25, 16.45, 1, 11.75, 16.45, 1, 15.25, 16.45, 6, 10.25, 16.45, 1, 5.5, 16.45, 1, 5.75, 16.45, 6, 10.25, 16.45, 1, 5.75, 16.45, 6, 15.25, 16.45, 6, 11.75, 16.45, 1, 19.25, 16.45, 1, 15.25, 16.45, 6, 25, 16.45, 6, 21, 16.45, 0.75, -1, -0.3, 3.75, -1, -0.3, 6, 1, -0.3, 6, 1, -0.3, 3.75 )
+polygons = [ PoolIntArray( 1, 0, 2 ), PoolIntArray( 2, 0, 3 ), PoolIntArray( 6, 5, 4 ), PoolIntArray( 9, 8, 7 ), PoolIntArray( 13, 12, 10 ), PoolIntArray( 10, 12, 11 ), PoolIntArray( 15, 14, 16 ), PoolIntArray( 16, 14, 17 ), PoolIntArray( 19, 18, 20 ), PoolIntArray( 20, 18, 21 ), PoolIntArray( 24, 23, 22 ), PoolIntArray( 27, 26, 25 ), PoolIntArray( 31, 30, 28 ), PoolIntArray( 28, 30, 29 ), PoolIntArray( 33, 32, 34 ), PoolIntArray( 34, 32, 35 ), PoolIntArray( 37, 36, 38 ), PoolIntArray( 38, 36, 39 ), PoolIntArray( 42, 41, 40 ), PoolIntArray( 45, 44, 43 ), PoolIntArray( 49, 48, 46 ), PoolIntArray( 46, 48, 47 ), PoolIntArray( 51, 50, 52 ), PoolIntArray( 52, 50, 53 ), PoolIntArray( 55, 54, 56 ), PoolIntArray( 56, 54, 57 ), PoolIntArray( 60, 59, 58 ), PoolIntArray( 63, 62, 61 ), PoolIntArray( 67, 66, 64 ), PoolIntArray( 64, 66, 65 ), PoolIntArray( 69, 68, 70 ), PoolIntArray( 70, 68, 71 ), PoolIntArray( 73, 72, 74 ), PoolIntArray( 74, 72, 75 ), PoolIntArray( 78, 77, 76 ), PoolIntArray( 81, 80, 79 ), PoolIntArray( 85, 84, 82 ), PoolIntArray( 82, 84, 83 ), PoolIntArray( 87, 86, 88 ), PoolIntArray( 88, 86, 89 ), PoolIntArray( 93, 92, 90 ), PoolIntArray( 90, 92, 91 ), PoolIntArray( 97, 96, 94 ), PoolIntArray( 94, 96, 95 ), PoolIntArray( 101, 100, 98 ), PoolIntArray( 98, 100, 99 ), PoolIntArray( 105, 104, 102 ), PoolIntArray( 102, 104, 103 ), PoolIntArray( 109, 108, 106 ), PoolIntArray( 106, 108, 107 ), PoolIntArray( 112, 111, 110 ), PoolIntArray( 115, 114, 113 ), PoolIntArray( 119, 118, 116 ), PoolIntArray( 116, 118, 117 ), PoolIntArray( 122, 121, 123 ), PoolIntArray( 123, 121, 120 ), PoolIntArray( 123, 120, 124 ), PoolIntArray( 128, 127, 125 ), PoolIntArray( 125, 127, 126 ), PoolIntArray( 131, 130, 129 ), PoolIntArray( 134, 133, 132 ), PoolIntArray( 138, 137, 135 ), PoolIntArray( 135, 137, 136 ), PoolIntArray( 141, 140, 142 ), PoolIntArray( 142, 140, 139 ), PoolIntArray( 142, 139, 143 ), PoolIntArray( 147, 146, 144 ), PoolIntArray( 144, 146, 145 ), PoolIntArray( 150, 149, 148 ), PoolIntArray( 153, 152, 151 ), PoolIntArray( 157, 156, 154 ), PoolIntArray( 154, 156, 155 ), PoolIntArray( 160, 159, 161 ), PoolIntArray( 161, 159, 158 ), PoolIntArray( 161, 158, 162 ), PoolIntArray( 166, 165, 163 ), PoolIntArray( 163, 165, 164 ), PoolIntArray( 169, 168, 167 ), PoolIntArray( 172, 171, 170 ), PoolIntArray( 176, 175, 173 ), PoolIntArray( 173, 175, 174 ), PoolIntArray( 179, 178, 180 ), PoolIntArray( 180, 178, 177 ), PoolIntArray( 180, 177, 181 ), PoolIntArray( 185, 184, 182 ), PoolIntArray( 182, 184, 183 ), PoolIntArray( 188, 187, 186 ), PoolIntArray( 191, 190, 189 ), PoolIntArray( 195, 194, 192 ), PoolIntArray( 192, 194, 193 ), PoolIntArray( 198, 197, 199 ), PoolIntArray( 199, 197, 196 ), PoolIntArray( 199, 196, 200 ), PoolIntArray( 204, 203, 201 ), PoolIntArray( 201, 203, 202 ), PoolIntArray( 207, 206, 205 ), PoolIntArray( 210, 209, 208 ), PoolIntArray( 214, 213, 211 ), PoolIntArray( 211, 213, 212 ), PoolIntArray( 215, 219, 216 ), PoolIntArray( 216, 219, 218 ), PoolIntArray( 216, 218, 217 ), PoolIntArray( 223, 222, 220 ), PoolIntArray( 220, 222, 221 ), PoolIntArray( 226, 225, 224 ), PoolIntArray( 229, 228, 227 ), PoolIntArray( 233, 232, 230 ), PoolIntArray( 230, 232, 231 ), PoolIntArray( 234, 238, 235 ), PoolIntArray( 235, 238, 237 ), PoolIntArray( 235, 237, 236 ), PoolIntArray( 242, 241, 239 ), PoolIntArray( 239, 241, 240 ), PoolIntArray( 245, 244, 243 ), PoolIntArray( 248, 247, 246 ), PoolIntArray( 252, 251, 249 ), PoolIntArray( 249, 251, 250 ), PoolIntArray( 253, 257, 254 ), PoolIntArray( 254, 257, 256 ), PoolIntArray( 254, 256, 255 ), PoolIntArray( 261, 260, 258 ), PoolIntArray( 258, 260, 259 ), PoolIntArray( 264, 263, 262 ), PoolIntArray( 267, 266, 265 ), PoolIntArray( 271, 270, 268 ), PoolIntArray( 268, 270, 269 ), PoolIntArray( 272, 276, 273 ), PoolIntArray( 273, 276, 275 ), PoolIntArray( 273, 275, 274 ), PoolIntArray( 280, 279, 277 ), PoolIntArray( 277, 279, 278 ), PoolIntArray( 283, 282, 281 ), PoolIntArray( 286, 285, 284 ), PoolIntArray( 290, 289, 287 ), PoolIntArray( 287, 289, 288 ), PoolIntArray( 291, 295, 292 ), PoolIntArray( 292, 295, 294 ), PoolIntArray( 292, 294, 293 ), PoolIntArray( 299, 298, 296 ), PoolIntArray( 296, 298, 297 ), PoolIntArray( 302, 301, 300 ), PoolIntArray( 304, 303, 305 ), PoolIntArray( 305, 303, 306 ), PoolIntArray( 310, 309, 307 ), PoolIntArray( 307, 309, 308 ), PoolIntArray( 313, 312, 311 ), PoolIntArray( 315, 314, 316 ), PoolIntArray( 316, 314, 317 ), PoolIntArray( 319, 318, 320 ), PoolIntArray( 320, 318, 321 ), PoolIntArray( 324, 323, 325 ), PoolIntArray( 325, 323, 322 ), PoolIntArray( 325, 322, 327 ), PoolIntArray( 325, 327, 326 ), PoolIntArray( 332, 331, 328 ), PoolIntArray( 328, 331, 330 ), PoolIntArray( 328, 330, 329 ), PoolIntArray( 335, 334, 333 ), PoolIntArray( 338, 337, 336 ), PoolIntArray( 340, 339, 341 ), PoolIntArray( 341, 339, 342 ), PoolIntArray( 346, 345, 343 ), PoolIntArray( 343, 345, 344 ), PoolIntArray( 349, 348, 347 ), PoolIntArray( 351, 350, 352 ), PoolIntArray( 352, 350, 353 ), PoolIntArray( 355, 354, 356 ), PoolIntArray( 356, 354, 357 ), PoolIntArray( 360, 359, 361 ), PoolIntArray( 361, 359, 358 ), PoolIntArray( 361, 358, 363 ), PoolIntArray( 361, 363, 362 ), PoolIntArray( 368, 367, 364 ), PoolIntArray( 364, 367, 366 ), PoolIntArray( 364, 366, 365 ), PoolIntArray( 371, 370, 369 ), PoolIntArray( 374, 373, 372 ), PoolIntArray( 376, 375, 377 ), PoolIntArray( 377, 375, 378 ), PoolIntArray( 382, 381, 379 ), PoolIntArray( 379, 381, 380 ), PoolIntArray( 385, 384, 383 ), PoolIntArray( 387, 386, 388 ), PoolIntArray( 388, 386, 389 ), PoolIntArray( 391, 390, 392 ), PoolIntArray( 392, 390, 393 ), PoolIntArray( 396, 395, 397 ), PoolIntArray( 397, 395, 394 ), PoolIntArray( 397, 394, 399 ), PoolIntArray( 397, 399, 398 ), PoolIntArray( 404, 403, 400 ), PoolIntArray( 400, 403, 402 ), PoolIntArray( 400, 402, 401 ), PoolIntArray( 407, 406, 405 ), PoolIntArray( 410, 409, 408 ), PoolIntArray( 412, 411, 413 ), PoolIntArray( 413, 411, 414 ), PoolIntArray( 418, 417, 415 ), PoolIntArray( 415, 417, 416 ), PoolIntArray( 421, 420, 419 ), PoolIntArray( 423, 422, 424 ), PoolIntArray( 424, 422, 425 ), PoolIntArray( 427, 426, 428 ), PoolIntArray( 428, 426, 429 ), PoolIntArray( 432, 431, 433 ), PoolIntArray( 433, 431, 430 ), PoolIntArray( 433, 430, 435 ), PoolIntArray( 433, 435, 434 ), PoolIntArray( 440, 439, 436 ), PoolIntArray( 436, 439, 438 ), PoolIntArray( 436, 438, 437 ), PoolIntArray( 443, 442, 441 ), PoolIntArray( 446, 445, 444 ), PoolIntArray( 448, 447, 449 ), PoolIntArray( 449, 447, 450 ), PoolIntArray( 454, 453, 451 ), PoolIntArray( 451, 453, 452 ), PoolIntArray( 457, 456, 455 ), PoolIntArray( 459, 458, 460 ), PoolIntArray( 460, 458, 461 ), PoolIntArray( 463, 462, 464 ), PoolIntArray( 464, 462, 465 ), PoolIntArray( 468, 467, 469 ), PoolIntArray( 469, 467, 466 ), PoolIntArray( 469, 466, 471 ), PoolIntArray( 469, 471, 470 ), PoolIntArray( 476, 475, 472 ), PoolIntArray( 472, 475, 474 ), PoolIntArray( 472, 474, 473 ), PoolIntArray( 479, 478, 477 ), PoolIntArray( 481, 480, 482 ), PoolIntArray( 482, 480, 483 ), PoolIntArray( 486, 485, 484 ), PoolIntArray( 489, 488, 487 ), PoolIntArray( 493, 492, 490 ), PoolIntArray( 490, 492, 491 ), PoolIntArray( 494, 497, 495 ), PoolIntArray( 495, 497, 496 ), PoolIntArray( 499, 498, 500 ), PoolIntArray( 500, 498, 501 ), PoolIntArray( 504, 503, 502 ), PoolIntArray( 507, 506, 505 ), PoolIntArray( 511, 510, 508 ), PoolIntArray( 508, 510, 509 ), PoolIntArray( 512, 515, 513 ), PoolIntArray( 513, 515, 514 ), PoolIntArray( 517, 516, 518 ), PoolIntArray( 518, 516, 519 ), PoolIntArray( 522, 521, 520 ), PoolIntArray( 525, 524, 523 ), PoolIntArray( 529, 528, 526 ), PoolIntArray( 526, 528, 527 ), PoolIntArray( 530, 533, 531 ), PoolIntArray( 531, 533, 532 ), PoolIntArray( 535, 534, 536 ), PoolIntArray( 536, 534, 537 ), PoolIntArray( 540, 539, 538 ), PoolIntArray( 543, 542, 541 ), PoolIntArray( 547, 546, 544 ), PoolIntArray( 544, 546, 545 ), PoolIntArray( 548, 551, 549 ), PoolIntArray( 549, 551, 550 ), PoolIntArray( 553, 552, 554 ), PoolIntArray( 554, 552, 555 ), PoolIntArray( 558, 557, 556 ), PoolIntArray( 561, 560, 559 ), PoolIntArray( 565, 564, 562 ), PoolIntArray( 562, 564, 563 ), PoolIntArray( 566, 569, 567 ), PoolIntArray( 567, 569, 568 ), PoolIntArray( 573, 572, 570 ), PoolIntArray( 570, 572, 571 ) ]
+sample_partition_type = 1
+geometry_parsed_geometry_type = 1
+geometry_collision_mask = 6
+agent_height = 1.8
+agent_radius = 0.4
+agent_max_climb = 0.3
+
+[sub_resource type="BoxShape" id=3]
+extents = Vector3( 12.05, 0.1, 7 )
+
+[sub_resource type="SpatialMaterial" id=4]
+albedo_color = Color( 0.45, 0.45, 0.47, 1 )
+roughness = 0.9
+
+[sub_resource type="CubeMesh" id=5]
+size = Vector3( 24.1, 0.2, 14 )
+
+[sub_resource type="BoxShape" id=6]
+extents = Vector3( 1.9, 0.1, 5 )
+
+[sub_resource type="CubeMesh" id=7]
+size = Vector3( 3.8, 0.2, 10 )
+
+[sub_resource type="BoxShape" id=8]
+extents = Vector3( 26, 1.9, 0.15 )
+
+[sub_resource type="SpatialMaterial" id=9]
+albedo_color = Color( 0.78, 0.7, 0.58, 1 )
+roughness = 0.9
+
+[sub_resource type="CubeMesh" id=10]
+size = Vector3( 52, 3.8, 0.3 )
+
+[sub_resource type="BoxShape" id=11]
+extents = Vector3( 0.15, 1.9, 6.7 )
+
+[sub_resource type="CubeMesh" id=12]
+size = Vector3( 0.299999, 3.8, 13.4 )
+
+[sub_resource type="BoxShape" id=13]
+extents = Vector3( 0.15, 1.9, 2.6 )
+
+[sub_resource type="CubeMesh" id=14]
+size = Vector3( 0.3, 3.8, 5.2 )
+
+[sub_resource type="BoxShape" id=15]
+extents = Vector3( 0.15, 0.6, 1.5 )
+
+[sub_resource type="CubeMesh" id=16]
+size = Vector3( 0.3, 1.2, 3 )
+
+[sub_resource type="BoxShape" id=17]
+extents = Vector3( 0.35, 1.9, 0.35 )
+
+[sub_resource type="SpatialMaterial" id=18]
+albedo_color = Color( 0.55, 0.52, 0.5, 1 )
+roughness = 0.9
+
+[sub_resource type="CubeMesh" id=19]
+size = Vector3( 0.700001, 3.8, 0.7 )
+
+[sub_resource type="BoxShape" id=20]
+extents = Vector3( 0.15, 2, 1.85 )
+
+[sub_resource type="SpatialMaterial" id=21]
+albedo_color = Color( 0.3, 0.3, 0.33, 1 )
+roughness = 0.9
+
+[sub_resource type="CubeMesh" id=22]
+size = Vector3( 0.3, 4, 3.7 )
+
+[sub_resource type="BoxShape" id=23]
+extents = Vector3( 0.6, 1.9, 0.15 )
+
+[sub_resource type="CubeMesh" id=24]
+size = Vector3( 1.2, 3.8, 0.3 )
+
+[sub_resource type="BoxShape" id=25]
+extents = Vector3( 1, 0.6, 0.15 )
+
+[sub_resource type="CubeMesh" id=26]
+size = Vector3( 2, 1.2, 0.3 )
+
+[sub_resource type="SpatialMaterial" id=27]
+albedo_color = Color( 0.62, 0.74, 0.62, 1 )
+roughness = 0.9
+
+[sub_resource type="SpatialMaterial" id=28]
+albedo_color = Color( 0.6, 0.68, 0.82, 1 )
+roughness = 0.9
+
+[sub_resource type="SpatialMaterial" id=29]
+albedo_color = Color( 0.8, 0.64, 0.64, 1 )
+roughness = 0.9
+
+[sub_resource type="SpatialMaterial" id=30]
+albedo_color = Color( 0.74, 0.66, 0.82, 1 )
+roughness = 0.9
+
+[sub_resource type="BoxShape" id=31]
+extents = Vector3( 2.2, 0.1, 2 )
+
+[sub_resource type="CubeMesh" id=32]
+size = Vector3( 4.4, 0.2, 4 )
+
+[sub_resource type="BoxShape" id=33]
+extents = Vector3( 26, 0.1, 7 )
+
+[sub_resource type="CubeMesh" id=34]
+size = Vector3( 52, 0.2, 14 )
+
+[sub_resource type="BoxShape" id=35]
+extents = Vector3( 1.55, 0.1, 1.825 )
+
+[sub_resource type="SpatialMaterial" id=36]
+albedo_color = Color( 0.72, 0.74, 0.78, 1 )
+metallic = 0.6
+roughness = 0.35
+
+[sub_resource type="CubeMesh" id=37]
+size = Vector3( 3.1, 0.2, 3.65 )
+
+[sub_resource type="BoxShape" id=38]
+extents = Vector3( 1.55, 1.5, 0.05 )
+
+[sub_resource type="CubeMesh" id=39]
+size = Vector3( 3.1, 3, 0.1 )
+
+[sub_resource type="BoxShape" id=40]
+extents = Vector3( 0.05, 1.5, 1.775 )
+
+[sub_resource type="CubeMesh" id=41]
+size = Vector3( 0.0999999, 3, 3.55 )
+
+[sub_resource type="BoxShape" id=42]
+extents = Vector3( 1.55, 0.05, 1.825 )
+
+[sub_resource type="CubeMesh" id=43]
+size = Vector3( 3.1, 0.0999999, 3.65 )
+
+[sub_resource type="BoxShape" id=44]
+extents = Vector3( 1.4, 1.3, 1.675 )
+
+[sub_resource type="BoxShape" id=45]
+extents = Vector3( 0.025, 0.08, 0.08 )
+
+[sub_resource type="SpatialMaterial" id=46]
+albedo_color = Color( 0.95, 0.75, 0.15, 1 )
+roughness = 0.9
+emission_enabled = true
+emission = Color( 0.6, 0.4, 0, 1 )
+emission_energy = 1.0
+emission_operator = 0
+emission_on_uv2 = false
+
+[sub_resource type="CubeMesh" id=47]
+size = Vector3( 0.05, 0.16, 0.16 )
+
+[sub_resource type="BoxShape" id=48]
+extents = Vector3( 0.5, 1.3, 0.0500001 )
+
+[sub_resource type="SpatialMaterial" id=49]
+albedo_color = Color( 0.42, 0.5, 0.62, 1 )
+metallic = 0.7
+roughness = 0.3
+
+[sub_resource type="CubeMesh" id=50]
+size = Vector3( 1, 2.6, 0.1 )
+
+[sub_resource type="BoxShape" id=51]
+extents = Vector3( 0.08, 0.08, 0.025 )
+
+[sub_resource type="CubeMesh" id=52]
+size = Vector3( 0.16, 0.16, 0.05 )
+
+[node name="HUD" type="Control"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="ViewportContainer" type="ViewportContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+stretch = true
+script = ExtResource( 8 )
+
+[node name="Viewport" parent="ViewportContainer" instance=ExtResource( 12 )]
+size = Vector2( 1920, 1080 )
+
+[node name="Building" type="Navigation" parent="ViewportContainer/Viewport"]
+script = ExtResource( 5 )
+is_bright = true
+is_inside = true
+is_reverb = false
+is_loadable = true
+is_need_show_path = true
+player_path = "player"
+player_female_path = "player_female"
+player_bandit_path = "player_bandit"
+cam_path = NodePath("camera")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="ViewportContainer/Viewport/Building"]
+environment = SubResource( 1 )
+
+[node name="PLDNavigationMeshInstance" type="NavigationMeshInstance" parent="ViewportContainer/Viewport/Building"]
+navmesh = SubResource( 2 )
+script = ExtResource( 6 )
+
+[node name="floor_1" type="Spatial" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance"]
+
+[node name="slab_left" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -13.95, -0.1, 0 )
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/slab_left"]
+shape = SubResource( 3 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/slab_left"]
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="slab_right" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 13.95, -0.1, 0 )
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/slab_right"]
+shape = SubResource( 3 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/slab_right"]
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="slab_middle" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, -2 )
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/slab_middle"]
+shape = SubResource( 6 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/slab_middle"]
+material_override = SubResource( 4 )
+mesh = SubResource( 7 )
+
+[node name="wall_front" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, -6.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/wall_front"]
+shape = SubResource( 8 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/wall_front"]
+material_override = SubResource( 9 )
+mesh = SubResource( 10 )
+
+[node name="wall_back" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, 6.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/wall_back"]
+shape = SubResource( 8 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/wall_back"]
+material_override = SubResource( 9 )
+mesh = SubResource( 10 )
+
+[node name="wall_left" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -25.85, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/wall_left"]
+shape = SubResource( 11 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/wall_left"]
+material_override = SubResource( 9 )
+mesh = SubResource( 12 )
+
+[node name="wall_right" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 25.85, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/wall_right"]
+shape = SubResource( 11 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/wall_right"]
+material_override = SubResource( 9 )
+mesh = SubResource( 12 )
+
+[node name="partition_left_front" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.9, -4.1 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/partition_left_front"]
+shape = SubResource( 13 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/partition_left_front"]
+material_override = SubResource( 9 )
+mesh = SubResource( 14 )
+
+[node name="partition_left_back" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.9, 4.1 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/partition_left_back"]
+shape = SubResource( 13 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/partition_left_back"]
+material_override = SubResource( 9 )
+mesh = SubResource( 14 )
+
+[node name="partition_left_lintel" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 3.2, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/partition_left_lintel"]
+shape = SubResource( 15 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/partition_left_lintel"]
+material_override = SubResource( 9 )
+mesh = SubResource( 16 )
+
+[node name="pillar_left_11" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/pillar_left_11"]
+shape = SubResource( 17 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/pillar_left_11"]
+material_override = SubResource( 18 )
+mesh = SubResource( 19 )
+
+[node name="pillar_left_20" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/pillar_left_20"]
+shape = SubResource( 17 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/pillar_left_20"]
+material_override = SubResource( 18 )
+mesh = SubResource( 19 )
+
+[node name="partition_right_front" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.9, -4.1 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/partition_right_front"]
+shape = SubResource( 13 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/partition_right_front"]
+material_override = SubResource( 9 )
+mesh = SubResource( 14 )
+
+[node name="partition_right_back" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.9, 4.1 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/partition_right_back"]
+shape = SubResource( 13 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/partition_right_back"]
+material_override = SubResource( 9 )
+mesh = SubResource( 14 )
+
+[node name="partition_right_lintel" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 3.2, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/partition_right_lintel"]
+shape = SubResource( 15 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/partition_right_lintel"]
+material_override = SubResource( 9 )
+mesh = SubResource( 16 )
+
+[node name="pillar_right_11" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/pillar_right_11"]
+shape = SubResource( 17 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/pillar_right_11"]
+material_override = SubResource( 18 )
+mesh = SubResource( 19 )
+
+[node name="pillar_right_20" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/pillar_right_20"]
+shape = SubResource( 17 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/pillar_right_20"]
+material_override = SubResource( 18 )
+mesh = SubResource( 19 )
+
+[node name="shaft_left" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 1.8, 4.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/shaft_left"]
+shape = SubResource( 20 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/shaft_left"]
+material_override = SubResource( 21 )
+mesh = SubResource( 22 )
+
+[node name="shaft_right" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.75, 1.8, 4.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/shaft_right"]
+shape = SubResource( 20 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/shaft_right"]
+material_override = SubResource( 21 )
+mesh = SubResource( 22 )
+
+[node name="shaft_front_left" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, 1.9, 2.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/shaft_front_left"]
+shape = SubResource( 23 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/shaft_front_left"]
+material_override = SubResource( 21 )
+mesh = SubResource( 24 )
+
+[node name="shaft_front_right" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 1.9, 2.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/shaft_front_right"]
+shape = SubResource( 23 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/shaft_front_right"]
+material_override = SubResource( 21 )
+mesh = SubResource( 24 )
+
+[node name="shaft_front_lintel" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, 2.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/shaft_front_lintel"]
+shape = SubResource( 25 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1/shaft_front_lintel"]
+material_override = SubResource( 21 )
+mesh = SubResource( 26 )
+
+[node name="Label_1" type="Label3D" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_1"]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 3.15, 2.68 )
+pixel_size = 0.02
+modulate = Color( 0.1, 0.1, 0.1, 1 )
+outline_modulate = Color( 1, 1, 1, 0.8 )
+text = "1"
+font = ExtResource( 7 )
+
+[node name="floor_2" type="Spatial" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0 )
+
+[node name="slab_left" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -13.95, -0.1, 0 )
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/slab_left"]
+shape = SubResource( 3 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/slab_left"]
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="slab_right" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 13.95, -0.1, 0 )
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/slab_right"]
+shape = SubResource( 3 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/slab_right"]
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="slab_middle" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, -2 )
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/slab_middle"]
+shape = SubResource( 6 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/slab_middle"]
+material_override = SubResource( 4 )
+mesh = SubResource( 7 )
+
+[node name="wall_front" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, -6.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/wall_front"]
+shape = SubResource( 8 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/wall_front"]
+material_override = SubResource( 27 )
+mesh = SubResource( 10 )
+
+[node name="wall_back" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, 6.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/wall_back"]
+shape = SubResource( 8 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/wall_back"]
+material_override = SubResource( 27 )
+mesh = SubResource( 10 )
+
+[node name="wall_left" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -25.85, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/wall_left"]
+shape = SubResource( 11 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/wall_left"]
+material_override = SubResource( 27 )
+mesh = SubResource( 12 )
+
+[node name="wall_right" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 25.85, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/wall_right"]
+shape = SubResource( 11 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/wall_right"]
+material_override = SubResource( 27 )
+mesh = SubResource( 12 )
+
+[node name="partition_left_front" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.9, -4.1 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/partition_left_front"]
+shape = SubResource( 13 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/partition_left_front"]
+material_override = SubResource( 27 )
+mesh = SubResource( 14 )
+
+[node name="partition_left_back" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.9, 4.1 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/partition_left_back"]
+shape = SubResource( 13 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/partition_left_back"]
+material_override = SubResource( 27 )
+mesh = SubResource( 14 )
+
+[node name="partition_left_lintel" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 3.2, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/partition_left_lintel"]
+shape = SubResource( 15 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/partition_left_lintel"]
+material_override = SubResource( 27 )
+mesh = SubResource( 16 )
+
+[node name="pillar_left_11" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/pillar_left_11"]
+shape = SubResource( 17 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/pillar_left_11"]
+material_override = SubResource( 18 )
+mesh = SubResource( 19 )
+
+[node name="pillar_left_20" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/pillar_left_20"]
+shape = SubResource( 17 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/pillar_left_20"]
+material_override = SubResource( 18 )
+mesh = SubResource( 19 )
+
+[node name="partition_right_front" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.9, -4.1 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/partition_right_front"]
+shape = SubResource( 13 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/partition_right_front"]
+material_override = SubResource( 27 )
+mesh = SubResource( 14 )
+
+[node name="partition_right_back" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.9, 4.1 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/partition_right_back"]
+shape = SubResource( 13 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/partition_right_back"]
+material_override = SubResource( 27 )
+mesh = SubResource( 14 )
+
+[node name="partition_right_lintel" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 3.2, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/partition_right_lintel"]
+shape = SubResource( 15 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/partition_right_lintel"]
+material_override = SubResource( 27 )
+mesh = SubResource( 16 )
+
+[node name="pillar_right_11" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/pillar_right_11"]
+shape = SubResource( 17 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/pillar_right_11"]
+material_override = SubResource( 18 )
+mesh = SubResource( 19 )
+
+[node name="pillar_right_20" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/pillar_right_20"]
+shape = SubResource( 17 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/pillar_right_20"]
+material_override = SubResource( 18 )
+mesh = SubResource( 19 )
+
+[node name="shaft_left" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 1.8, 4.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/shaft_left"]
+shape = SubResource( 20 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/shaft_left"]
+material_override = SubResource( 21 )
+mesh = SubResource( 22 )
+
+[node name="shaft_right" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.75, 1.8, 4.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/shaft_right"]
+shape = SubResource( 20 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/shaft_right"]
+material_override = SubResource( 21 )
+mesh = SubResource( 22 )
+
+[node name="shaft_front_left" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, 1.9, 2.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/shaft_front_left"]
+shape = SubResource( 23 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/shaft_front_left"]
+material_override = SubResource( 21 )
+mesh = SubResource( 24 )
+
+[node name="shaft_front_right" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 1.9, 2.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/shaft_front_right"]
+shape = SubResource( 23 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/shaft_front_right"]
+material_override = SubResource( 21 )
+mesh = SubResource( 24 )
+
+[node name="shaft_front_lintel" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, 2.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/shaft_front_lintel"]
+shape = SubResource( 25 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2/shaft_front_lintel"]
+material_override = SubResource( 21 )
+mesh = SubResource( 26 )
+
+[node name="Label_2" type="Label3D" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_2"]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 3.15, 2.68 )
+pixel_size = 0.02
+modulate = Color( 0.1, 0.1, 0.1, 1 )
+outline_modulate = Color( 1, 1, 1, 0.8 )
+text = "2"
+font = ExtResource( 7 )
+
+[node name="floor_3" type="Spatial" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 0 )
+
+[node name="slab_left" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -13.95, -0.1, 0 )
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/slab_left"]
+shape = SubResource( 3 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/slab_left"]
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="slab_right" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 13.95, -0.1, 0 )
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/slab_right"]
+shape = SubResource( 3 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/slab_right"]
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="slab_middle" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, -2 )
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/slab_middle"]
+shape = SubResource( 6 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/slab_middle"]
+material_override = SubResource( 4 )
+mesh = SubResource( 7 )
+
+[node name="wall_front" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, -6.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/wall_front"]
+shape = SubResource( 8 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/wall_front"]
+material_override = SubResource( 28 )
+mesh = SubResource( 10 )
+
+[node name="wall_back" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, 6.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/wall_back"]
+shape = SubResource( 8 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/wall_back"]
+material_override = SubResource( 28 )
+mesh = SubResource( 10 )
+
+[node name="wall_left" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -25.85, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/wall_left"]
+shape = SubResource( 11 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/wall_left"]
+material_override = SubResource( 28 )
+mesh = SubResource( 12 )
+
+[node name="wall_right" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 25.85, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/wall_right"]
+shape = SubResource( 11 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/wall_right"]
+material_override = SubResource( 28 )
+mesh = SubResource( 12 )
+
+[node name="partition_left_front" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.9, -4.1 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/partition_left_front"]
+shape = SubResource( 13 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/partition_left_front"]
+material_override = SubResource( 28 )
+mesh = SubResource( 14 )
+
+[node name="partition_left_back" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.9, 4.1 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/partition_left_back"]
+shape = SubResource( 13 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/partition_left_back"]
+material_override = SubResource( 28 )
+mesh = SubResource( 14 )
+
+[node name="partition_left_lintel" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 3.2, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/partition_left_lintel"]
+shape = SubResource( 15 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/partition_left_lintel"]
+material_override = SubResource( 28 )
+mesh = SubResource( 16 )
+
+[node name="pillar_left_11" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/pillar_left_11"]
+shape = SubResource( 17 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/pillar_left_11"]
+material_override = SubResource( 18 )
+mesh = SubResource( 19 )
+
+[node name="pillar_left_20" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/pillar_left_20"]
+shape = SubResource( 17 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/pillar_left_20"]
+material_override = SubResource( 18 )
+mesh = SubResource( 19 )
+
+[node name="partition_right_front" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.9, -4.1 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/partition_right_front"]
+shape = SubResource( 13 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/partition_right_front"]
+material_override = SubResource( 28 )
+mesh = SubResource( 14 )
+
+[node name="partition_right_back" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.9, 4.1 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/partition_right_back"]
+shape = SubResource( 13 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/partition_right_back"]
+material_override = SubResource( 28 )
+mesh = SubResource( 14 )
+
+[node name="partition_right_lintel" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 3.2, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/partition_right_lintel"]
+shape = SubResource( 15 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/partition_right_lintel"]
+material_override = SubResource( 28 )
+mesh = SubResource( 16 )
+
+[node name="pillar_right_11" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/pillar_right_11"]
+shape = SubResource( 17 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/pillar_right_11"]
+material_override = SubResource( 18 )
+mesh = SubResource( 19 )
+
+[node name="pillar_right_20" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/pillar_right_20"]
+shape = SubResource( 17 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/pillar_right_20"]
+material_override = SubResource( 18 )
+mesh = SubResource( 19 )
+
+[node name="shaft_left" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 1.8, 4.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/shaft_left"]
+shape = SubResource( 20 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/shaft_left"]
+material_override = SubResource( 21 )
+mesh = SubResource( 22 )
+
+[node name="shaft_right" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.75, 1.8, 4.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/shaft_right"]
+shape = SubResource( 20 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/shaft_right"]
+material_override = SubResource( 21 )
+mesh = SubResource( 22 )
+
+[node name="shaft_front_left" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, 1.9, 2.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/shaft_front_left"]
+shape = SubResource( 23 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/shaft_front_left"]
+material_override = SubResource( 21 )
+mesh = SubResource( 24 )
+
+[node name="shaft_front_right" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 1.9, 2.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/shaft_front_right"]
+shape = SubResource( 23 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/shaft_front_right"]
+material_override = SubResource( 21 )
+mesh = SubResource( 24 )
+
+[node name="shaft_front_lintel" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, 2.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/shaft_front_lintel"]
+shape = SubResource( 25 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3/shaft_front_lintel"]
+material_override = SubResource( 21 )
+mesh = SubResource( 26 )
+
+[node name="Label_3" type="Label3D" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_3"]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 3.15, 2.68 )
+pixel_size = 0.02
+modulate = Color( 0.1, 0.1, 0.1, 1 )
+outline_modulate = Color( 1, 1, 1, 0.8 )
+text = "3"
+font = ExtResource( 7 )
+
+[node name="floor_4" type="Spatial" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, 0 )
+
+[node name="slab_left" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -13.95, -0.1, 0 )
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/slab_left"]
+shape = SubResource( 3 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/slab_left"]
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="slab_right" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 13.95, -0.1, 0 )
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/slab_right"]
+shape = SubResource( 3 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/slab_right"]
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="slab_middle" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, -2 )
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/slab_middle"]
+shape = SubResource( 6 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/slab_middle"]
+material_override = SubResource( 4 )
+mesh = SubResource( 7 )
+
+[node name="wall_front" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, -6.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/wall_front"]
+shape = SubResource( 8 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/wall_front"]
+material_override = SubResource( 29 )
+mesh = SubResource( 10 )
+
+[node name="wall_back" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, 6.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/wall_back"]
+shape = SubResource( 8 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/wall_back"]
+material_override = SubResource( 29 )
+mesh = SubResource( 10 )
+
+[node name="wall_left" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -25.85, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/wall_left"]
+shape = SubResource( 11 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/wall_left"]
+material_override = SubResource( 29 )
+mesh = SubResource( 12 )
+
+[node name="wall_right" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 25.85, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/wall_right"]
+shape = SubResource( 11 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/wall_right"]
+material_override = SubResource( 29 )
+mesh = SubResource( 12 )
+
+[node name="partition_left_front" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.9, -4.1 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/partition_left_front"]
+shape = SubResource( 13 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/partition_left_front"]
+material_override = SubResource( 29 )
+mesh = SubResource( 14 )
+
+[node name="partition_left_back" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.9, 4.1 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/partition_left_back"]
+shape = SubResource( 13 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/partition_left_back"]
+material_override = SubResource( 29 )
+mesh = SubResource( 14 )
+
+[node name="partition_left_lintel" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 3.2, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/partition_left_lintel"]
+shape = SubResource( 15 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/partition_left_lintel"]
+material_override = SubResource( 29 )
+mesh = SubResource( 16 )
+
+[node name="pillar_left_11" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/pillar_left_11"]
+shape = SubResource( 17 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/pillar_left_11"]
+material_override = SubResource( 18 )
+mesh = SubResource( 19 )
+
+[node name="pillar_left_20" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/pillar_left_20"]
+shape = SubResource( 17 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/pillar_left_20"]
+material_override = SubResource( 18 )
+mesh = SubResource( 19 )
+
+[node name="partition_right_front" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.9, -4.1 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/partition_right_front"]
+shape = SubResource( 13 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/partition_right_front"]
+material_override = SubResource( 29 )
+mesh = SubResource( 14 )
+
+[node name="partition_right_back" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.9, 4.1 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/partition_right_back"]
+shape = SubResource( 13 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/partition_right_back"]
+material_override = SubResource( 29 )
+mesh = SubResource( 14 )
+
+[node name="partition_right_lintel" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 3.2, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/partition_right_lintel"]
+shape = SubResource( 15 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/partition_right_lintel"]
+material_override = SubResource( 29 )
+mesh = SubResource( 16 )
+
+[node name="pillar_right_11" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/pillar_right_11"]
+shape = SubResource( 17 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/pillar_right_11"]
+material_override = SubResource( 18 )
+mesh = SubResource( 19 )
+
+[node name="pillar_right_20" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/pillar_right_20"]
+shape = SubResource( 17 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/pillar_right_20"]
+material_override = SubResource( 18 )
+mesh = SubResource( 19 )
+
+[node name="shaft_left" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 1.8, 4.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/shaft_left"]
+shape = SubResource( 20 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/shaft_left"]
+material_override = SubResource( 21 )
+mesh = SubResource( 22 )
+
+[node name="shaft_right" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.75, 1.8, 4.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/shaft_right"]
+shape = SubResource( 20 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/shaft_right"]
+material_override = SubResource( 21 )
+mesh = SubResource( 22 )
+
+[node name="shaft_front_left" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, 1.9, 2.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/shaft_front_left"]
+shape = SubResource( 23 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/shaft_front_left"]
+material_override = SubResource( 21 )
+mesh = SubResource( 24 )
+
+[node name="shaft_front_right" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 1.9, 2.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/shaft_front_right"]
+shape = SubResource( 23 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/shaft_front_right"]
+material_override = SubResource( 21 )
+mesh = SubResource( 24 )
+
+[node name="shaft_front_lintel" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, 2.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/shaft_front_lintel"]
+shape = SubResource( 25 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4/shaft_front_lintel"]
+material_override = SubResource( 21 )
+mesh = SubResource( 26 )
+
+[node name="Label_4" type="Label3D" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_4"]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 3.15, 2.68 )
+pixel_size = 0.02
+modulate = Color( 0.1, 0.1, 0.1, 1 )
+outline_modulate = Color( 1, 1, 1, 0.8 )
+text = "4"
+font = ExtResource( 7 )
+
+[node name="floor_5" type="Spatial" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16, 0 )
+
+[node name="slab_left" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -13.95, -0.1, 0 )
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/slab_left"]
+shape = SubResource( 3 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/slab_left"]
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="slab_right" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 13.95, -0.1, 0 )
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/slab_right"]
+shape = SubResource( 3 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/slab_right"]
+material_override = SubResource( 4 )
+mesh = SubResource( 5 )
+
+[node name="slab_middle" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, -2 )
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/slab_middle"]
+shape = SubResource( 6 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/slab_middle"]
+material_override = SubResource( 4 )
+mesh = SubResource( 7 )
+
+[node name="wall_front" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, -6.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/wall_front"]
+shape = SubResource( 8 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/wall_front"]
+material_override = SubResource( 30 )
+mesh = SubResource( 10 )
+
+[node name="wall_back" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.9, 6.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/wall_back"]
+shape = SubResource( 8 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/wall_back"]
+material_override = SubResource( 30 )
+mesh = SubResource( 10 )
+
+[node name="wall_left" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -25.85, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/wall_left"]
+shape = SubResource( 11 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/wall_left"]
+material_override = SubResource( 30 )
+mesh = SubResource( 12 )
+
+[node name="wall_right" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 25.85, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/wall_right"]
+shape = SubResource( 11 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/wall_right"]
+material_override = SubResource( 30 )
+mesh = SubResource( 12 )
+
+[node name="partition_left_front" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.9, -4.1 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/partition_left_front"]
+shape = SubResource( 13 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/partition_left_front"]
+material_override = SubResource( 30 )
+mesh = SubResource( 14 )
+
+[node name="partition_left_back" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 1.9, 4.1 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/partition_left_back"]
+shape = SubResource( 13 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/partition_left_back"]
+material_override = SubResource( 30 )
+mesh = SubResource( 14 )
+
+[node name="partition_left_lintel" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5, 3.2, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/partition_left_lintel"]
+shape = SubResource( 15 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/partition_left_lintel"]
+material_override = SubResource( 30 )
+mesh = SubResource( 16 )
+
+[node name="pillar_left_11" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -11, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/pillar_left_11"]
+shape = SubResource( 17 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/pillar_left_11"]
+material_override = SubResource( 18 )
+mesh = SubResource( 19 )
+
+[node name="pillar_left_20" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -20, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/pillar_left_20"]
+shape = SubResource( 17 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/pillar_left_20"]
+material_override = SubResource( 18 )
+mesh = SubResource( 19 )
+
+[node name="partition_right_front" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.9, -4.1 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/partition_right_front"]
+shape = SubResource( 13 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/partition_right_front"]
+material_override = SubResource( 30 )
+mesh = SubResource( 14 )
+
+[node name="partition_right_back" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 1.9, 4.1 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/partition_right_back"]
+shape = SubResource( 13 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/partition_right_back"]
+material_override = SubResource( 30 )
+mesh = SubResource( 14 )
+
+[node name="partition_right_lintel" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 5, 3.2, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/partition_right_lintel"]
+shape = SubResource( 15 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/partition_right_lintel"]
+material_override = SubResource( 30 )
+mesh = SubResource( 16 )
+
+[node name="pillar_right_11" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 11, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/pillar_right_11"]
+shape = SubResource( 17 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/pillar_right_11"]
+material_override = SubResource( 18 )
+mesh = SubResource( 19 )
+
+[node name="pillar_right_20" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 20, 1.9, 0 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/pillar_right_20"]
+shape = SubResource( 17 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/pillar_right_20"]
+material_override = SubResource( 18 )
+mesh = SubResource( 19 )
+
+[node name="shaft_left" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.75, 1.8, 4.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/shaft_left"]
+shape = SubResource( 20 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/shaft_left"]
+material_override = SubResource( 21 )
+mesh = SubResource( 22 )
+
+[node name="shaft_right" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.75, 1.8, 4.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/shaft_right"]
+shape = SubResource( 20 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/shaft_right"]
+material_override = SubResource( 21 )
+mesh = SubResource( 22 )
+
+[node name="shaft_front_left" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.6, 1.9, 2.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/shaft_front_left"]
+shape = SubResource( 23 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/shaft_front_left"]
+material_override = SubResource( 21 )
+mesh = SubResource( 24 )
+
+[node name="shaft_front_right" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.6, 1.9, 2.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/shaft_front_right"]
+shape = SubResource( 23 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/shaft_front_right"]
+material_override = SubResource( 21 )
+mesh = SubResource( 24 )
+
+[node name="shaft_front_lintel" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, 2.85 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/shaft_front_lintel"]
+shape = SubResource( 25 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5/shaft_front_lintel"]
+material_override = SubResource( 21 )
+mesh = SubResource( 26 )
+
+[node name="Label_5" type="Label3D" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/floor_5"]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 3.15, 2.68 )
+pixel_size = 0.02
+modulate = Color( 0.1, 0.1, 0.1, 1 )
+outline_modulate = Color( 1, 1, 1, 0.8 )
+text = "5"
+font = ExtResource( 7 )
+
+[node name="shaft_pit" type="StaticBody" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.7, 5 )
+collision_layer = 4
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/shaft_pit"]
+shape = SubResource( 31 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/PLDNavigationMeshInstance/shaft_pit"]
+material_override = SubResource( 21 )
+mesh = SubResource( 32 )
+
+[node name="roof" type="Spatial" parent="ViewportContainer/Viewport/Building"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 20, 0 )
+
+[node name="roof_slab" type="StaticBody" parent="ViewportContainer/Viewport/Building/roof"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0 )
+collision_layer = 6
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/roof/roof_slab"]
+shape = SubResource( 33 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/roof/roof_slab"]
+material_override = SubResource( 4 )
+mesh = SubResource( 34 )
+
+[node name="lights" type="Spatial" parent="ViewportContainer/Viewport/Building"]
+
+[node name="light_0_lobby" type="OmniLight" parent="ViewportContainer/Viewport/Building/lights"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.2, -2 )
+omni_range = 8.0
+
+[node name="light_0_left" type="OmniLight" parent="ViewportContainer/Viewport/Building/lights"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.5, 3.2, 0 )
+omni_range = 13.0
+
+[node name="light_0_right" type="OmniLight" parent="ViewportContainer/Viewport/Building/lights"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 3.2, 0 )
+omni_range = 13.0
+
+[node name="light_1_lobby" type="OmniLight" parent="ViewportContainer/Viewport/Building/lights"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 7.2, -2 )
+omni_range = 8.0
+
+[node name="light_1_left" type="OmniLight" parent="ViewportContainer/Viewport/Building/lights"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.5, 7.2, 0 )
+omni_range = 13.0
+
+[node name="light_1_right" type="OmniLight" parent="ViewportContainer/Viewport/Building/lights"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 7.2, 0 )
+omni_range = 13.0
+
+[node name="light_2_lobby" type="OmniLight" parent="ViewportContainer/Viewport/Building/lights"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 11.2, -2 )
+omni_range = 8.0
+
+[node name="light_2_left" type="OmniLight" parent="ViewportContainer/Viewport/Building/lights"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.5, 11.2, 0 )
+omni_range = 13.0
+
+[node name="light_2_right" type="OmniLight" parent="ViewportContainer/Viewport/Building/lights"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 11.2, 0 )
+omni_range = 13.0
+
+[node name="light_3_lobby" type="OmniLight" parent="ViewportContainer/Viewport/Building/lights"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 15.2, -2 )
+omni_range = 8.0
+
+[node name="light_3_left" type="OmniLight" parent="ViewportContainer/Viewport/Building/lights"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.5, 15.2, 0 )
+omni_range = 13.0
+
+[node name="light_3_right" type="OmniLight" parent="ViewportContainer/Viewport/Building/lights"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 15.2, 0 )
+omni_range = 13.0
+
+[node name="light_4_lobby" type="OmniLight" parent="ViewportContainer/Viewport/Building/lights"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 19.2, -2 )
+omni_range = 8.0
+
+[node name="light_4_left" type="OmniLight" parent="ViewportContainer/Viewport/Building/lights"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -15.5, 19.2, 0 )
+omni_range = 13.0
+
+[node name="light_4_right" type="OmniLight" parent="ViewportContainer/Viewport/Building/lights"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 15.5, 19.2, 0 )
+omni_range = 13.0
+
+[node name="elevator" type="Spatial" parent="ViewportContainer/Viewport/Building"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 4.825 )
+script = ExtResource( 9 )
+floors_count = 5
+floor_height = 4.0
+speed = 2.0
+door_time = 0.6
+door_slide = 1.0
+initial_floor = 0
+
+[node name="cabin" type="KinematicBody" parent="ViewportContainer/Viewport/Building/elevator"]
+collision_layer = 6
+collision_mask = 0
+
+[node name="floor_shape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/cabin"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0 )
+shape = SubResource( 35 )
+
+[node name="floor_mesh" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/cabin"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.1, 0 )
+material_override = SubResource( 36 )
+mesh = SubResource( 37 )
+
+[node name="back_shape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/cabin"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 1.775 )
+shape = SubResource( 38 )
+
+[node name="back_mesh" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/cabin"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 1.775 )
+material_override = SubResource( 36 )
+mesh = SubResource( 39 )
+
+[node name="left_shape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/cabin"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 1.5, -0.05 )
+shape = SubResource( 40 )
+
+[node name="left_mesh" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/cabin"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -1.5, 1.5, -0.05 )
+material_override = SubResource( 36 )
+mesh = SubResource( 41 )
+
+[node name="right_shape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/cabin"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1.5, -0.05 )
+shape = SubResource( 40 )
+
+[node name="right_mesh" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/cabin"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5, 1.5, -0.05 )
+material_override = SubResource( 36 )
+mesh = SubResource( 41 )
+
+[node name="ceiling_shape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/cabin"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.05, 0 )
+shape = SubResource( 42 )
+
+[node name="ceiling_mesh" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/cabin"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.05, 0 )
+material_override = SubResource( 36 )
+mesh = SubResource( 43 )
+
+[node name="light" type="OmniLight" parent="ViewportContainer/Viewport/Building/elevator/cabin"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.7, 0 )
+light_energy = 0.8
+omni_range = 4.0
+
+[node name="passengers" type="Area" parent="ViewportContainer/Viewport/Building/elevator/cabin"]
+collision_layer = 0
+collision_mask = 6144
+input_ray_pickable = false
+monitorable = false
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/cabin/passengers"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.4, 8.88178e-16 )
+shape = SubResource( 44 )
+
+[node name="buttons" type="Spatial" parent="ViewportContainer/Viewport/Building/elevator/cabin"]
+
+[node name="button_1" type="StaticBody" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.425, 0.9, -1.225 )
+collision_layer = 128
+collision_mask = 0
+script = ExtResource( 10 )
+use_distance = 2.6
+usable_id = 0
+remove_on_hard_difficulty = false
+elevator_path = NodePath("../../..")
+target_floor = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons/button_1"]
+shape = SubResource( 45 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons/button_1"]
+material_override = SubResource( 46 )
+mesh = SubResource( 47 )
+
+[node name="Label_1" type="Label3D" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons/button_1"]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.03, 0, 0 )
+pixel_size = 0.006
+modulate = Color( 0.1, 0.1, 0.1, 1 )
+outline_modulate = Color( 1, 1, 1, 0.8 )
+text = "1"
+font = ExtResource( 7 )
+
+[node name="button_2" type="StaticBody" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.425, 1.12, -1.225 )
+collision_layer = 128
+collision_mask = 0
+script = ExtResource( 10 )
+use_distance = 2.6
+usable_id = 0
+remove_on_hard_difficulty = false
+elevator_path = NodePath("../../..")
+target_floor = 1
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons/button_2"]
+shape = SubResource( 45 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons/button_2"]
+material_override = SubResource( 46 )
+mesh = SubResource( 47 )
+
+[node name="Label_2" type="Label3D" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons/button_2"]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.03, 0, 0 )
+pixel_size = 0.006
+modulate = Color( 0.1, 0.1, 0.1, 1 )
+outline_modulate = Color( 1, 1, 1, 0.8 )
+text = "2"
+font = ExtResource( 7 )
+
+[node name="button_3" type="StaticBody" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.425, 1.34, -1.225 )
+collision_layer = 128
+collision_mask = 0
+script = ExtResource( 10 )
+use_distance = 2.6
+usable_id = 0
+remove_on_hard_difficulty = false
+elevator_path = NodePath("../../..")
+target_floor = 2
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons/button_3"]
+shape = SubResource( 45 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons/button_3"]
+material_override = SubResource( 46 )
+mesh = SubResource( 47 )
+
+[node name="Label_3" type="Label3D" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons/button_3"]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.03, 0, 0 )
+pixel_size = 0.006
+modulate = Color( 0.1, 0.1, 0.1, 1 )
+outline_modulate = Color( 1, 1, 1, 0.8 )
+text = "3"
+font = ExtResource( 7 )
+
+[node name="button_4" type="StaticBody" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.425, 1.56, -1.225 )
+collision_layer = 128
+collision_mask = 0
+script = ExtResource( 10 )
+use_distance = 2.6
+usable_id = 0
+remove_on_hard_difficulty = false
+elevator_path = NodePath("../../..")
+target_floor = 3
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons/button_4"]
+shape = SubResource( 45 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons/button_4"]
+material_override = SubResource( 46 )
+mesh = SubResource( 47 )
+
+[node name="Label_4" type="Label3D" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons/button_4"]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.03, 0, 0 )
+pixel_size = 0.006
+modulate = Color( 0.1, 0.1, 0.1, 1 )
+outline_modulate = Color( 1, 1, 1, 0.8 )
+text = "4"
+font = ExtResource( 7 )
+
+[node name="button_5" type="StaticBody" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.425, 1.78, -1.225 )
+collision_layer = 128
+collision_mask = 0
+script = ExtResource( 10 )
+use_distance = 2.6
+usable_id = 0
+remove_on_hard_difficulty = false
+elevator_path = NodePath("../../..")
+target_floor = 4
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons/button_5"]
+shape = SubResource( 45 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons/button_5"]
+material_override = SubResource( 46 )
+mesh = SubResource( 47 )
+
+[node name="Label_5" type="Label3D" parent="ViewportContainer/Viewport/Building/elevator/cabin/buttons/button_5"]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, -0.03, 0, 0 )
+pixel_size = 0.006
+modulate = Color( 0.1, 0.1, 0.1, 1 )
+outline_modulate = Color( 1, 1, 1, 0.8 )
+text = "5"
+font = ExtResource( 7 )
+
+[node name="doors" type="Spatial" parent="ViewportContainer/Viewport/Building/elevator"]
+
+[node name="floor_0" type="Spatial" parent="ViewportContainer/Viewport/Building/elevator/doors"]
+
+[node name="left" type="StaticBody" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_0"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1.3, -1.975 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_0/left"]
+shape = SubResource( 48 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_0/left"]
+material_override = SubResource( 49 )
+mesh = SubResource( 50 )
+
+[node name="right" type="StaticBody" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_0"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.3, -1.975 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_0/right"]
+shape = SubResource( 48 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_0/right"]
+material_override = SubResource( 49 )
+mesh = SubResource( 50 )
+
+[node name="call_button" type="StaticBody" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_0"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.45, 1.2, -2.15 )
+collision_layer = 128
+collision_mask = 0
+script = ExtResource( 10 )
+use_distance = 2.6
+usable_id = 0
+remove_on_hard_difficulty = false
+elevator_path = NodePath("../../..")
+target_floor = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_0/call_button"]
+shape = SubResource( 51 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_0/call_button"]
+material_override = SubResource( 46 )
+mesh = SubResource( 52 )
+
+[node name="floor_1" type="Spatial" parent="ViewportContainer/Viewport/Building/elevator/doors"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4, 0 )
+
+[node name="left" type="StaticBody" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1.3, -1.975 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_1/left"]
+shape = SubResource( 48 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_1/left"]
+material_override = SubResource( 49 )
+mesh = SubResource( 50 )
+
+[node name="right" type="StaticBody" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.3, -1.975 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_1/right"]
+shape = SubResource( 48 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_1/right"]
+material_override = SubResource( 49 )
+mesh = SubResource( 50 )
+
+[node name="call_button" type="StaticBody" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_1"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.45, 1.2, -2.15 )
+collision_layer = 128
+collision_mask = 0
+script = ExtResource( 10 )
+use_distance = 2.6
+usable_id = 0
+remove_on_hard_difficulty = false
+elevator_path = NodePath("../../..")
+target_floor = 1
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_1/call_button"]
+shape = SubResource( 51 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_1/call_button"]
+material_override = SubResource( 46 )
+mesh = SubResource( 52 )
+
+[node name="floor_2" type="Spatial" parent="ViewportContainer/Viewport/Building/elevator/doors"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 8, 0 )
+
+[node name="left" type="StaticBody" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1.3, -1.975 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_2/left"]
+shape = SubResource( 48 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_2/left"]
+material_override = SubResource( 49 )
+mesh = SubResource( 50 )
+
+[node name="right" type="StaticBody" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.3, -1.975 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_2/right"]
+shape = SubResource( 48 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_2/right"]
+material_override = SubResource( 49 )
+mesh = SubResource( 50 )
+
+[node name="call_button" type="StaticBody" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_2"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.45, 1.2, -2.15 )
+collision_layer = 128
+collision_mask = 0
+script = ExtResource( 10 )
+use_distance = 2.6
+usable_id = 0
+remove_on_hard_difficulty = false
+elevator_path = NodePath("../../..")
+target_floor = 2
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_2/call_button"]
+shape = SubResource( 51 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_2/call_button"]
+material_override = SubResource( 46 )
+mesh = SubResource( 52 )
+
+[node name="floor_3" type="Spatial" parent="ViewportContainer/Viewport/Building/elevator/doors"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 12, 0 )
+
+[node name="left" type="StaticBody" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1.3, -1.975 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_3/left"]
+shape = SubResource( 48 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_3/left"]
+material_override = SubResource( 49 )
+mesh = SubResource( 50 )
+
+[node name="right" type="StaticBody" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.3, -1.975 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_3/right"]
+shape = SubResource( 48 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_3/right"]
+material_override = SubResource( 49 )
+mesh = SubResource( 50 )
+
+[node name="call_button" type="StaticBody" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_3"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.45, 1.2, -2.15 )
+collision_layer = 128
+collision_mask = 0
+script = ExtResource( 10 )
+use_distance = 2.6
+usable_id = 0
+remove_on_hard_difficulty = false
+elevator_path = NodePath("../../..")
+target_floor = 3
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_3/call_button"]
+shape = SubResource( 51 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_3/call_button"]
+material_override = SubResource( 46 )
+mesh = SubResource( 52 )
+
+[node name="floor_4" type="Spatial" parent="ViewportContainer/Viewport/Building/elevator/doors"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 16, 0 )
+
+[node name="left" type="StaticBody" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, -0.5, 1.3, -1.975 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_4/left"]
+shape = SubResource( 48 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_4/left"]
+material_override = SubResource( 49 )
+mesh = SubResource( 50 )
+
+[node name="right" type="StaticBody" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0.5, 1.3, -1.975 )
+collision_layer = 2
+collision_mask = 0
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_4/right"]
+shape = SubResource( 48 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_4/right"]
+material_override = SubResource( 49 )
+mesh = SubResource( 50 )
+
+[node name="call_button" type="StaticBody" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_4"]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 1.45, 1.2, -2.15 )
+collision_layer = 128
+collision_mask = 0
+script = ExtResource( 10 )
+use_distance = 2.6
+usable_id = 0
+remove_on_hard_difficulty = false
+elevator_path = NodePath("../../..")
+target_floor = 4
+
+[node name="CollisionShape" type="CollisionShape" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_4/call_button"]
+shape = SubResource( 51 )
+
+[node name="MeshInstance" type="MeshInstance" parent="ViewportContainer/Viewport/Building/elevator/doors/floor_4/call_button"]
+material_override = SubResource( 46 )
+mesh = SubResource( 52 )
+
+[node name="Tween" type="Tween" parent="ViewportContainer/Viewport/Building/elevator"]
+
+[node name="enemies" type="Spatial" parent="ViewportContainer/Viewport/Building"]
+
+[node name="enemy_f1_l1" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -9, 0, -3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f1_l1"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_l1"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_l1/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f1_l2" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -13, 0, 3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f1_l2"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_l2"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_l2/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f1_l3" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -18, 0, -3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f1_l3"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_l3"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_l3/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f1_l4" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -22.5, 0, 3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f1_l4"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_l4"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_l4/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f1_r1" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 9, 0, -3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f1_r1"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_r1"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_r1/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f1_r2" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 13, 0, 3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f1_r2"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_r2"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_r2/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f1_r3" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 18, 0, -3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f1_r3"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_r3"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_r3/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f1_r4" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 22.5, 0, 3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f1_r4"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_r4"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f1_r4/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f2_l1" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -9, 4, -3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f2_l1"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_l1"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_l1/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f2_l2" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -13, 4, 3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f2_l2"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_l2"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_l2/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f2_l3" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -18, 4, -3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f2_l3"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_l3"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_l3/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f2_l4" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -22.5, 4, 3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f2_l4"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_l4"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_l4/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f2_r1" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 9, 4, -3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f2_r1"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_r1"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_r1/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f2_r2" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 13, 4, 3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f2_r2"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_r2"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_r2/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f2_r3" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 18, 4, -3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f2_r3"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_r3"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_r3/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f2_r4" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 22.5, 4, 3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f2_r4"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_r4"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f2_r4/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f3_l1" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -9, 8, -3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f3_l1"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_l1"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_l1/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f3_l2" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -13, 8, 3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f3_l2"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_l2"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_l2/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f3_l3" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -18, 8, -3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f3_l3"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_l3"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_l3/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f3_l4" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -22.5, 8, 3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f3_l4"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_l4"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_l4/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f3_r1" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 9, 8, -3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f3_r1"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_r1"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_r1/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f3_r2" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 13, 8, 3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f3_r2"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_r2"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_r2/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f3_r3" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 18, 8, -3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f3_r3"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_r3"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_r3/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f3_r4" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 22.5, 8, 3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f3_r4"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_r4"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f3_r4/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f4_l1" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -9, 12, -3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f4_l1"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_l1"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_l1/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f4_l2" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -13, 12, 3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f4_l2"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_l2"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_l2/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f4_l3" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -18, 12, -3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f4_l3"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_l3"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_l3/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f4_l4" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -22.5, 12, 3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f4_l4"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_l4"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_l4/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f4_r1" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 9, 12, -3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f4_r1"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_r1"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_r1/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f4_r2" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 13, 12, 3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f4_r2"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_r2"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_r2/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f4_r3" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 18, 12, -3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f4_r3"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_r3"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_r3/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f4_r4" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 22.5, 12, 3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f4_r4"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_r4"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f4_r4/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f5_l1" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -9, 16, -3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f5_l1"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_l1"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_l1/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f5_l2" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -13, 16, 3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f5_l2"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_l2"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_l2/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f5_l3" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -18, 16, -3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f5_l3"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_l3"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_l3/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f5_l4" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, -22.5, 16, 3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f5_l4"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_l4"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_l4/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f5_r1" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 9, 16, -3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f5_r1"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_r1"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_r1/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f5_r2" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 13, 16, 3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f5_r2"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_r2"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_r2/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f5_r3" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 18, 16, -3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f5_r3"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_r3"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_r3/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="enemy_f5_r4" parent="ViewportContainer/Viewport/Building/enemies" instance=ExtResource( 3 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 22.5, 16, 3.5 )
+script = ExtResource( 11 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "enemy_f5_r4"
+has_ranged_attack = false
+has_melee_attack = true
+attack_speed = 0.7
+can_hide = false
+can_read = false
+auto_sit_down = false
+max_hits = 1
+use_distance_limits = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_r4"]
+
+[node name="squig" parent="ViewportContainer/Viewport/Building/enemies/enemy_f5_r4/Model" instance=ExtResource( 4 )]
+force_anim_disable = false
+rest_shots_max = 0
+
+[node name="camera" parent="ViewportContainer/Viewport/Building" instance=ExtResource( 2 )]
+transform = Transform( -1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 2.2, -8 )
+translate_speed = 0.95
+rotate_speed = 0.95
+fov_speed = 0.95
+near_far_speed = 0.95
+target_path = NodePath("")
+
+[node name="player" parent="ViewportContainer/Viewport/Building" instance=ExtResource( 1 )]
+transform = Transform( 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -3.5 )
+max_lower_limit_y = -999.1
+use_distance = 2.2
+name_hint = "player"
+show_path = true
+has_ranged_attack = true
+has_melee_attack = false
+attack_speed = 0.7
+can_hide = true
+can_read = false
+auto_sit_down = false
+initial_player = true
+
+[node name="Model" type="Spatial" parent="ViewportContainer/Viewport/Building/player"]
+
+[node name="vasya" parent="ViewportContainer/Viewport/Building/player/Model" instance=ExtResource( 14 )]
+transform = Transform( -4.37114e-08, 0, -1, 0, 1, 0, 1, 0, -4.37114e-08, 0, 0, 0 )
+force_anim_disable = false
+rest_shots_max = 0
+attack_cutscene_ids = PoolIntArray(  )
+backpack_animation_player_path = null
+backpack_speak_animations = {
+}
+backpack_rest_animations = {
+}
+backpack_cutscene_animations = {
+}
+backpack_damage_animations = {
+}
+backpack_squats_reversed_anim = ""
+backpack_squats_anim = ""
+backpack_squats_rest_anim = ""
+backpack_crouch_squatted_anim = ""
+backpack_walk_anim = ""
+backpack_runs_anim = ""
+backpack_fall_down_anim = ""
+speak_shots_max = 2
+
+[node name="hud" parent="." instance=ExtResource( 13 )]
+cutscene_mode = false
