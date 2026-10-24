@@ -18,13 +18,29 @@ extends SceneTree
 # Everything except the player and the enemies is built from engine primitives
 # (CubeMesh + BoxShape). The navigation mesh is baked here, so the level does
 # not need to bake it at runtime.
+#
+# The generated scene is meant to be identical to what the Godot editor writes
+# when the scene is opened and saved, i.e. properties that have their default
+# values are not stored. Two mechanisms are used for that:
+#   1. Engine.editor_hint is enabled before anything is built, so that
+#      PackedScene.pack() knows the default values of exported script
+#      variables (outside the editor GDScript does not track them and every
+#      exported variable gets written).
+#   2. Some scripts cannot be fully analyzed in this mode (e.g. camera.gd and
+#      hud.gd use PLDSettings constants in match patterns, which cannot be
+#      resolved without the running __PLDRT singleton). For instanced scenes
+#      the saved file is therefore post-processed: properties equal to the
+#      values of a freshly instanced scene are removed.
 
 const OUTPUT_PATH = "res://building.tscn"
 
 const FLOORS = 5
-const FLOOR_H = 4.0
+const ROOM_H = 4.0                 # floor top -> ceiling top
+const GAP_H = 4.0                  # empty space between a ceiling and the next floor slab
 const SLAB_T = 0.2
-const WALL_H = FLOOR_H - SLAB_T
+const FLOOR_H = ROOM_H + GAP_H     # vertical distance between floors (elevator stops)
+const WALL_H = ROOM_H - SLAB_T     # interior height of a room
+const GAP_WALL_H = FLOOR_H - SLAB_T  # outer/shaft walls also close the gap up to the next slab
 const WALL_T = 0.3
 
 const HALF_X = 26.0
@@ -41,16 +57,29 @@ const SHAFT_FRONT_HALF_X = 2.2
 const SHAFT_DOOR_HALF_W = 1.0
 const SHAFT_DOOR_H = 2.6
 
+# Enemies are placed deep enough in the wings so that they are farther than
+# PLDEnemy.AGGRESSION_RANGE (12) from the elevator exit and from the lobby
+# center; the player has to approach the doorway to be noticed.
 const ENEMIES_PER_WING = [
-	Vector3(9.0, 0.0, -3.5),
-	Vector3(13.0, 0.0, 3.5),
-	Vector3(18.0, 0.0, -3.5),
-	Vector3(22.5, 0.0, 3.5),
+	Vector3(14.0, 0.0, -3.5),
+	Vector3(16.5, 0.0, 3.5),
+	Vector3(20.0, 0.0, -3.5),
+	Vector3(23.0, 0.0, 3.5),
 ]
-const PILLARS_PER_WING = [ Vector3(11.0, 0, 0), Vector3(20.0, 0, 0) ]
+const PILLARS_PER_WING = [ Vector3(10.0, 0, 0), Vector3(18.5, 0, 0) ]
 
-const LAYER_WALLS = 2          # bit 1
+# Collision setup, the same as in other Palladium levels:
+#   walls:   layer bits 0, 1;  mask bits 0, 1
+#   floor:   layer bit 2;      mask bits 0-3, 10-13
+#   ceiling: layer bits 0, 10 (Default + Ceiling Hint), so that it blocks
+#            characters and visibility rays, but is not parsed into the navmesh
+const LAYER_WALLS = 3          # bits 0, 1
+const MASK_WALLS = 3           # bits 0, 1
 const LAYER_FLOOR = 4          # bit 2
+const MASK_FLOOR = 15375       # bits 0-3, 10-13
+const LAYER_CEILING = 1025     # bits 0, 10
+const MASK_CEILING = 15375
+const NAVMESH_PARSE_MASK = 6   # bits 1 (walls) and 2 (floor) only
 const LAYER_USE_TARGET = 128   # bit 7
 const LAYER_PLAYER = 2048      # bit 11
 const LAYER_ENEMY = 4096       # bit 12
@@ -74,6 +103,9 @@ var mat_button : SpatialMaterial
 var mat_pillar : SpatialMaterial
 var mat_walls = []
 var font : Font
+
+func _init():
+	Engine.editor_hint = true
 
 func _initialize():
 	var err = generate()
@@ -115,6 +147,9 @@ func generate():
 
 	var viewport = load("res://addons/palladium/ui/viewport.tscn").instance(PackedScene.GEN_EDIT_STATE_INSTANCE)
 	viewport.size = Vector2(1920, 1080)
+	# ViewportContainer with stretch switches it to UPDATE_ALWAYS anyway, and the
+	# editor writes this value on save, so it is set here to avoid diffs
+	viewport.render_target_update_mode = Viewport.UPDATE_ALWAYS
 	add(vc, viewport)
 
 	var level = Navigation.new()
@@ -139,7 +174,6 @@ func generate():
 		return ERR_BUG
 	add(level, nmi)
 
-	add_roof(level)
 	add_lights(level)
 	add_elevator(level)
 	add_enemies(level)
@@ -153,10 +187,92 @@ func generate():
 	if err != OK:
 		return err
 	err = ResourceSaver.save(OUTPUT_PATH, packed)
+	scene_root.free()
+	if err != OK:
+		return err
+	err = strip_instance_defaults(OUTPUT_PATH)
 	if err == OK:
 		print("Saved %s" % OUTPUT_PATH)
-	scene_root.free()
 	return err
+
+### Removing default values of instanced scenes ###
+
+var instance_defaults_cache = {}
+
+func get_instance_defaults(scene_path):
+	if instance_defaults_cache.has(scene_path):
+		return instance_defaults_cache[scene_path]
+	var result = {}
+	var inst = load(scene_path).instance()
+	for p in inst.get_property_list():
+		if p.usage & PROPERTY_USAGE_STORAGE:
+			result[p.name] = var2str(inst.get(p.name))
+	inst.free()
+	instance_defaults_cache[scene_path] = result
+	return result
+
+# Removes "key = value" lines from [node ... instance=...] sections, when the
+# value equals the one of a freshly instanced scene. Sections that override the
+# script are left as is: their defaults come from the new script, and these are
+# already handled by pack() thanks to Engine.editor_hint.
+func strip_instance_defaults(path):
+	var f = File.new()
+	var err = f.open(path, File.READ)
+	if err != OK:
+		return err
+	var lines = f.get_as_text().split("\n")
+	f.close()
+
+	var re_ext = RegEx.new()
+	re_ext.compile("^\\[ext_resource path=\"([^\"]+)\" type=\"PackedScene\" id=(\\d+)\\]")
+	var re_inst = RegEx.new()
+	re_inst.compile("^\\[node .* instance=ExtResource\\( (\\d+) \\)\\]")
+	var scenes = {}
+	for line in lines:
+		var m = re_ext.search(line)
+		if m:
+			scenes[m.get_string(2)] = m.get_string(1)
+
+	var out = PoolStringArray()
+	var section = []
+	var defaults = null
+	var removed = 0
+	for i in range(lines.size() + 1):
+		var line = lines[i] if i < lines.size() else "["
+		if line.begins_with("["):
+			# Flush the previous section
+			var overrides_script = false
+			for l in section:
+				if l.begins_with("script = "):
+					overrides_script = true
+			for l in section:
+				if defaults != null and not overrides_script:
+					var eq = l.find(" = ")
+					if eq > 0:
+						var key = l.substr(0, eq)
+						var val = l.substr(eq + 3)
+						if defaults.has(key) and defaults[key] == val:
+							removed += 1
+							continue
+				out.append(l)
+			section = []
+			defaults = null
+			if i == lines.size():
+				break
+			var mi = re_inst.search(line)
+			if mi and scenes.has(mi.get_string(1)):
+				defaults = get_instance_defaults(scenes[mi.get_string(1)])
+			out.append(line)
+		else:
+			section.append(line)
+
+	err = f.open(path, File.WRITE)
+	if err != OK:
+		return err
+	f.store_string(out.join("\n"))
+	f.close()
+	print("Removed %d default values of instanced scenes" % removed)
+	return OK
 
 ### Helpers ###
 
@@ -213,7 +329,7 @@ func make_box(node_name, from : Vector3, to : Vector3, material, layer, body_typ
 	body.translation = center
 	if body is CollisionObject:
 		body.collision_layer = layer
-		body.collision_mask = 0
+		body.collision_mask = mask_for_layer(layer)
 		var cs = CollisionShape.new()
 		cs.name = "CollisionShape"
 		cs.shape = get_shape(size)
@@ -224,6 +340,16 @@ func make_box(node_name, from : Vector3, to : Vector3, material, layer, body_typ
 	mi.material_override = material
 	body.add_child(mi)
 	return body
+
+func mask_for_layer(layer):
+	match layer:
+		LAYER_WALLS:
+			return MASK_WALLS
+		LAYER_FLOOR:
+			return MASK_FLOOR
+		LAYER_CEILING:
+			return MASK_CEILING
+	return 0
 
 # Same as make_box, but adds shapes and meshes directly into an existing body
 func add_box_to_body(body, part_name, from : Vector3, to : Vector3, material):
@@ -286,7 +412,7 @@ func add_lights(level):
 func build_static_geometry():
 	var nm = NavigationMesh.new()
 	nm.geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS
-	nm.geometry_collision_mask = LAYER_WALLS | LAYER_FLOOR
+	nm.geometry_collision_mask = NAVMESH_PARSE_MASK
 	nm.agent_radius = 0.4
 	nm.agent_height = 1.8
 	nm.agent_max_climb = 0.3
@@ -316,6 +442,9 @@ func build_floor(fnode, f):
 	var mw = mat_walls[f]
 	var t = WALL_T
 	var h = WALL_H
+	var is_top = f == FLOORS - 1
+	# Outer and shaft walls go up to the next floor slab, closing the gap
+	var oh = h if is_top else GAP_WALL_H
 	var sx = SHAFT_HALF_X + t  # outer half width of the shaft side walls
 
 	# Floor slab with a hole for the elevator shaft
@@ -323,11 +452,19 @@ func build_floor(fnode, f):
 	fnode.add_child(make_box("slab_right", Vector3(sx, -SLAB_T, -HALF_Z), Vector3(HALF_X, 0, HALF_Z), mat_floor, LAYER_FLOOR))
 	fnode.add_child(make_box("slab_middle", Vector3(-sx, -SLAB_T, -HALF_Z), Vector3(sx, 0, SHAFT_Z0), mat_floor, LAYER_FLOOR))
 
+	# Ceiling (the top one also covers the shaft and serves as the roof)
+	if is_top:
+		fnode.add_child(make_box("ceiling", Vector3(-HALF_X, h, -HALF_Z), Vector3(HALF_X, h + SLAB_T, HALF_Z), mat_floor, LAYER_CEILING))
+	else:
+		fnode.add_child(make_box("ceiling_left", Vector3(-HALF_X, h, -HALF_Z), Vector3(-sx, h + SLAB_T, HALF_Z), mat_floor, LAYER_CEILING))
+		fnode.add_child(make_box("ceiling_right", Vector3(sx, h, -HALF_Z), Vector3(HALF_X, h + SLAB_T, HALF_Z), mat_floor, LAYER_CEILING))
+		fnode.add_child(make_box("ceiling_middle", Vector3(-sx, h, -HALF_Z), Vector3(sx, h + SLAB_T, SHAFT_Z0), mat_floor, LAYER_CEILING))
+
 	# Outer walls
-	fnode.add_child(make_box("wall_front", Vector3(-HALF_X, 0, -HALF_Z), Vector3(HALF_X, h, -HALF_Z + t), mw, LAYER_WALLS))
-	fnode.add_child(make_box("wall_back", Vector3(-HALF_X, 0, HALF_Z - t), Vector3(HALF_X, h, HALF_Z), mw, LAYER_WALLS))
-	fnode.add_child(make_box("wall_left", Vector3(-HALF_X, 0, -HALF_Z + t), Vector3(-HALF_X + t, h, HALF_Z - t), mw, LAYER_WALLS))
-	fnode.add_child(make_box("wall_right", Vector3(HALF_X - t, 0, -HALF_Z + t), Vector3(HALF_X, h, HALF_Z - t), mw, LAYER_WALLS))
+	fnode.add_child(make_box("wall_front", Vector3(-HALF_X, 0, -HALF_Z), Vector3(HALF_X, oh, -HALF_Z + t), mw, LAYER_WALLS))
+	fnode.add_child(make_box("wall_back", Vector3(-HALF_X, 0, HALF_Z - t), Vector3(HALF_X, oh, HALF_Z), mw, LAYER_WALLS))
+	fnode.add_child(make_box("wall_left", Vector3(-HALF_X, 0, -HALF_Z + t), Vector3(-HALF_X + t, oh, HALF_Z - t), mw, LAYER_WALLS))
+	fnode.add_child(make_box("wall_right", Vector3(HALF_X - t, 0, -HALF_Z + t), Vector3(HALF_X, oh, HALF_Z - t), mw, LAYER_WALLS))
 
 	# Partitions between the lobby and the wings, with doorways
 	for side in [ -1, 1 ]:
@@ -347,8 +484,11 @@ func build_floor(fnode, f):
 			))
 
 	# Elevator shaft walls (side walls also cover the slab gap below)
-	fnode.add_child(make_box("shaft_left", Vector3(-sx, -SLAB_T, SHAFT_Z0), Vector3(-SHAFT_HALF_X, h, SHAFT_Z1), mat_shaft, LAYER_WALLS))
-	fnode.add_child(make_box("shaft_right", Vector3(SHAFT_HALF_X, -SLAB_T, SHAFT_Z0), Vector3(sx, h, SHAFT_Z1), mat_shaft, LAYER_WALLS))
+	fnode.add_child(make_box("shaft_left", Vector3(-sx, -SLAB_T, SHAFT_Z0), Vector3(-SHAFT_HALF_X, oh, SHAFT_Z1), mat_shaft, LAYER_WALLS))
+	fnode.add_child(make_box("shaft_right", Vector3(SHAFT_HALF_X, -SLAB_T, SHAFT_Z0), Vector3(sx, oh, SHAFT_Z1), mat_shaft, LAYER_WALLS))
+	if not is_top:
+		# Front wall of the shaft in the gap between floors
+		fnode.add_child(make_box("shaft_front_gap", Vector3(-sx, h + SLAB_T, SHAFT_Z0 - t), Vector3(sx, oh, SHAFT_Z0), mat_shaft, LAYER_WALLS))
 	var fz0 = SHAFT_Z0 - t
 	fnode.add_child(make_box("shaft_front_left", Vector3(-SHAFT_FRONT_HALF_X, 0, fz0), Vector3(-SHAFT_DOOR_HALF_W, h, SHAFT_Z0), mat_shaft, LAYER_WALLS))
 	fnode.add_child(make_box("shaft_front_right", Vector3(SHAFT_DOOR_HALF_W, 0, fz0), Vector3(SHAFT_FRONT_HALF_X, h, SHAFT_Z0), mat_shaft, LAYER_WALLS))
@@ -356,13 +496,6 @@ func build_floor(fnode, f):
 
 	# Floor number above the elevator door
 	fnode.add_child(make_label(str(f + 1), 0.02, Vector3(0, SHAFT_DOOR_H + 0.55, fz0 - 0.02), 180))
-
-func add_roof(level):
-	var roof = Spatial.new()
-	roof.name = "roof"
-	roof.translation = Vector3(0, FLOORS * FLOOR_H, 0)
-	roof.add_child(make_box("roof_slab", Vector3(-HALF_X, -SLAB_T, -HALF_Z), Vector3(HALF_X, 0, HALF_Z), mat_floor, LAYER_FLOOR | LAYER_WALLS))
-	add(level, roof)
 
 ### Elevator ###
 
@@ -373,6 +506,7 @@ func add_elevator(level):
 	el.floors_count = FLOORS
 	el.floor_height = FLOOR_H
 	el.initial_floor = 0
+	el.speed = 3.0
 	var cabin_z = (SHAFT_Z0 + SHAFT_Z1) * 0.5 - 0.025
 	el.translation = Vector3(0, 0, cabin_z)
 
@@ -380,7 +514,7 @@ func add_elevator(level):
 	var cabin = KinematicBody.new()
 	cabin.name = "cabin"
 	cabin.collision_layer = LAYER_WALLS | LAYER_FLOOR
-	cabin.collision_mask = 0
+	cabin.collision_mask = MASK_WALLS | MASK_FLOOR
 	el.add_child(cabin)
 	var hx = SHAFT_HALF_X - 0.05
 	var z0 = SHAFT_Z0 - cabin_z            # cabin front edge, flush with the landing
