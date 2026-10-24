@@ -113,6 +113,9 @@ var force_visibility = false
 var last_attack_target = null
 var last_attack_anim_idx = -1
 var model_to_restore = null
+# Phase of the perception updates (see is_perception_frame()), random so that
+# characters do not update their perception on the same physics frame
+var perception_phase : int = randi() % 1024
 
 func _ready():
 	__PLDRT.game_state.connect("player_underwater", self, "_on_player_underwater")
@@ -120,6 +123,18 @@ func _ready():
 	__PLDRT.game_state.connect("player_drunk", self, "_on_player_drunk")
 	__PLDRT.game_state.connect("player_registered", self, "_on_player_registered")
 	__PLDRT.game_state.register_player(self)
+
+### Perception throttling ###
+
+# How often (in physics frames) the character updates its perception:
+# rays to other characters and, for enemies, the decision about aggression.
+# 1 means every physics frame.
+func get_perception_period_frames() -> int:
+	return 1
+
+func is_perception_frame() -> bool:
+	var period = get_perception_period_frames()
+	return period <= 1 or (Engine.get_physics_frames() + perception_phase) % period == 0
 
 func get_gravity():
 	return (
@@ -1257,6 +1272,10 @@ func update_rays_to_characters(characters):
 		var r = update_ray_to_character(character)
 		if not r:
 			r = add_ray_to_character(character)
+		elif get_perception_period_frames() > 1:
+			# The ray target was not updated for several frames, so the last
+			# physics step result is stale
+			r.force_raycast_update()
 		if not r or not r.enabled:
 			if poi and clear_poi_if_it_is(character):
 				poi = null
@@ -1459,7 +1478,11 @@ func do_process(delta, is_player):
 		and not d.is_moving
 		and is_player
 	)
-	var urd = update_rays_to_characters(characters)
+	var urd = (
+		update_rays_to_characters(characters)
+			if is_perception_frame()
+			else { "poi" : get_point_of_interest(), "player_is_crouching" : false }
+	)
 	if d.cannot_move:
 		if is_transporting:
 			var player = __PLDRT.game_state.get_player()

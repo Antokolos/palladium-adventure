@@ -6,6 +6,10 @@ const AGGRESSION_RANGE = 12
 const STOP_CHASING_RANGE = 20
 
 export var max_hits = 0
+# Enemy updates its perception (line of sight, aggression) once per this many
+# physics frames, phases of different enemies are shifted. 1 means every frame.
+# At 60 physics FPS the default value gives 10 updates per second.
+export(int) var perception_period_frames = 6
 var hits = 0
 
 onready var hideout_decision_timer = $HideoutDecisionTimer
@@ -86,6 +90,9 @@ func get_aggression_range():
 func get_stop_chasing_range():
 	return STOP_CHASING_RANGE
 
+func get_perception_period_frames() -> int:
+	return perception_period_frames
+
 func set_states():
 	set_states_for_character(get_nearest_character(true))
 
@@ -141,7 +148,8 @@ func _physics_process(delta):
 		and __PLDRT.game_state.get_cam().is_tactical_player_character(self)
 	):
 		return
-	set_states()
+	if is_perception_frame():
+		set_states()
 	if not is_aggressive():
 		var target = get_target_node()
 		if target and not target.get_parent() is PLDPatrolArea:
