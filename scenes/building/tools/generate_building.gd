@@ -625,6 +625,8 @@ func add_enemies(level):
 				e.has_melee_attack = true
 				e.can_hide = false
 				e.max_hits = 1
+				# Only the enemies of the current floor should be processed
+				e.max_vert_dist = ROOM_H
 				# Facing the lobby (the model looks along +Z)
 				var basis = Basis(Vector3.UP, -side * PI * 0.5)
 				e.transform = Transform(basis, Vector3(side * p.x, f * FLOOR_H, p.z))

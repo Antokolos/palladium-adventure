@@ -745,22 +745,21 @@ func get_nearest_character(party_members_only = false):
 	var dist_squared_min
 	var origin = get_global_transform().origin
 	for ch in characters:
+		# Cheap checks go first: this is called every physics frame
+		# by every active enemy for every character on the level
+		if party_members_only and not ch.is_in_party():
+			continue
 		if equals(ch):
+			continue
+		var dist_squared_cur = origin.distance_squared_to(ch.get_global_transform().origin)
+		if tgt and dist_squared_cur >= dist_squared_min:
 			continue
 		if not ch.is_activated():
 			continue
 		if ch.is_dying():
 			continue
-		if party_members_only and not ch.is_in_party():
-			continue
-		var dist_squared_cur = origin.distance_squared_to(ch.get_global_transform().origin)
-		if not tgt:
-			tgt = ch
-			dist_squared_min = dist_squared_cur
-			continue
-		if dist_squared_cur < dist_squared_min:
-			dist_squared_min = dist_squared_cur
-			tgt = ch
+		tgt = ch
+		dist_squared_min = dist_squared_cur
 	return tgt
 
 func get_aggression_target():
@@ -1235,6 +1234,13 @@ func update_rays_to_characters(characters):
 	var poi = get_point_of_interest()
 	if is_player_controlled():
 		return { "poi" : poi, "player_is_crouching" : is_crouching() }
+	var in_party = is_in_party()
+	if USE_RAYS_ONLY_FOR_PARTY_MEMBERS and not in_party:
+		# Characters outside of the party need rays only to party members.
+		# Iterating over all characters of the level here was one of the most
+		# expensive parts of do_process() on levels with many enemies.
+		character_nodes.delete_rays_to_non_party_characters()
+		characters = __PLDRT.game_state.get_party_characters()
 	for character in characters:
 		if character.is_active_player():
 			player_is_crouching = character.is_crouching()
@@ -1243,7 +1249,7 @@ func update_rays_to_characters(characters):
 		if (
 			USE_RAYS_ONLY_FOR_PARTY_MEMBERS
 			and (
-				not is_in_party() and not character.is_in_party()
+				not in_party and not character.is_in_party()
 			)
 		):
 			delete_ray_to_character(character)

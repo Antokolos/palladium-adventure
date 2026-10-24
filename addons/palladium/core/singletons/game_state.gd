@@ -102,6 +102,13 @@ const CHARACTER_STATS_DEFAULT = {
 }
 
 var characters_cache = {}
+# get_characters() is called many times per physics frame by every active
+# character, so its result is memoized for the current physics frame.
+# The returned array must not be modified by callers.
+var characters_list_cache = []
+var characters_list_cache_frame = -1
+var party_list_cache = []
+var party_list_cache_frame = -1
 var characters_transition_data = {}
 var scenes_data = {}
 var saving_disabled = false
@@ -179,9 +186,15 @@ func set_level_ready(level_ready):
 
 func clear_caches():
 	characters_cache.clear()
+	invalidate_characters_list_cache()
+
+func invalidate_characters_list_cache():
+	characters_list_cache_frame = -1
+	party_list_cache_frame = -1
 
 func cleanup_paths():
 	player_paths.clear()
+	invalidate_characters_list_cache()
 	room_enabler_paths.clear()
 	usable_paths.clear()
 	activatable_paths.clear()
@@ -286,11 +299,30 @@ func get_character(name_hint):
 	return ch
 
 func get_characters():
+	var frame = Engine.get_physics_frames()
+	if characters_list_cache_frame == frame:
+		return characters_list_cache
 	var result = []
 	for name_hint in player_paths.keys():
 		var character_node = get_character(name_hint)
 		if character_node:
 			result.append(character_node)
+	characters_list_cache = result
+	characters_list_cache_frame = frame
+	return result
+
+# Party members (the player and companions), memoized for the current physics
+# frame like get_characters(). The returned array must not be modified.
+func get_party_characters():
+	var frame = Engine.get_physics_frames()
+	if party_list_cache_frame == frame:
+		return party_list_cache
+	var result = []
+	for character in get_characters():
+		if character.is_in_party():
+			result.append(character)
+	party_list_cache = result
+	party_list_cache_frame = frame
 	return result
 
 func get_room_enabler_path(room_id):
@@ -1010,6 +1042,7 @@ func register_player(player):
 	var name_hint = player.get_name_hint()
 	var hud = get_hud()
 	player_paths[name_hint] = player.get_path()
+	invalidate_characters_list_cache()
 	player.connect("crouching_changed", hud, "on_crouching_changed")
 	player.connect("crouching_changed", self, "on_crouching_changed")
 	player.connect("player_changed", hud, "on_player_changed")

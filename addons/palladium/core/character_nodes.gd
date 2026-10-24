@@ -33,6 +33,10 @@ onready var sound_player_miss = $SoundMiss
 
 var walk_sound_ids = [ __PLDRT.CHARS.SoundId.SOUND_WALK_NONE ]
 var visible_to_player = true
+# Rays to other characters, by instance id of another character.
+# Looking rays up by node name every frame was expensive, and a ray queued
+# for deletion could still be found by name in the same frame.
+var rays_by_character = {}
 
 func _ready():
 	__PLDRT.game_state.connect("player_underwater", self, "_on_player_underwater")
@@ -129,21 +133,28 @@ func get_ray_to_character_name(another_character):
 func get_ray_to_character(another_character):
 	if not another_character:
 		return null
-	var ray_name = get_ray_to_character_name(another_character)
-	return rays_to_characters.get_node(ray_name) \
-			if rays_to_characters.has_node(ray_name) \
-			else null
+	var id = another_character.get_instance_id()
+	if not rays_by_character.has(id):
+		return null
+	var r = rays_by_character[id]
+	if not is_instance_valid(r):
+		rays_by_character.erase(id)
+		return null
+	return r
+
+func free_ray(another_character, r):
+	rays_by_character.erase(another_character.get_instance_id())
+	r.enabled = false
+	r.queue_free()
 
 func add_ray_to_character(another_character):
+	var existing = get_ray_to_character(another_character)
+	if existing:
+		return update_ray_to_character(another_character, existing)
 	var need_ray = need_ray_to_character(another_character)
-	var ray_name = get_ray_to_character_name(another_character)
-	if rays_to_characters.has_node(ray_name):
-		rays_to_characters.get_node(ray_name).queue_free()
-		if DEBUG_RAYS:
-			print_debug(ray_name + " deleted in add for " + character.get_name_hint())
-		return null
 	if not need_ray:
 		return null
+	var ray_name = get_ray_to_character_name(another_character)
 	if DEBUG_RAYS:
 		print_debug(ray_name + " created in add for " + character.get_name_hint())
 	var r = RayCast.new()
@@ -159,7 +170,12 @@ func add_ray_to_character(another_character):
 	r.set_collision_mask_bit(12, false) # Enemies is NOT a collision
 	r.set_collision_mask_bit(13, false) # Obstacles is NOT a collision
 	rays_to_characters.add_child(r)
-	update_ray_to_character(another_character, r)
+	rays_by_character[another_character.get_instance_id()] = r
+	r = update_ray_to_character(another_character, r)
+	if r:
+		# Otherwise is_colliding() is false until the next physics step,
+		# and has_obstacles_between() would report a free line of sight
+		r.force_raycast_update()
 	return r
 
 func update_ray_to_character(another_character, ray = null):
@@ -172,17 +188,16 @@ func update_ray_to_character(another_character, ray = null):
 		else:
 			if DEBUG_RAYS:
 				print_debug(r.get_name() + " deleted in update for " + character.get_name_hint())
-			r.queue_free()
+			free_ray(another_character, r)
 			r = null
 	return r
 
 func delete_ray_to_character(another_character):
 	var r = get_ray_to_character(another_character)
 	if r:
-		r.enabled = false
 		if DEBUG_RAYS:
 			print_debug(r.get_name() + " deleted for " + character.get_name_hint())
-		r.queue_free()
+		free_ray(another_character, r)
 		return true
 	return false
 
@@ -193,6 +208,23 @@ func has_obstacles_between(another_character):
 	if not r or not r.enabled:
 		return false
 	return r.is_colliding()
+
+# Deletes rays to characters that are not party members anymore
+# (or that do not exist anymore)
+func delete_rays_to_non_party_characters():
+	for id in rays_by_character.keys():
+		var another_character = instance_from_id(id)
+		if (
+			another_character
+			and is_instance_valid(another_character)
+			and another_character.is_in_party()
+		):
+			continue
+		var r = rays_by_character[id]
+		rays_by_character.erase(id)
+		if is_instance_valid(r):
+			r.enabled = false
+			r.queue_free()
 
 func disable_rays_to_characters():
 	for ray in rays_to_characters.get_children():
