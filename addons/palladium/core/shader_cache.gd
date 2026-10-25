@@ -102,12 +102,25 @@ func make_skeleton(pos, skeleton):
 		if skeleton_child is PLDBoneAttachment:
 			skeleton_child.queue_free()
 	skeleton.set_scale(get_scale_from_aabb(aabb))
-	for ch in skeleton.get_children():
-		if ch is AnimationPlayer:
-			var anim_list = ch.get_animation_list()
-			for anim in anim_list:
-				ch.play(anim)
+	# All animations of the skeleton's AnimationPlayers used to be played here.
+	# Skinning shader variants do not depend on the pose, and playing animations
+	# that the game itself never plays printed errors (e.g. "slerp: The start
+	# quaternion must be normalized" for animations with non-normalized rotation
+	# keys) during the whole warm-up.
+	disable_animations(skeleton)
 	return skeleton
+
+# Copies must not play animations: neither autoplay nor ones that were playing
+# in the original node when it was duplicated
+func disable_animations(node):
+	for ch in node.get_children():
+		if ch is AnimationPlayer:
+			ch.autoplay = ""
+			ch.stop()
+			ch.playback_active = false
+		elif ch is AnimationTree:
+			ch.active = false
+		disable_animations(ch)
 
 func make_base_asset(pos, resource):
 	var asset = MeshInstance.new()
@@ -147,6 +160,7 @@ func make_particles(pos, particles):
 	aabb = aabb.merge(particles.get_aabb())
 	particles.set_scale(get_scale_from_aabb(aabb))
 	particles.emitting = true
+	disable_animations(particles)
 	return particles
 
 # Adds a warm-up sphere for the material, if it was not added yet
