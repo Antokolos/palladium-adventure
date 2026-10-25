@@ -18,6 +18,15 @@ export var player_path = "player"
 export var player_female_path = "player_female"
 export var player_bandit_path = "player_bandit"
 export(NodePath) var cam_path
+# Scenes that are not on the level when it is loaded, but can appear later
+# (spawned enemies, effects, models that characters switch to...).
+# The extended shader cache warms up their materials, meshes, skeletons and
+# particles too. The scenes are instanced, but never added to the tree, so
+# only their _init() is executed.
+export(Array, PackedScene) var shader_cache_extra_scenes = []
+# The extended shader cache also warms up models of the items in inventories
+# and quick items of all characters (item preview, item use)
+export var shader_cache_inventory_items = true
 
 onready var player = get_node(player_path) if has_node(player_path) else null
 onready var player_female = get_node(player_female_path) if has_node(player_female_path) else null

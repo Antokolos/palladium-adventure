@@ -121,7 +121,9 @@ func get_skeleton_key(sk):
 	var owner_node = sk.owner
 	if owner_node and owner_node.filename != "":
 		return owner_node.filename + ":" + str(owner_node.get_path_to(sk))
-	return str(sk.get_path())
+	if sk.filename != "":
+		return sk.filename
+	return str(sk.get_path()) if sk.is_inside_tree() else str(sk.get_instance_id())
 
 func next_pos(pos):
 	pos.x = pos.x + STEP
@@ -216,6 +218,62 @@ func add_material_meshes(pos, scn):
 # Shader compilation mode: 0 - synchronous, 1 - asynchronous, 2 - asynchronous + cache.
 # Previously "scm and scm < 2" returned false for 0, i.e. exactly for the mode
 # with the compilation stalls.
+### Scenes that are not on the level yet ###
+
+func get_extra_scene_paths():
+	var result = []
+	var level = __PLDRT.game_state.get_level()
+	if not level:
+		return result
+	var extra_scenes = level.get("shader_cache_extra_scenes")
+	if extra_scenes:
+		for scene in extra_scenes:
+			if scene and scene.resource_path != "" and not result.has(scene.resource_path):
+				result.append(scene.resource_path)
+	if level.get("shader_cache_inventory_items"):
+		for path in get_inventory_model_paths():
+			if not result.has(path):
+				result.append(path)
+	return result
+
+func get_inventory_model_paths():
+	var result = []
+	var item_lists = []
+	for name_hint in __PLDRT.game_state.inventory.keys():
+		item_lists.append(__PLDRT.game_state.inventory[name_hint])
+	for name_hint in __PLDRT.game_state.quick_items.keys():
+		item_lists.append(__PLDRT.game_state.quick_items[name_hint])
+	for items in item_lists:
+		for item in items:
+			if not item or not item.has("item_id"):
+				continue
+			var item_data = PLDDB.get_item_data(item.item_id)
+			if not item_data:
+				continue
+			for key in [ "model_path", "model_use_path" ]:
+				var path = item_data.get(key)
+				if path and not result.has(path):
+					result.append(path)
+	return result
+
+# Extra scenes are instanced but not added to the tree (so that their scripts
+# do not register characters, usables etc. in the game state); the warm-up
+# assets made of them are independent copies, and the instances are freed.
+func add_extra_scenes(pos):
+	for path in get_extra_scene_paths():
+		if not ResourceLoader.exists(path):
+			push_warning("Shader cache: scene does not exist: " + path)
+			continue
+		var scene = load(path)
+		if not scene is PackedScene:
+			continue
+		var inst = scene.instance()
+		if not inst:
+			continue
+		pos = add_material_meshes(pos, inst)
+		inst.free()
+	return pos
+
 func godot_shader_cache_is_off():
 	var scm = ProjectSettings.get("rendering/gles3/shaders/shader_compilation_mode")
 	return scm != null and int(scm) < 2
@@ -237,6 +295,8 @@ func _process(delta):
 			stage = stage + 1
 			var pos = Vector2(-STEP * HALFROW, 0)
 			pos = add_material_meshes(pos, __PLDRT.game_state.get_viewport())
+			if caching_enabled():
+				pos = add_extra_scenes(pos)
 		3:
 			stage = stage + 1
 			# Show all items for one frame
