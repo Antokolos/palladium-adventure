@@ -10,8 +10,43 @@ const HALFROW = 20
 # down and moved to the center), being skinned and drawn in every frame.
 # Compiled shader variants belong to the shaders and do not need it.
 const KEEP_CHARACTER_SKELETONS = false
+# Shader variants depend on the viewport and the camera that render an object:
+# USE_SHADOW is enabled only in viewports with a shadow atlas, the camera's
+# environment enables multiple render targets (SSAO, SSR, DOF) and the radiance
+# map (sky). Secondary viewports (mirrors, item previews...) have no shadow atlas
+# and their cameras use the World's environment, so the objects rendered there
+# need other variants than in the main viewport. Therefore the warm-up assets
+# are rendered once more by a camera in a small secondary viewport like that.
+const SECONDARY_PASS_SIZE = Vector2(64, 36)
+
+# How long the warm-up assets are shown in each pass (the main viewport and the
+# secondary one). A shader variant is compiled when an object using it is
+# drawn, but with asynchronous compilation (shader_compilation_mode 1 or 2)
+# Godot starts at most max_simultaneous_compiles compilations at a time, at most
+# two per frame; a variant that did not get a slot is started only when the
+# object is drawn again. With assets shown for one frame most variants were
+# not even started and were compiled later, during the game.
+# Number of frames of each pass; 0 means automatic: 2 frames for synchronous
+# compilation, and for asynchronous compilation enough frames to start the
+# compilation of every asset's variants
+export(int, 0, 1000) var pass_frames = 0
+# Asynchronous compilation only: minimum duration of each pass in seconds,
+# so that started compilations can finish and free their slots
+export(float, 0, 10) var pass_min_duration_async = 1.0
+# Asynchronous compilation only: maximum duration of each pass in seconds,
+# the pass ends then even if pass_frames are not shown yet
+export(float, 0, 30) var pass_max_duration_async = 5.0
+# Variants started per asset in a pass, used for automatic pass_frames
+# (the color pass, the depth prepass, the shadow pass...)
+const VARIANTS_PER_ASSET_ESTIMATE = 2
+const PASS_FRAMES_SYNC = 2
+const PASS_FRAMES_MARGIN = 2
 
 var stage = 0
+var pass_frames_done = 0
+var pass_frames_needed = 0
+var pass_start_msec = 0
+var secondary_viewport = null
 var rids = {}
 var skeleton_paths = {}
 var character_skeleton_paths = {}
@@ -125,6 +160,39 @@ func get_skeleton_key(sk):
 		return sk.filename
 	return str(sk.get_path()) if sk.is_inside_tree() else str(sk.get_instance_id())
 
+func make_multimesh(pos, mmi):
+	var src = mmi.multimesh
+	var mm = MultiMesh.new()
+	mm.transform_format = MultiMesh.TRANSFORM_3D
+	mm.color_format = src.color_format
+	mm.custom_data_format = src.custom_data_format
+	mm.mesh = src.mesh
+	mm.instance_count = 1
+	mm.set_instance_transform(0, Transform())
+	var asset = MultiMeshInstance.new()
+	asset.set_portal_mode(CullInstance.PORTAL_MODE_GLOBAL)
+	asset.include_in_bound = false
+	asset.multimesh = mm
+	asset.material_override = mmi.material_override
+	asset.set_transform(Transform())
+	asset.translate(Vector3(pos.x, pos.y, 0))
+	var aabb = AABB(Vector3(0, 0, 0), Vector3(STEP, STEP, STEP))
+	aabb = aabb.merge(src.mesh.get_aabb())
+	asset.set_scale(get_scale_from_aabb(aabb))
+	return asset
+
+# Adds an instanced copy of the MultiMeshInstance (one instance), once per mesh and material_override
+func add_multimesh(pos, mmi):
+	var key = "mm:%d:%d" % [
+		mmi.multimesh.mesh.get_rid().get_id(),
+		mmi.material_override.get_rid().get_id() if mmi.material_override else 0
+	]
+	if rids.has(key):
+		return pos
+	rids[key] = make_multimesh(pos, mmi)
+	self.add_child(rids[key])
+	return next_pos(pos)
+
 func next_pos(pos):
 	pos.x = pos.x + STEP
 	if pos.x > STEP * HALFROW:
@@ -149,11 +217,12 @@ func add_material_meshes(pos, scn):
 			continue
 		var geometry = item.get("geometry")
 		if geometry:
-			pos = add_material(pos, geometry.material_override)
 			if geometry is MultiMeshInstance and geometry.multimesh and geometry.multimesh.mesh:
-				var mm = geometry.multimesh.mesh
-				for j in range(mm.get_surface_count()):
-					pos = add_material(pos, mm.surface_get_material(j))
+				# The materials of a MultiMesh are rendered with instancing
+				# (USE_INSTANCING), a sphere would compile another variant
+				pos = add_multimesh(pos, geometry)
+			else:
+				pos = add_material(pos, geometry.material_override)
 			continue
 		if mesh:
 			# material_override replaces all surface materials, and it was not collected before
@@ -289,6 +358,7 @@ func _process(delta):
 			stage = stage + 1
 			__PLDRT.game_state.get_hud().clear_popup_message()
 			__PLDRT.game_state.get_hud().set_popup_message(tr("MESSAGE_PLEASE_WAIT"))
+			stop_secondary_pass()
 			free_assets()
 			get_tree().call_group("room_enablers", "set_active", false)
 		2:
@@ -297,9 +367,23 @@ func _process(delta):
 			pos = add_material_meshes(pos, __PLDRT.game_state.get_viewport())
 			if caching_enabled():
 				pos = add_extra_scenes(pos)
+			start_pass()
 		3:
+			# Showing all items in the main viewport
+			if caching_enabled() and not is_pass_finished():
+				return
 			stage = stage + 1
-			# Show all items for one frame
+			if caching_enabled() and start_secondary_pass():
+				start_pass()
+			else:
+				stage = stage + 1
+		4:
+			# Showing all items once more in a secondary viewport
+			if not is_pass_finished():
+				update_secondary_camera()
+				return
+			stage = stage + 1
+			stop_secondary_pass()
 		_:
 			if (
 				SHADER_CACHE_HIDING_ENABLED
@@ -339,6 +423,88 @@ func free_assets(keep_character_skeletons = false):
 		if is_instance_valid(character_sk):
 			character_sk.queue_free()
 	character_skeleton_paths.clear()
+
+### Pass duration ###
+
+func is_async_compilation():
+	var scm = ProjectSettings.get("rendering/gles3/shaders/shader_compilation_mode")
+	return scm != null and int(scm) >= 1
+
+func get_assets_count():
+	return rids.size() + skeleton_paths.size() + character_skeleton_paths.size()
+
+func get_pass_frames():
+	if pass_frames > 0:
+		return pass_frames
+	if not is_async_compilation():
+		return PASS_FRAMES_SYNC
+	var slots = ProjectSettings.get("rendering/gles3/shaders/max_simultaneous_compiles")
+	slots = max(1, int(slots) if slots != null else 2)
+	# At most two compilations are started per frame, and at most `slots` at a time
+	var per_frame = min(2, slots)
+	return int(ceil(float(get_assets_count() * VARIANTS_PER_ASSET_ESTIMATE) / per_frame)) + PASS_FRAMES_MARGIN
+
+func start_pass():
+	pass_frames_done = 0
+	pass_frames_needed = get_pass_frames()
+	pass_start_msec = OS.get_ticks_msec()
+
+# Called once per frame while the pass is in progress
+func is_pass_finished():
+	pass_frames_done += 1
+	if not is_async_compilation():
+		return pass_frames_done > pass_frames_needed
+	var elapsed = (OS.get_ticks_msec() - pass_start_msec) / 1000.0
+	if elapsed >= pass_max_duration_async:
+		return true
+	return pass_frames_done > pass_frames_needed and elapsed >= pass_min_duration_async
+
+### Pass in a secondary viewport ###
+
+func get_camera():
+	# shader_cache is a child of the camera's viewpoint
+	var node = get_parent()
+	while node and not node is Camera:
+		node = node.get_parent()
+	return node
+
+# Creates a small viewport in the same World, without a shadow atlas, with a
+# camera that has no own environment and sees all layers (the player's model,
+# for example, is not visible to the main camera, but is visible in mirrors)
+func start_secondary_pass():
+	var main_camera = get_camera()
+	if not main_camera:
+		return false
+	stop_secondary_pass()
+	secondary_viewport = Viewport.new()
+	secondary_viewport.name = "secondary_pass"
+	secondary_viewport.size = SECONDARY_PASS_SIZE
+	secondary_viewport.shadow_atlas_size = 0
+	secondary_viewport.render_target_update_mode = Viewport.UPDATE_ALWAYS
+	var camera = Camera.new()
+	camera.cull_mask = 0xFFFFF
+	secondary_viewport.add_child(camera)
+	add_child(secondary_viewport)
+	camera.make_current()
+	update_secondary_camera()
+	return true
+
+func update_secondary_camera():
+	if not secondary_viewport:
+		return
+	var main_camera = get_camera()
+	var camera = secondary_viewport.get_child(0)
+	if not main_camera or not camera:
+		return
+	camera.fov = main_camera.fov
+	camera.near = main_camera.near
+	camera.far = main_camera.far
+	camera.global_transform = main_camera.global_transform
+
+func stop_secondary_pass():
+	if secondary_viewport and is_instance_valid(secondary_viewport):
+		secondary_viewport.queue_free()
+	secondary_viewport = null
 
 func refresh():
 	stage = 1
