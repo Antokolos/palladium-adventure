@@ -18,6 +18,15 @@ const KEEP_CHARACTER_SKELETONS = false
 # need other variants than in the main viewport. Therefore the warm-up assets
 # are rendered once more by a camera in a small secondary viewport like that.
 const SECONDARY_PASS_SIZE = Vector2(64, 36)
+# Both passes are rendered in small offscreen viewports, and the warm-up assets
+# are on a render layer that is not in the main camera's cull mask, so the
+# player does not see them, no matter how long the passes last.
+# The first pass reproduces the main viewport (a shadow atlas, the main
+# camera's environment), the second one the secondary viewports.
+# The layer must not be used by anything that the main camera should see.
+export(int, 0, 19) var asset_layer = 19
+# Any non-zero shadow atlas enables the same shader variants (USE_SHADOW)
+const MAIN_PASS_SHADOW_ATLAS_SIZE = 256
 
 # How long the warm-up assets are shown in each pass (the main viewport and the
 # secondary one). A shader variant is compiled when an object using it is
@@ -193,6 +202,34 @@ func add_multimesh(pos, mmi):
 	self.add_child(rids[key])
 	return next_pos(pos)
 
+# Settings that the built-in materials of Sprite3D, AnimatedSprite3D and Label3D depend on
+const BUILTIN_MATERIAL_PROPERTIES = [
+	"billboard", "transparent", "shaded", "double_sided", "no_depth_test",
+	"fixed_size", "alpha_cut", "render_priority"
+]
+
+# Adds a copy of a node with a built-in material, once per combination of the settings
+func add_geometry_copy(pos, geometry):
+	var values = [ geometry.get_class() ]
+	for property in BUILTIN_MATERIAL_PROPERTIES:
+		values.append(geometry.get(property))
+	var key = "builtin:" + str(values)
+	if rids.has(key):
+		return pos
+	var asset = geometry.duplicate(0)  # without scripts, signals and groups
+	for ch in asset.get_children():
+		asset.remove_child(ch)
+		ch.free()
+	if asset is GeometryInstance:
+		asset.set_portal_mode(CullInstance.PORTAL_MODE_GLOBAL)
+		asset.include_in_bound = false
+	asset.set_transform(Transform())
+	asset.translate(Vector3(pos.x, pos.y, 0))
+	asset.set_scale(Vector3(STEP, STEP, STEP))
+	rids[key] = asset
+	self.add_child(asset)
+	return next_pos(pos)
+
 func next_pos(pos):
 	pos.x = pos.x + STEP
 	if pos.x > STEP * HALFROW:
@@ -221,8 +258,15 @@ func add_material_meshes(pos, scn):
 				# The materials of a MultiMesh are rendered with instancing
 				# (USE_INSTANCING), a sphere would compile another variant
 				pos = add_multimesh(pos, geometry)
+			elif (geometry is SpriteBase3D or geometry is Label3D) and not geometry.material_override:
+				# Their built-in materials are generated from their settings
+				pos = add_geometry_copy(pos, geometry)
 			else:
 				pos = add_material(pos, geometry.material_override)
+				# CSG primitives have their own material property
+				var own_material = geometry.get("material")
+				if own_material is Material:
+					pos = add_material(pos, own_material)
 			continue
 		if mesh:
 			# material_override replaces all surface materials, and it was not collected before
@@ -367,18 +411,22 @@ func _process(delta):
 			pos = add_material_meshes(pos, __PLDRT.game_state.get_viewport())
 			if caching_enabled():
 				pos = add_extra_scenes(pos)
+				set_assets_layer(self)
+				if not start_secondary_pass(true):
+					stage = stage + 2
 			start_pass()
 		3:
-			# Showing all items in the main viewport
+			# Showing all items in an offscreen viewport like the main one
 			if caching_enabled() and not is_pass_finished():
+				update_secondary_camera()
 				return
 			stage = stage + 1
-			if caching_enabled() and start_secondary_pass():
+			if caching_enabled() and start_secondary_pass(false):
 				start_pass()
 			else:
 				stage = stage + 1
 		4:
-			# Showing all items once more in a secondary viewport
+			# Showing all items once more in an offscreen viewport like the secondary ones
 			if not is_pass_finished():
 				update_secondary_camera()
 				return
@@ -459,7 +507,7 @@ func is_pass_finished():
 		return true
 	return pass_frames_done > pass_frames_needed and elapsed >= pass_min_duration_async
 
-### Pass in a secondary viewport ###
+### Passes in offscreen viewports ###
 
 func get_camera():
 	# shader_cache is a child of the camera's viewpoint
@@ -468,21 +516,33 @@ func get_camera():
 		node = node.get_parent()
 	return node
 
-# Creates a small viewport in the same World, without a shadow atlas, with a
-# camera that has no own environment and sees all layers (the player's model,
-# for example, is not visible to the main camera, but is visible in mirrors)
-func start_secondary_pass():
+# The warm-up assets are moved to asset_layer, so that only the offscreen
+# cameras of the passes see them
+func set_assets_layer(node):
+	for ch in node.get_children():
+		if ch is VisualInstance:
+			ch.layers = 1 << asset_layer
+		set_assets_layer(ch)
+
+# like_main_viewport: with a shadow atlas and the main camera's environment,
+# otherwise like secondary viewports (mirrors etc.): without a shadow atlas and
+# with the World's environment. Only the warm-up assets are rendered.
+func start_secondary_pass(like_main_viewport):
 	var main_camera = get_camera()
 	if not main_camera:
 		return false
+	if main_camera.get_cull_mask_bit(asset_layer):
+		push_warning("Shader cache: asset_layer %d is visible to the main camera" % asset_layer)
 	stop_secondary_pass()
 	secondary_viewport = Viewport.new()
-	secondary_viewport.name = "secondary_pass"
+	secondary_viewport.name = "main_pass" if like_main_viewport else "secondary_pass"
 	secondary_viewport.size = SECONDARY_PASS_SIZE
-	secondary_viewport.shadow_atlas_size = 0
+	secondary_viewport.shadow_atlas_size = MAIN_PASS_SHADOW_ATLAS_SIZE if like_main_viewport else 0
 	secondary_viewport.render_target_update_mode = Viewport.UPDATE_ALWAYS
 	var camera = Camera.new()
-	camera.cull_mask = 0xFFFFF
+	camera.cull_mask = 1 << asset_layer
+	if like_main_viewport:
+		camera.environment = main_camera.environment
 	secondary_viewport.add_child(camera)
 	add_child(secondary_viewport)
 	camera.make_current()
