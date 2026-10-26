@@ -51,6 +51,12 @@ const VARIANTS_PER_ASSET_ESTIMATE = 2
 const PASS_FRAMES_SYNC = 2
 const PASS_FRAMES_MARGIN = 2
 
+# Prints a report about the shaders used by the level's materials after each
+# warm-up (see print_shader_report()). Every unique shader means a separate
+# ubershader, compiled synchronously when it appears, and separate variants,
+# so materials that differ only in a couple of settings are worth unifying.
+export var shader_report_enabled = false
+
 var stage = 0
 var pass_frames_done = 0
 var pass_frames_needed = 0
@@ -466,6 +472,145 @@ func _process(delta):
 			__PLDRT.game_state.shader_cache_processed()
 			get_tree().call_group("room_enablers", "set_active", true)
 			stage = 0
+			if shader_report_enabled:
+				print_shader_report()
+
+### Shader report ###
+
+# Collects materials used in the node's subtree: material -> path of the first
+# node that uses it. Built-in materials of Sprite3D/Label3D are not visible here.
+func collect_materials(node, result):
+	var mats = []
+	if node is GeometryInstance:
+		mats.append(node.material_override)
+		var own_material = node.get("material")
+		if own_material is Material:
+			mats.append(own_material)
+	if node is MeshInstance:
+		for i in range(node.get_surface_material_count()):
+			mats.append(node.get_surface_material(i))
+		if node.mesh:
+			for i in range(node.mesh.get_surface_count()):
+				mats.append(node.mesh.surface_get_material(i))
+	elif node is MultiMeshInstance and node.multimesh and node.multimesh.mesh:
+		for i in range(node.multimesh.mesh.get_surface_count()):
+			mats.append(node.multimesh.mesh.surface_get_material(i))
+	elif node is Particles:
+		for i in range(node.draw_passes):
+			var dp = node.get_draw_pass_mesh(i)
+			if dp:
+				for j in range(dp.get_surface_count()):
+					mats.append(dp.surface_get_material(j))
+	elif node is CPUParticles and node.mesh:
+		for i in range(node.mesh.get_surface_count()):
+			mats.append(node.mesh.surface_get_material(i))
+	for mat in mats:
+		# next_pass materials are separate shaders too
+		while mat:
+			if not result.has(mat):
+				result[mat] = str(node.get_path()) if node.is_inside_tree() else node.name
+			mat = mat.next_pass if mat is Material else null
+	if node == self:
+		return
+	for ch in node.get_children():
+		collect_materials(ch, result)
+
+func is_shader_relevant_property(name):
+	if name.ends_with("_texture"):
+		return true
+	if name.begins_with("flags_") or name.ends_with("_enabled") or name.ends_with("_texture_channel"):
+		return true
+	if name.begins_with("params_") and not name in [
+		"params_line_width", "params_point_size", "params_alpha_scissor_threshold", "params_grow_amount"
+	]:
+		return true
+	return name in [
+		"distance_fade_mode", "detail_blend_mode", "detail_uv_layer", "uv1_triplanar", "uv2_triplanar",
+		"proximity_fade_enable", "albedo_texture_force_srgb", "vertex_color_use_as_albedo", "vertex_color_is_srgb"
+	]
+
+var default_spatial_material = null
+
+# Settings of a SpatialMaterial that its generated shader depends on and that
+# differ from the defaults ("name" for enabled flags, "name=value" otherwise,
+# textures are shown as present)
+func get_shader_settings(mat):
+	if not default_spatial_material:
+		default_spatial_material = SpatialMaterial.new()
+	var result = []
+	for p in mat.get_property_list():
+		if not (p.usage & PROPERTY_USAGE_STORAGE) or not is_shader_relevant_property(p.name):
+			continue
+		var value = mat.get(p.name)
+		if p.name.ends_with("_texture") and not p.name.ends_with("_texture_channel"):
+			if value:
+				result.append(p.name)
+			continue
+		if value == default_spatial_material.get(p.name):
+			continue
+		result.append(p.name if typeof(value) == TYPE_BOOL and value else "%s=%s" % [p.name, str(value)])
+	return result
+
+func describe_material(mat, user_path):
+	var path = mat.resource_path
+	if path != "" and path.find("::") < 0:
+		return path
+	return "built-in %s (%s), used by %s" % [mat.get_class(), mat.resource_name if mat.resource_name != "" else "unnamed", user_path]
+
+func print_shader_report():
+	var materials = {}
+	collect_materials(__PLDRT.game_state.get_viewport(), materials)
+	var groups = {}  # shader RID id -> { "materials": [...], "settings": [...], "type": ... }
+	for mat in materials.keys():
+		var shader_rid = VisualServer.material_get_shader(mat.get_rid())
+		var key = shader_rid.get_id()
+		if not groups.has(key):
+			var settings = []
+			var type = mat.get_class()
+			if mat is SpatialMaterial:
+				settings = get_shader_settings(mat)
+			elif mat is ShaderMaterial and mat.shader:
+				settings = [ "shader: " + (mat.shader.resource_path if mat.shader.resource_path != "" else "built-in") ]
+			groups[key] = { "materials": [], "settings": settings, "type": type }
+		groups[key].materials.append(describe_material(mat, materials[mat]))
+	var keys = groups.keys()
+	report_groups = groups
+	keys.sort_custom(self, "_compare_groups_by_size")
+	report_groups = {}
+	var base = null
+	for key in keys:
+		if groups[key].type == "SpatialMaterial":
+			base = groups[key]
+			break
+	print("Shader report: %d unique shaders for %d materials" % [groups.size(), materials.size()])
+	var n = 0
+	for key in keys:
+		n += 1
+		var g = groups[key]
+		var line = "  #%d: %d material(s), %s" % [n, g.materials.size(), g.type]
+		if g == base:
+			line += ", the most common SpatialMaterial shader"
+		elif base and g.type == "SpatialMaterial":
+			var diff = []
+			for s in g.settings:
+				if not s in base.settings:
+					diff.append("+" + s)
+			for s in base.settings:
+				if not s in g.settings:
+					diff.append("-" + s)
+			line += ", differs from the most common one by: " + PoolStringArray(diff).join(", ")
+		print(line)
+		if g.settings.size() > 0:
+			print("      settings: " + PoolStringArray(g.settings).join(", "))
+		for i in range(min(3, g.materials.size())):
+			print("      " + g.materials[i])
+		if g.materials.size() > 3:
+			print("      ... and %d more" % (g.materials.size() - 3))
+
+var report_groups = {}
+
+func _compare_groups_by_size(a, b):
+	return report_groups[a].materials.size() > report_groups[b].materials.size()
 
 func free_assets(keep_character_skeletons = false):
 	for rid in rids.keys():
