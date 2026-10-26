@@ -67,7 +67,7 @@ var skeleton_paths = {}
 var character_skeleton_paths = {}
 
 func _ready():
-	__PLDRT.settings.connect("shader_cache_enabled_changed", self, "refresh")
+	__PLDRT.settings.connect("shader_cache_enabled_changed", self, "_on_shader_cache_enabled_changed")
 	#refresh() -- will be called on settings ready
 
 func get_cacheable_items(scn):
@@ -727,3 +727,10 @@ func stop_secondary_pass():
 
 func refresh():
 	stage = 1
+
+# refresh() was connected to the signal directly, but the signal has an
+# argument and refresh() has none, so calling it failed. When the cache is
+# disabled there is nothing to warm up.
+func _on_shader_cache_enabled_changed(enabled):
+	if enabled:
+		refresh()

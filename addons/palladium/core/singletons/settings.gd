@@ -66,7 +66,9 @@ var camera_view = PLDDB.CAMERA_VIEW_TYPE_DEFAULT
 var pause_on_joy_disconnected = true
 var disable_mouse_if_joy_connected = false
 var show_path = false
-var shader_cache_enabled = false
+# The extended shader cache (see PLDShaderCache) is enabled by default since
+# settings version 2; earlier versions saved false by default
+var shader_cache_enabled = true
 var vsync = true
 var fullscreen = true
 var invert_yaxis = false
@@ -116,6 +118,10 @@ func _init(pldrt):
 	set_fullscreen(fullscreen)
 	set_resolution(resolution)
 
+# Version of the saved settings format; increment it when a saved value must
+# not be applied anymore (see load_settings())
+const SETTINGS_VERSION = 2
+
 func load_settings():
 	var f = File.new()
 	var error = f.open("user://settings.json", File.READ)
@@ -152,7 +158,11 @@ func load_settings():
 	if ("show_path" in d):
 		show_path = bool(d.show_path)
 
-	if ("shader_cache_enabled" in d):
+	var settings_version = int(d.settings_version) if ("settings_version" in d) else 1
+
+	# Before version 2 the extended shader cache was disabled by default and
+	# had no checkbox, so the saved false is the old default, not the player's choice
+	if ("shader_cache_enabled" in d) and settings_version >= 2:
 		shader_cache_enabled = bool(d.shader_cache_enabled)
 
 	if ("vsync" in d):
@@ -218,6 +228,7 @@ func save_settings():
 	assert( not error )
 	
 	var d = {
+		"settings_version" : SETTINGS_VERSION,
 		"tablet_orientation" : tablet_orientation,
 		"joypad_type" : joypad_type,
 		"performance_stats" : performance_stats,
@@ -433,6 +444,10 @@ func set_show_path(sp):
 	show_path = sp
 
 func set_shader_cache_enabled(sce):
+	# The settings UI calls it with the current value when it is opened,
+	# and every change restarts the warm-up
+	if shader_cache_enabled == sce:
+		return
 	shader_cache_enabled = sce
 	emit_signal("shader_cache_enabled_changed", sce)
 
