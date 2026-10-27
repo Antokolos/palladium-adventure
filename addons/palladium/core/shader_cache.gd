@@ -114,7 +114,19 @@ func make_skeleton(pos, skeleton):
 	# quaternion must be normalized" for animations with non-normalized rotation
 	# keys) during the whole warm-up.
 	disable_animations(skeleton)
+	make_visible(skeleton)
 	return skeleton
+
+# Parts of a model can be hidden most of the time and shown only by an animation
+# or a script (a weapon, claws, an effect during an attack). In a copy they would
+# stay hidden and their shader variants (e.g. with skinning) would be compiled
+# when they appear in the game, so everything in a copy is made visible. (Playing
+# all animations in the copies, as before, made some of them visible by chance.)
+func make_visible(node):
+	for ch in node.get_children():
+		if ch is Spatial:
+			ch.visible = true
+		make_visible(ch)
 
 # Copies must not play animations: neither autoplay nor ones that were playing
 # in the original node when it was duplicated
@@ -167,6 +179,7 @@ func make_particles(pos, particles):
 	particles.set_scale(get_scale_from_aabb(aabb))
 	particles.emitting = true
 	disable_animations(particles)
+	make_visible(particles)
 	return particles
 
 # Adds a warm-up sphere for the material, if it was not added yet
