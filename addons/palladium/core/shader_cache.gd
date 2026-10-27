@@ -389,10 +389,22 @@ func get_inventory_model_paths():
 					result.append(path)
 	return result
 
+# Materials of the extra scenes, kept until the next warm-up.
+# A SpatialMaterial's generated shader is shared by all materials with the same
+# combination of settings and is freed together with its compiled programs
+# (including the ubershader) when the last such material is freed. Extra
+# scenes, e.g. inventory item models, are usually not loaded after the warm-up,
+# so without these references their shaders were compiled again, with a stall,
+# when the scene appeared in the game. Keeping the materials is enough: a scene
+# loaded again gets new material objects, but with the same settings they use
+# the shader that is still alive.
+var extra_materials = []
+
 # Extra scenes are instanced but not added to the tree (so that their scripts
 # do not register characters, usables etc. in the game state); the warm-up
 # assets made of them are independent copies, and the instances are freed.
 func add_extra_scenes(pos):
+	var materials = {}
 	for path in get_extra_scene_paths():
 		if not ResourceLoader.exists(path):
 			push_warning("Shader cache: scene does not exist: " + path)
@@ -404,7 +416,11 @@ func add_extra_scenes(pos):
 		if not inst:
 			continue
 		pos = add_material_meshes(pos, inst)
+		collect_materials(inst, materials)
 		inst.free()
+	# Replaced only now, so that the previously kept materials stay alive while
+	# the scenes are loaded again
+	extra_materials = materials.keys()
 	return pos
 
 func godot_shader_cache_is_off():
